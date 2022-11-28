@@ -37,14 +37,24 @@ var svg = d3.select("svg"),
     diameter = +svg.attr("width"),
     g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
-var color = d3.scaleLinear()
+var color = d3.scaleLog()
     .domain([-1, 5])
     .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
     .interpolate(d3.interpolateHcl);
 
-var color2 = d3.scaleLinear()
+var color2 = d3.scaleLog()
     .domain([1, 1021158])
-    .range(["green", "blue"])
+    .range(["white", "black"])
+
+var c_size = d3.scaleLog()
+    .domain([1, 510580, 1021158])
+    .range([5, 50, 100]);
+
+// var c_size = d3.scaleLog()
+//     .domain([d3.least(percents_items, ([, v]) => v)[1], 
+//                 (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1])/2,  
+//                 d3.greatest(percents_items, ([, v]) => v)[1]])
+//     .range([5,50, 70])
 
 var pack = d3.pack()
     .size([diameter - margin, diameter - margin])
@@ -144,7 +154,10 @@ function draw() {
         .attr("class", "label")
         .style("fill-opacity", function(d) { return d.parent === household ? 1 : 0; })
         .style("display", function(d) { return d.parent === household ? "inline" : "none"; })
-        .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; });
+        .text(function(d) { return d.data.name });
+        // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; });
+
+        //hover for the number!!!!
 
 
 
@@ -175,7 +188,14 @@ function draw() {
     function zoomTo(v) {
         var k = diameter / v[2]; view = v;
         node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-        circle.attr("r", function(d) { return d.r * k; });
+        circle.attr("r", function(d) { 
+            // return Math.sqrt(d.value) / 20;
+            // return d.value / 2000.0;
+            // console.log(c_size(d.value));
+            return c_size(d.value);
+            // return d.r * k
+            // return c_size(d.value); 
+        });
         }
 };
 
