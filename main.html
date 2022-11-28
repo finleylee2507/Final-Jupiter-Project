@@ -28,29 +28,30 @@
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet">
 
 <body>
 <div><h1>Country vs Removal Requests</h1></div>
 <div class="dropdown-wrapper">
-    Continent Displayed: <select id="continent-selection" class="dropdown"></select>
+    Continent Displayed: <select class="dropdown" id="continent-selection"></select>
 </div>
 <script>
+
     // Line Bubble Plot
 
     //Plot vars
-    let width = document.documentElement.clientWidth - 100, height = document.body.clientHeight;
-    let margin = {top: 50, right: 100, bottom: 50, left: 100};
+    let width = document.documentElement.clientWidth - 100, height = document.body.clientHeight
+    let margin = {top: 50, right: 100, bottom: 50, left: 100}
     let quadrants = [0.25, 0.50, 0.75]
 
     let svg_bubble = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height)
 
-    let defs = svg_bubble.append("defs");
+    let defs = svg_bubble.append("defs")
 
     let tooltip = d3.select("body")
         .append("div")
@@ -61,16 +62,20 @@
         .style("border-width", "2px")
         .style("border-radius", "5px")
         .style("padding", "5px")
-    let bubble_width = width - margin.left - margin.right;
-    let bubble_height = height - margin.top - margin.bottom;
+    let bubble_width = width - margin.left - margin.right
+    let bubble_height = height - margin.top - margin.bottom
 
     //Variables using the products data
-    let products_data;
-    let country_counts;
+    let products_data
+    let country_counts
+
+    //mapping from country name to country code supported by the api
+    let country_code_mapping
+
 
     //Variables using the percent data
-    let percents_data;
-    let percents_items_normalized, percents_items, percents_removed_percent;
+    let percents_data
+    let percents_items_normalized, percents_items, percents_removed_percent
 
     //maps each continent to its abbreviation
     const continent_mapping = {
@@ -88,8 +93,8 @@
 
 
     //Misc Variables
-    let country_to_continent = new Map();
-    let continent_to_country = new Map();
+    let country_to_continent = new Map()
+    let continent_to_country = new Map()
 
 
     //Check to see if two circles intersect each other
@@ -102,34 +107,34 @@
         if ((d <= r1 - r2) || (d <= r2 - r1) || (d < r1 + r2) || (d == r1 + r2))
             return true
         return false
-    };
+    }
 
     //A circle takes up a x-span of space. i.e. [c-r, c+r]
     //You can check to see if any circles cross that plane; they have to in order to intersect the circle
     const check_breaks_plane = (c1, r1, c2, r2) => {
-        var left = c1[0] - r1;
-        var right = c1[0] + r1;
+        let left = c1[0] - r1
+        let right = c1[0] + r1
         if (((c2[0] + r2 > left) && c2[0] <= c1[0]) || ((c2[0] - r2 < right) && c2[0] >= c1[0])) {
             return true
         }
         return false
-    };
+    }
 
     //Get all possible y-values of the circle to be placed
     const get_possible = (c1, r1, c2, r2) => {
-        var min = margin.top, max = bubble_height, step = 0.01, diff = 0.01;
-        var works = []
-        var current = min;
+        let min = margin.top, max = bubble_height, step = 0.01, diff = 0.01
+        let works = []
+        let current = min
         do {
             if (!check_intersection([c1[0], current], r1, c2, r2)) {
                 works.push(current)
             }
-            current += step;
+            current += step
         } while (current <= max)
 
         //Only need the point closest to the axis
         //Find the largest y-value thats above the center that's valid
-        var left = works.filter(function (d) {
+        let left = works.filter(function (d) {
             return d < c2[1]
         })
         if (left.length == 0) {
@@ -139,7 +144,7 @@
         }
 
         //Find the smallest y-value below the center that's valid
-        var right = works.filter(function (d) {
+        let right = works.filter(function (d) {
             return d > c2[1]
         })
         if (right.length == 0) {
@@ -149,29 +154,29 @@
         }
 
         return [left, right]
-    };
+    }
 
     //Let code merge ranges (because the ends are the "best" placements for the circles)
     const merge_ranges = (intervals, r) => {
-        var result = [];
-        var previous = intervals[0];
+        var result = []
+        var previous = intervals[0]
 
         for (let i = 1; i < intervals.length; i += 1) {
             if (previous[1] >= intervals[i][0]) {
-                previous = [previous[0], Math.max(previous[1], intervals[i][1])];
+                previous = [previous[0], Math.max(previous[1], intervals[i][1])]
             } else {
-                result.push(previous);
-                previous = intervals[i];
+                result.push(previous)
+                previous = intervals[i]
             }
         }
-        result.push(previous);
+        result.push(previous)
 
         intervals = result
         // console.log(intervals)
-        var previous = intervals[0];
+        var previous = intervals[0]
 
         //Find the value that closest to the axis
-        var best = previous[0];
+        var best = previous[0]
         for (let i = 1; i < intervals.length; i += 1) {
             if (intervals[i][0] - previous[1] >= r * 2) { //Make sure that the space is large enough for the diameter
                 if (Math.abs(((bubble_height + margin.top) / 2.0) - previous[1]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
@@ -187,14 +192,14 @@
             best = previous[1]
         }
 
-        return best;
-    };
+        return best
+    }
 
 
     //Find the best y-values for the points
     const open_y = (placed_circles, result_y, this_point, xScale, sizeScale) => {
         if (placed_circles.length == 0) {
-            return new Promise(resolve => setTimeout(() => resolve(result_y), 1));
+            return new Promise(resolve => setTimeout(() => resolve(result_y), 1))
         }
 
         //Find the circles that broke the plane
@@ -209,7 +214,7 @@
             }
         })
         if (temp_placed_circles.length == 0) {
-            return new Promise(resolve => setTimeout(() => resolve(result_y), 1));
+            return new Promise(resolve => setTimeout(() => resolve(result_y), 1))
         }
 
         //For each circle that broke the plane, see the two ends of valid values
@@ -222,18 +227,19 @@
 
         //Combine the ranges and pick a single best point
         best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
-        return new Promise(resolve => setTimeout(() => resolve(best_place), 1));
-    };
+        return new Promise(resolve => setTimeout(() => resolve(best_place), 1))
+    }
 
     const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width])
 
     async function drawBubble() {
 
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1], d3.greatest(country_counts, ([, v]) => v)[1]]).range([5, 50])
+
         // const countryColorScale = d3.scaleOrdinal().domain(country_to_continent.keys()).range(d3.schemeTableau10)
+        const getId = d => d[0].toLowerCase().replace(/ /g, "-")
 
-
-        function preprocess_countries() {
+        const preprocess_countries = () => {
             //Sort most requests to least
             var countries_sorted = Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500})
             // console.log("countries sorted: ", countries_preprocessed)
@@ -241,28 +247,37 @@
             switch (continent_mapping[current_continent]) {
                 case "NA":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("NA").has(d[0]))
-                    break;
+                    break
                 case "SA":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("SA").has(d[0]))
-                    break;
+                    break
                 case "AS":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("AS").has(d[0]))
-                    break;
+                    break
                 case "OC":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("OC").has(d[0]))
-                    break;
+                    break
                 case "AF":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("AF").has(d[0]))
-                    break;
+                    break
                 case "EU":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("EU").has(d[0]))
-                    break;
+                    break
 
             }
-            return countries_sorted;
+            return countries_sorted
         }
 
-        let countries_preprocessed = preprocess_countries();
+        const get_country_icon_url = (country_name) => {
+            console.log(country_name)
+            let country_code = country_code_mapping[country_name]
+            console.log(country_code)
+            let url = `https://flagcdn.com/w2560/${country_code}.png`
+            return url
+        }
+
+
+        let countries_preprocessed = preprocess_countries()
 
         //append initial y-value
         countries_preprocessed.forEach(function (d, i) {
@@ -270,24 +285,20 @@
         })
 
         //Create the circles after finding their best y-value
-        var countries_sorted;
+        let countries_sorted
 
-        function getId(d) {
-            return d[0].toLowerCase().replace(/ /g, "-");
-        }
 
         for (i in countries_preprocessed) {
-            console.log(i)
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
                 countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
 
             countries_sorted = countries_preprocessed.filter(function (e, j) {
                 return j <= i
-            });
+            })
 
             //create country flags
 
-
+            console.log(countries_sorted)
             defs.selectAll(".country-pattern")
                 .data(countries_sorted)
                 .join(
@@ -301,7 +312,11 @@
                         .attr("height", 1)
                         .attr("width", 1)
                         .attr("preserveAspectRatio", "none")
-                        .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
+                        .attr("xlink:href", d=>{
+                            // console.log(d[0])
+                            return get_country_icon_url(d[0])
+                        })
+                    ,
 
                     // update => update
                     //     .attr("class", "country-pattern")
@@ -315,8 +330,8 @@
                     //     .attr("preserveAspectRatio", "none")
                     //     .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
 
-                    exit => exit
-                        .remove()
+                    // exit => exit
+                    //     .remove()
                 )
 
             //draw circles
@@ -343,7 +358,7 @@
                     //     .attr("fill", d => `url(#${getId(d[0])})`)
                     // ,
 
-                    exit => exit.remove()
+                    // exit => exit.remove()
                 )
                 .on("mouseover", function (event, d) {
                     tooltip
@@ -376,33 +391,33 @@
         percents_removed_percent = new d3.InternMap()
         Array.from(percents_items.keys()).forEach(e => {
             percents_removed_percent.set(e, percents_items_normalized.get(e) / percents_items.get(e))
-        });
+        })
 
         //remove countries from country counts that aren't in the percentages table
         Array.from(country_counts.keys()).forEach(e => {
             if (!percents_removed_percent.has(e)) {
-                country_counts.delete(e);
+                country_counts.delete(e)
             }
-        });
+        })
 
         //country_continents = d3.group(percents_data, d => d.continent, d=> d.country)
 
         //create mappings: continents ->countries, country->continent
         percents_data.forEach(e => {
-            let continent = e.continent;
-            let country = e.country;
+            let continent = e.continent
+            let country = e.country
 
             //continents -> countries
             if (!continent_to_country.has(continent)) {
-                continent_to_country.set(continent, new Set([country]));
+                continent_to_country.set(continent, new Set([country]))
             } else {
-                continent_to_country.get(continent).add(country);
+                continent_to_country.get(continent).add(country)
             }
 
             //countries -> continents
-            country_to_continent.set(country, continent);
+            country_to_continent.set(country, continent)
 
-        });
+        })
 
         // console.log(continent_to_country)
 
@@ -414,7 +429,7 @@
         let xAxis = svg_bubble.append("g")
             .attr("class", "x-axis")
             .attr("transform", "translate(" + 0 + "," + (height / 2) + ")")
-            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0));
+            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0))
 
         xAxis
             .attr("stroke-width", "5")
@@ -426,14 +441,14 @@
                 (height / 2 + 50) + ")")
             .style("text-anchor", "middle")
             .attr("dy", "12")
-            .text("% of Acceptance");
+            .text("% of Acceptance")
 
 
         //draw lines that mark the quadrants
         let quadrant_lines = svg_bubble.selectAll("lines.quadrant-line")
             .data(quadrants)
             .enter()
-            .append("line");
+            .append("line")
         quadrant_lines.attr("class", "quadrant-line")
             .attr("x1", d => xScale(d))
             .attr("y1", margin.top + 20)
@@ -466,48 +481,48 @@
             .attr("markerHeight", 13)
             .attr("orient", "right")
             .append("path")
-            .attr("d", "M2,2 L2,13 L8,7 L2,2");
+            .attr("d", "M2,2 L2,13 L8,7 L2,2")
 
-        xAxis.select("path").attr("marker-end", "url(#arrowhead)");
+        xAxis.select("path").attr("marker-end", "url(#arrowhead)")
     }
 
     function set_up_dropdown() {
         d3.selectAll(".dropdown").selectAll('myOptions').data(dropdown_options).enter()
             .append('option')
             .text(function (d) {
-                return d;
+                return d
             }) // text showed in the menu
             .attr("value", function (d) {
-                return d;
+                return d
             })
 
         d3.select(".dropdown")
             .on("change", (e, d) => {
-                current_continent = e.currentTarget.value;
+                current_continent = e.currentTarget.value
                 // console.log(current_continent);
 
                 //draw bubble again
-                drawBubble();
+                drawBubble()
             })
     }
 
     async function ready() {
-        products_data = await d3.csv("removal-requests-products.csv");
-        percents_data = await d3.csv("removal-requests-percents.csv");
+        products_data = await d3.csv("removal-requests-products.csv")
+        percents_data = await d3.csv("removal-requests-percents.csv")
+        country_code_mapping = await d3.json("country-code-mapping.json")
 
         //load dropdown
-        set_up_dropdown();
+        set_up_dropdown()
 
-        set_up_axis_and_labels();
+        set_up_axis_and_labels()
 
-        prep_data();
+        prep_data()
 
-        drawBubble();
+        drawBubble()
     }
 
 
-
-    ready();
+    ready()
 </script>
 
 </body>
