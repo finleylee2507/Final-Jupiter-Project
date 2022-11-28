@@ -43,7 +43,7 @@
     // Line Bubble Plot
 
     //Plot vars
-    let width = document.documentElement.clientWidth - 100, height = document.body.clientHeight
+    let width = document.documentElement.clientWidth - 100, height = 1000
     let margin = {top: 50, right: 100, bottom: 50, left: 100}
     let quadrants = [0.25, 0.50, 0.75]
 
@@ -78,13 +78,22 @@
     let percents_items_normalized, percents_items, percents_removed_percent
 
     //maps each continent to its abbreviation
-    const continent_mapping = {
+    const continent_mapping_a = {
         "North America": "NA",
         "South America": "SA",
         "Asia": "AS",
         "Oceania": "OC",
         "Europe": "EU",
         "Africa": "AF"
+    }
+    //maps each continent abbreviation to its full name
+    const continent_mapping_b = {
+        "NA": "North America",
+        "SA": "South America",
+        "AS": "Asia",
+        "OC": "Oceania",
+        "EU": "Europe",
+        "AF": "Africa"
     }
 
     //Variable that controls the dropdown
@@ -134,9 +143,7 @@
 
         //Only need the point closest to the axis
         //Find the largest y-value thats above the center that's valid
-        let left = works.filter(function (d) {
-            return d < c2[1]
-        })
+        let left = works.filter(d => d < c2[1])
         if (left.length == 0) {
             left = 0
         } else {
@@ -144,9 +151,7 @@
         }
 
         //Find the smallest y-value below the center that's valid
-        let right = works.filter(function (d) {
-            return d > c2[1]
-        })
+        let right = works.filter(d => d > c2[1])
         if (right.length == 0) {
             left = height
         } else {
@@ -206,7 +211,7 @@
         temp_placed_circles = []
         this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
         this_radius = sizeScale(this_point[1])
-        placed_circles.forEach(function (d) {
+        placed_circles.forEach(d => {
             other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
             other_radius = sizeScale(d[1])
             if (check_breaks_plane(this_center, this_radius, other_center, other_radius)) {
@@ -219,7 +224,7 @@
 
         //For each circle that broke the plane, see the two ends of valid values
         var valid_heights = []
-        temp_placed_circles.forEach(function (d) {
+        temp_placed_circles.forEach(d => {
             other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
             other_radius = sizeScale(d[1])
             valid_heights.push(get_possible(this_center, this_radius, other_center, other_radius))
@@ -232,19 +237,21 @@
 
     const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width])
 
-    async function drawBubble() {
+    const continentColorScale = d3.scaleOrdinal().domain(continent_to_country.keys()).range(d3.schemeTableau10)
+
+    const drawBubble = async () => {
 
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1], d3.greatest(country_counts, ([, v]) => v)[1]]).range([5, 50])
 
-        // const countryColorScale = d3.scaleOrdinal().domain(country_to_continent.keys()).range(d3.schemeTableau10)
-        const getId = d => d[0].toLowerCase().replace(/ /g, "-")
+
+        const getId = d => d.toLowerCase().replace(/ /g, "-")
 
         const preprocess_countries = () => {
             //Sort most requests to least
             var countries_sorted = Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500})
             // console.log("countries sorted: ", countries_preprocessed)
             //filter based on dropdown
-            switch (continent_mapping[current_continent]) {
+            switch (continent_mapping_a[current_continent]) {
                 case "NA":
                     countries_sorted = countries_sorted.filter(d => continent_to_country.get("NA").has(d[0]))
                     break
@@ -272,15 +279,26 @@
             console.log(country_name)
             let country_code = country_code_mapping[country_name]
             console.log(country_code)
-            let url = `https://flagcdn.com/w2560/${country_code}.png`
+            let url = `https://flagcdn.com/h240/${country_code}.png`
             return url
         }
 
+        const get_halo_stroke_width = (radius) => {
+            if (radius >= 5 && radius <= 10) {
+                return 2
+            } else if (radius > 10 && radius <= 20) {
+                return 3
+            } else if (radius > 20 && radius <= 40) {
+                return 4
+            } else {
+                return 5
+            }
+        }
 
         let countries_preprocessed = preprocess_countries()
 
         //append initial y-value
-        countries_preprocessed.forEach(function (d, i) {
+        countries_preprocessed.forEach((d, i) => {
             countries_preprocessed[i] = countries_preprocessed[i].concat((bubble_height + margin.top) / 2.0)
         })
 
@@ -288,13 +306,11 @@
         let countries_sorted
 
 
-        for (i in countries_preprocessed) {
+        for (let i in countries_preprocessed) {
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
                 countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
 
-            countries_sorted = countries_preprocessed.filter(function (e, j) {
-                return j <= i
-            })
+            countries_sorted = countries_preprocessed.filter((e, j) => j <= i)
 
             //create country flags
 
@@ -312,11 +328,8 @@
                         .attr("height", 1)
                         .attr("width", 1)
                         .attr("preserveAspectRatio", "none")
-                        .attr("xlink:href", d=>{
-                            // console.log(d[0])
-                            return get_country_icon_url(d[0])
-                        })
-                    ,
+                        .attr("xlink:href", d => get_country_icon_url(d[0])
+                        ),
 
                     // update => update
                     //     .attr("class", "country-pattern")
@@ -330,15 +343,16 @@
                     //     .attr("preserveAspectRatio", "none")
                     //     .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
 
-                    // exit => exit
-                    //     .remove()
+                    exit => exit
+                        .remove()
                 )
 
             //draw circles
-            svg_bubble.selectAll("circle")
+            svg_bubble.selectAll("circle.country")
                 .data(countries_sorted)
                 .join(
                     enter => enter.append("circle")
+                        .attr("class", "country")
                         .attr("country", d => d[0])
                         .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
                         .attr("cy", d => d[2])
@@ -346,6 +360,8 @@
                         .attr("r", d => sizeScale(d[1]))
                         // .attr("fill", d => countryColorScale(d[0]))
                         .attr("fill", d => `url(#${getId(d[0])})`)
+                        .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
+                        .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
                     ,
 
                     // update => update
@@ -358,19 +374,19 @@
                     //     .attr("fill", d => `url(#${getId(d[0])})`)
                     // ,
 
-                    // exit => exit.remove()
+                    exit => exit.remove()
                 )
-                .on("mouseover", function (event, d) {
+                .on("mouseover", (event, d) => {
                     tooltip
                         .style("opacity", 1)
                 })
-                .on("mousemove", function (event, d) {
+                .on("mousemove", (event, d) => {
                     tooltip
                         .html('<u>' + d[0] + '</u>' + "<br>Removal Requests: " + d[1] + "<br>%Removed: " + percents_removed_percent.get(d[0]))
                         .style("left", (event.pageX + 20) + "px")
                         .style("top", (event.pageY - 30) + "px")
                 })
-                .on("mouseleave", function (event, d) {
+                .on("mouseleave", (event, d) => {
                     tooltip
                         .style("opacity", 0)
                 })
@@ -380,7 +396,7 @@
     }
 
     //parse the csv files and perform calculations
-    function prep_data() {
+    const prep_data = () => {
 
         country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
 
@@ -423,7 +439,7 @@
 
     }
 
-    function set_up_axis_and_labels() {
+    const set_up_axis_and_labels = () => {
         //add axis and text
 
         let xAxis = svg_bubble.append("g")
@@ -484,17 +500,36 @@
             .attr("d", "M2,2 L2,13 L8,7 L2,2")
 
         xAxis.select("path").attr("marker-end", "url(#arrowhead)")
+
+        //add legend
+        svg_bubble.selectAll("circles.mydots")
+            .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
+            .enter()
+            .append("circle")
+            .attr("class", "mydots")
+            .attr("cx", width - margin.right - 30)
+            .attr("cy", (d, i) => 100 + i * 25) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("r", 7)
+            .style("fill", d => continentColorScale(continent_mapping_a[d]))
+
+        svg_bubble.selectAll("text.legend-label")
+            .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
+            .enter()
+            .append("text")
+            .attr("class", "legend-label")
+            .attr("x", width - margin.right - 20)
+            .attr("y", (d, i) => 100 + i * 25)
+            .style("fill", d => continentColorScale(continent_mapping_a[d]))
+            .text(d => d)
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle")
     }
 
-    function set_up_dropdown() {
+    const set_up_dropdown = () => {
         d3.selectAll(".dropdown").selectAll('myOptions').data(dropdown_options).enter()
             .append('option')
-            .text(function (d) {
-                return d
-            }) // text showed in the menu
-            .attr("value", function (d) {
-                return d
-            })
+            .text(d => d) // text showed in the menu
+            .attr("value", d => d)
 
         d3.select(".dropdown")
             .on("change", (e, d) => {
@@ -506,7 +541,7 @@
             })
     }
 
-    async function ready() {
+    const ready = async () => {
         products_data = await d3.csv("removal-requests-products.csv")
         percents_data = await d3.csv("removal-requests-percents.csv")
         country_code_mapping = await d3.json("country-code-mapping.json")
@@ -514,9 +549,9 @@
         //load dropdown
         set_up_dropdown()
 
-        set_up_axis_and_labels()
-
         prep_data()
+
+        set_up_axis_and_labels()
 
         drawBubble()
     }
