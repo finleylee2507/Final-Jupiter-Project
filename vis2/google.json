@@ -1,0 +1,3516 @@
+{
+    "name": "World",
+    "children": [
+        {
+            "name": "AF",
+            "children": [
+                {
+                    "name": "Algeria",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 25.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 107.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 95.06
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 11.94
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 88.8411214953271
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 11.158878504672897
+                        }
+                    ]
+                },
+                {
+                    "name": "Egypt",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 14.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 20.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 9.030000000000001
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 10.97
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 45.150000000000006
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 54.85
+                        }
+                    ]
+                },
+                {
+                    "name": "Ethiopia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Kenya",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 32.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 115.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 26.07
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 88.92999999999999
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 22.669565217391305
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 77.33043478260869
+                        }
+                    ]
+                },
+                {
+                    "name": "Libya",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Malawi",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Mauritius",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Morocco",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Nigeria",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 102.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 24.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 78.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 23.52941176470588
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 76.47058823529412
+                        }
+                    ]
+                },
+                {
+                    "name": "R\u00e9union",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 6.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 33.33333333333333
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 66.66666666666666
+                        }
+                    ]
+                },
+                {
+                    "name": "Senegal",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 76.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 72.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 94.73684210526315
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 5.263157894736842
+                        }
+                    ]
+                },
+                {
+                    "name": "Somalia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "South Africa",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 8.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 19.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 16.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 15.789473684210526
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 84.21052631578947
+                        }
+                    ]
+                },
+                {
+                    "name": "Tunisia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 71.42857142857143
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 28.57142857142857
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "AS",
+            "children": [
+                {
+                    "name": "Afghanistan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Azerbaijan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 43.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 69.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 20.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 49.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 28.985507246376812
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 71.01449275362319
+                        }
+                    ]
+                },
+                {
+                    "name": "Bahrain",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Bangladesh",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 856.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2407.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 474.9
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1932.1000000000001
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 19.729954299958454
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 80.27004570004155
+                        }
+                    ]
+                },
+                {
+                    "name": "Bhutan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Cambodia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "China",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 428.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 4897.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 17.82
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4879.18
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.3638962630181744
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 99.63610373698182
+                        }
+                    ]
+                },
+                {
+                    "name": "Cyprus",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 28.57142857142857
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 71.42857142857143
+                        }
+                    ]
+                },
+                {
+                    "name": "Hong Kong",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 93.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 295.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 68.77148514851486
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 226.22851485148516
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 23.31236784695419
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 76.68763215304581
+                        }
+                    ]
+                },
+                {
+                    "name": "India",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 8362.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 40783.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 16251.350867086709
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 24531.649132913295
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 39.84834579870708
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 60.15165420129293
+                        }
+                    ]
+                },
+                {
+                    "name": "Indonesia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 633.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 275492.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 39727.53249224923
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 235764.46750775076
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 14.420575730783192
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 85.57942426921682
+                        }
+                    ]
+                },
+                {
+                    "name": "Iraq",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 9.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 30.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 30.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Israel",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 962.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2990.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1562.476200620062
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1427.523799379938
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 52.25672911772783
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 47.74327088227218
+                        }
+                    ]
+                },
+                {
+                    "name": "Japan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 554.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2658.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1386.407695769577
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1271.592304230423
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 52.15980796725271
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 47.84019203274729
+                        }
+                    ]
+                },
+                {
+                    "name": "Jordan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 52.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 63.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2.9898989898989896
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 60.01010101010101
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 4.7458714125380785
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 95.25412858746192
+                        }
+                    ]
+                },
+                {
+                    "name": "Kazakhstan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 402.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 106310.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2664.9287048704873
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 103645.07129512951
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 2.50675261487206
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 97.49324738512794
+                        }
+                    ]
+                },
+                {
+                    "name": "Kuwait",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 16.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 68.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 19.99009900990099
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 48.00990099009901
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 29.397204426324986
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 70.60279557367501
+                        }
+                    ]
+                },
+                {
+                    "name": "Lebanon",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 51.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 51.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Macao",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Malaysia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 160.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 314.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 217.65357435743573
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 96.34642564256426
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 69.31642495459737
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 30.683575045402627
+                        }
+                    ]
+                },
+                {
+                    "name": "Maldives",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Nepal",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 62.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 83.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 14.029603960396038
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 68.97039603960395
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 16.903137301681973
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 83.09686269831802
+                        }
+                    ]
+                },
+                {
+                    "name": "Oman",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Pakistan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3618.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 35893.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 25044.751444266876
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 10848.248555733124
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 69.77614421827899
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 30.223855781721014
+                        }
+                    ]
+                },
+                {
+                    "name": "Philippines",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 108.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 267.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 100.52415841584158
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 166.47584158415842
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 37.64949753402306
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 62.35050246597693
+                        }
+                    ]
+                },
+                {
+                    "name": "Qatar",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 6.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 33.33333333333333
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 66.66666666666666
+                        }
+                    ]
+                },
+                {
+                    "name": "Saudi Arabia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 47.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 64.900099009901
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 35.09990099009901
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 64.900099009901
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 35.09990099009901
+                        }
+                    ]
+                },
+                {
+                    "name": "Singapore",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 59.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 113.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 49.95029702970297
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 63.049702970297034
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 44.20380268115308
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 55.79619731884693
+                        }
+                    ]
+                },
+                {
+                    "name": "South Korea",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 13224.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 152142.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 102941.80187218722
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 49200.19812781278
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 67.66165941829819
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 32.33834058170182
+                        }
+                    ]
+                },
+                {
+                    "name": "Sri Lanka",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 154.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 300.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 23.77909090909091
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 276.22090909090906
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 7.926363636363637
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 92.07363636363635
+                        }
+                    ]
+                },
+                {
+                    "name": "Taiwan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 84.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 281.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 33.30742574257425
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 247.69257425742575
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 11.85317642084493
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 88.14682357915507
+                        }
+                    ]
+                },
+                {
+                    "name": "Thailand",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 696.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 8847.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 7157.798181818182
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1689.2018181818182
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 80.90650143345972
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 19.093498566540276
+                        }
+                    ]
+                },
+                {
+                    "name": "Turkey",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 5661.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 22448.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 7685.352146214621
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 14762.647853785378
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 34.23624441471232
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 65.76375558528767
+                        }
+                    ]
+                },
+                {
+                    "name": "Turkmenistan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "United Arab Emirates",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 31.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 81.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 16.98
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 64.02
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 20.962962962962965
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 79.03703703703702
+                        }
+                    ]
+                },
+                {
+                    "name": "Uzbekistan",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 33.33333333333333
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 66.66666666666666
+                        }
+                    ]
+                },
+                {
+                    "name": "Vietnam",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1965.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 40405.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 33654.70784378438
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 6750.2921562156225
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 83.2934236945536
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 16.70657630544641
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "EU",
+            "children": [
+                {
+                    "name": "Albania",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 145.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 164.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 147.01
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 16.99
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 89.64024390243902
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 10.359756097560975
+                        }
+                    ]
+                },
+                {
+                    "name": "Austria",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 68.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 575.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 394.11333333333334
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 180.88666666666666
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 68.54144927536233
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 31.45855072463768
+                        }
+                    ]
+                },
+                {
+                    "name": "Belarus",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 16.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 50.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 6.00969696969697
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 43.990303030303025
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 12.01939393939394
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 87.98060606060605
+                        }
+                    ]
+                },
+                {
+                    "name": "Belgium",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 156.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 960.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 158.35188118811882
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 801.6481188118812
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 16.494987623762377
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 83.50501237623763
+                        }
+                    ]
+                },
+                {
+                    "name": "Bosnia & Herzegovina",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 22.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 22.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Bulgaria",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 10.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 12.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 8.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 33.33333333333333
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 66.66666666666666
+                        }
+                    ]
+                },
+                {
+                    "name": "Croatia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 18.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 113.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 79.24990099009901
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 33.75009900990099
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 70.13265574345044
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 29.86734425654955
+                        }
+                    ]
+                },
+                {
+                    "name": "Czechia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 30.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 63.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 45.05
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 17.95
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 71.50793650793649
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 28.49206349206349
+                        }
+                    ]
+                },
+                {
+                    "name": "Denmark",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 80.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 305.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 156.75787878787878
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 148.24212121212122
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 51.39602583209141
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 48.603974167908596
+                        }
+                    ]
+                },
+                {
+                    "name": "Estonia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 25.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1382.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 33.5
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1348.5
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 2.4240231548480464
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 97.57597684515196
+                        }
+                    ]
+                },
+                {
+                    "name": "Europol",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 30.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 30.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 29.04
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.96
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 96.8
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 3.2
+                        }
+                    ]
+                },
+                {
+                    "name": "Finland",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 30.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 329.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 91.6
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 237.4
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 27.8419452887538
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 72.1580547112462
+                        }
+                    ]
+                },
+                {
+                    "name": "France",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2279.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 14708.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 7677.825409620194
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 7030.174590379806
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 52.20169574123058
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 47.79830425876942
+                        }
+                    ]
+                },
+                {
+                    "name": "Germany",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1598.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 7116.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 4753.308418194761
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2362.6915818052394
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 66.7974763658623
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 33.20252363413771
+                        }
+                    ]
+                },
+                {
+                    "name": "Gibraltar",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Greece",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 85.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 510.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 264.3592079207921
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 245.64079207920793
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 51.83513880799845
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 48.16486119200156
+                        }
+                    ]
+                },
+                {
+                    "name": "Hungary",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 45.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 161.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 106.93
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 54.07
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 66.41614906832298
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 33.58385093167702
+                        }
+                    ]
+                },
+                {
+                    "name": "Iceland",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Ireland",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 79.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 969.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 852.0098989898989
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 116.990101010101
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 87.92671816201228
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 12.07328183798772
+                        }
+                    ]
+                },
+                {
+                    "name": "Isle of Man",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 19.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 158.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 158.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Italy",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 754.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 5807.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 4231.163112311231
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1575.836887688769
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 72.86314985898453
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 27.13685014101548
+                        }
+                    ]
+                },
+                {
+                    "name": "Latvia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 15.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 15.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Lithuania",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 28.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 62.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 48.069900990099015
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 13.930099009900989
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 77.53209837112745
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 22.467901628872564
+                        }
+                    ]
+                },
+                {
+                    "name": "Luxembourg",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 20.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 36.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 25.97010101010101
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 10.02989898989899
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 72.1391694725028
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 27.860830527497193
+                        }
+                    ]
+                },
+                {
+                    "name": "Malta",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Moldova",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 25.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 25.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Monaco",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 3.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 66.66666666666666
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 33.33333333333333
+                        }
+                    ]
+                },
+                {
+                    "name": "Netherlands",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 160.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 849.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 501.6155275527552
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 347.3844724472447
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 59.08310100739166
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 40.91689899260833
+                        }
+                    ]
+                },
+                {
+                    "name": "North Macedonia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Norway",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 73.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 332.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 142.58
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 189.42000000000002
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 42.945783132530124
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 57.05421686746989
+                        }
+                    ]
+                },
+                {
+                    "name": "Poland",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 187.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 735.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 301.8389108910891
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 433.16108910891086
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 41.06651848858355
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 58.93348151141644
+                        }
+                    ]
+                },
+                {
+                    "name": "Portugal",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 353.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 464.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 378.47
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 85.53
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 81.56681034482759
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 18.433189655172413
+                        }
+                    ]
+                },
+                {
+                    "name": "Romania",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 78.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 352.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 110.03788878887889
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 241.9621112111211
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 31.26076386047696
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 68.73923613952304
+                        }
+                    ]
+                },
+                {
+                    "name": "Russia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 84805.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1021158.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 759753.0543444344
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 261404.94565556556
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 74.4011264020293
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 25.598873597970695
+                        }
+                    ]
+                },
+                {
+                    "name": "San Marino",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Serbia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 12.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 18.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 17.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 5.555555555555555
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 94.44444444444444
+                        }
+                    ]
+                },
+                {
+                    "name": "Slovakia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Slovenia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 5.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 20.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 80.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Spain",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 277.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 154976.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 145499.39384438444
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 9476.606155615562
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 93.88511372366331
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 6.114886276336699
+                        }
+                    ]
+                },
+                {
+                    "name": "Sweden",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 15.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 36.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 19.96039603960396
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 16.03960396039604
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 55.44554455445545
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 44.554455445544555
+                        }
+                    ]
+                },
+                {
+                    "name": "Switzerland",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 80.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 797.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 367.26077807780774
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 429.7392219221922
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 46.08039875505743
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 53.91960124494256
+                        }
+                    ]
+                },
+                {
+                    "name": "Ukraine",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 281.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1857.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 425.370396039604
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1431.629603960396
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 22.906321811502636
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 77.09367818849736
+                        }
+                    ]
+                },
+                {
+                    "name": "United Kingdom",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 748.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 3945.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2797.2475774047994
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1147.7524225952006
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 70.9061489836451
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 29.093851016354893
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "NA",
+            "children": [
+                {
+                    "name": "Canada",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 528.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2582.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 2089.6464162886878
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 492.3535837113123
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 80.93130969359751
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 19.06869030640249
+                        }
+                    ]
+                },
+                {
+                    "name": "Costa Rica",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 24.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 24.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Cura\u00e7ao",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Dominican Republic",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "El Salvador",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Guadeloupe",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 16.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 777.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 592.259603960396
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 184.74039603960395
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 76.22388725359022
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 23.776112746409776
+                        }
+                    ]
+                },
+                {
+                    "name": "Jamaica",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Mexico",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 94.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 267.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 30.98
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 236.01999999999998
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 11.602996254681647
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 88.39700374531834
+                        }
+                    ]
+                },
+                {
+                    "name": "Nicaragua",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Puerto Rico",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 50.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 50.0
+                        }
+                    ]
+                },
+                {
+                    "name": "St. Vincent & Grenadines",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Trinidad & Tobago",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "United States",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2672.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 134483.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 81743.84504044523
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 52739.15495955478
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 60.78377567457986
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 39.21622432542014
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "OC",
+            "children": [
+                {
+                    "name": "Australia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1592.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 7356.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 4378.625739573958
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2977.3742604260424
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 59.524547846301765
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 40.475452153698235
+                        }
+                    ]
+                },
+                {
+                    "name": "New Zealand",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 91.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 346.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 181.25247524752476
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 164.74752475247527
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 52.38510845304184
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 47.61489154695817
+                        }
+                    ]
+                },
+                {
+                    "name": "Papua New Guinea",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 100.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 0.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Vanuatu",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "SA",
+            "children": [
+                {
+                    "name": "Argentina",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 495.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 5873.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 3925.4828222822284
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1947.5171777177718
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 66.83948275638053
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 33.16051724361947
+                        }
+                    ]
+                },
+                {
+                    "name": "Bolivia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 2.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Brazil",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 3819.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 24108.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 14490.064704352788
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 9617.935295647212
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 60.104798010423046
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 39.895201989576954
+                        }
+                    ]
+                },
+                {
+                    "name": "Chile",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 23.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 46.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 7.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 39.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 15.217391304347828
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 84.78260869565217
+                        }
+                    ]
+                },
+                {
+                    "name": "Colombia",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 70.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 144.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 43.840198019801974
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 100.15980198019801
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 30.444581958195815
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 69.55541804180417
+                        }
+                    ]
+                },
+                {
+                    "name": "Ecuador",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 82.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 102.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 7.2
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 94.8
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 7.0588235294117645
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 92.94117647058823
+                        }
+                    ]
+                },
+                {
+                    "name": "Peru",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 31.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 238.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 4.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 234.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 1.680672268907563
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 98.31932773109243
+                        }
+                    ]
+                },
+                {
+                    "name": "Uruguay",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 1.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                },
+                {
+                    "name": "Venezuela",
+                    "children": [
+                        {
+                            "name": "Number of Requests",
+                            "value": 11.0
+                        },
+                        {
+                            "name": "Items Requested To Be Removed",
+                            "value": 39.0
+                        },
+                        {
+                            "name": "Count-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Count-No-Action",
+                            "value": 39.0
+                        },
+                        {
+                            "name": "Percentage-Removed",
+                            "value": 0.0
+                        },
+                        {
+                            "name": "Percentage-No-Action",
+                            "value": 100.0
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "value": 0
+}
