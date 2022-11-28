@@ -41,7 +41,7 @@
     //Plot vars
     let width = document.documentElement.clientWidth - 100, height = document.body.clientHeight;
     let margin = {top: 50, right: 100, bottom: 50, left: 100};
-    let quadrants=[0.25,0.50,0.75]
+    let quadrants = [0.25, 0.50, 0.75]
 
     let svg_bubble = d3.select("body").append("svg")
         .attr("width", width)
@@ -272,9 +272,10 @@
         }
 
         for (i in countries_preprocessed) {
-            countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter(function (e, j) {
-                return j < i
-            }), countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
+            console.log(i)
+            countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
+                countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
+
             countries_sorted = countries_preprocessed.filter(function (e, j) {
                 return j <= i
             });
@@ -428,36 +429,36 @@
 
         //add axis and text
 
-        let xAxis=svg_bubble.append("g")
+        let xAxis = svg_bubble.append("g")
             .attr("class", "x-axis")
-            .attr("transform", "translate(" + 0 + "," + (height/2) + ")")
-            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width+50])).tickValues([]).tickSize(0));
+            .attr("transform", "translate(" + 0 + "," + (height / 2) + ")")
+            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0));
 
         xAxis
-            .attr("stroke-width","5")
+            .attr("stroke-width", "5")
 
 
         svg_bubble.append("text")
             .attr("class", "x-axis-label")
-            .attr("transform", "translate(" + (width-100) + " ," +
-                (height-155) + ")")
+            .attr("transform", "translate(" + (width - 100) + " ," +
+                (height - 155) + ")")
             .style("text-anchor", "middle")
             .attr("dy", "12")
             .text("% of Acceptance");
 
 
         //draw lines that mark the quadrants
-        let quadrant_lines=svg_bubble.selectAll("lines.quadrant")
+        let quadrant_lines = svg_bubble.selectAll("lines.quadrant")
             .data(quadrants)
             .enter()
             .append("line");
-        quadrant_lines.attr("class","quadrant")
-            .attr("x1",d=>xScale(d))
-            .attr("y1",margin.top+20)
-            .attr("x2",d=>xScale(d))
-            .attr("y2",height-100)
-            .attr("stroke","#f8e1ed")
-            .attr("stroke-width",5)
+        quadrant_lines.attr("class", "quadrant")
+            .attr("x1", d => xScale(d))
+            .attr("y1", margin.top + 20)
+            .attr("x2", d => xScale(d))
+            .attr("y2", height - 100)
+            .attr("stroke", "#f8e1ed")
+            .attr("stroke-width", 5)
 
         //quadrant labels above line
 
