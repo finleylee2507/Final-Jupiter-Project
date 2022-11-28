@@ -14,15 +14,19 @@
         width: 200px;
         height: 50px;
         padding: 2px;
-        font: 12px sans-serif;
+        font-size: 12px;
         background: lightsteelblue;
-        border: 0px;
         border-radius: 8px;
         pointer-events: none;
     }
 
     h1 {
         text-align: center;
+    }
+
+    .tool-tip-flag-icon {
+        position: relative;
+        top: 2px;
     }
 
 </style>
@@ -275,11 +279,15 @@
             return countries_sorted
         }
 
-        const get_country_icon_url = (country_name) => {
-            console.log(country_name)
+        const get_country_flag_big_icon_url = (country_name) => {
             let country_code = country_code_mapping[country_name]
-            console.log(country_code)
             let url = `https://flagcdn.com/h240/${country_code}.png`
+            return url
+        }
+
+        const get_country_flag_small_icon_url = (country_name) => {
+            let country_code = country_code_mapping[country_name]
+            let url = `https://flagcdn.com/16x12/${country_code}.png`
             return url
         }
 
@@ -328,7 +336,7 @@
                         .attr("height", 1)
                         .attr("width", 1)
                         .attr("preserveAspectRatio", "none")
-                        .attr("xlink:href", d => get_country_icon_url(d[0])
+                        .attr("xlink:href", d => get_country_flag_big_icon_url(d[0])
                         ),
 
                     // update => update
@@ -381,10 +389,15 @@
                         .style("opacity", 1)
                 })
                 .on("mousemove", (event, d) => {
+                    let html_content = `<u>${d[0]}</u>   <img src="${get_country_flag_small_icon_url(d[0])}"
+                        class="tool-tip-flag-icon"/>
+                        <br>Removal Requests: ${d[1]}<br>%Removed: ${Math.round(percents_removed_percent.get(d[0]) * 10000) / 100}`
+
                     tooltip
-                        .html('<u>' + d[0] + '</u>' + "<br>Removal Requests: " + d[1] + "<br>%Removed: " + percents_removed_percent.get(d[0]))
+                        .html(html_content)
                         .style("left", (event.pageX + 20) + "px")
                         .style("top", (event.pageY - 30) + "px")
+                        .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
                 })
                 .on("mouseleave", (event, d) => {
                     tooltip
