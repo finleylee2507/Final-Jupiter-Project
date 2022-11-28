@@ -1,0 +1,153 @@
+{
+    "name": "AS",
+    "children": [
+        {
+            "name": "Afghanistan",
+            "value": 1
+        },
+        {
+            "name": "Azerbaijan",
+            "value": 69
+        },
+        {
+            "name": "Bahrain",
+            "value": 2
+        },
+        {
+            "name": "Bangladesh",
+            "value": 2407
+        },
+        {
+            "name": "Bhutan",
+            "value": 2
+        },
+        {
+            "name": "Cambodia",
+            "value": 1
+        },
+        {
+            "name": "China",
+            "value": 4897
+        },
+        {
+            "name": "Cyprus",
+            "value": 7
+        },
+        {
+            "name": "Hong Kong",
+            "value": 295
+        },
+        {
+            "name": "India",
+            "value": 40783
+        },
+        {
+            "name": "Indonesia",
+            "value": 275492
+        },
+        {
+            "name": "Iraq",
+            "value": 30
+        },
+        {
+            "name": "Israel",
+            "value": 2990
+        },
+        {
+            "name": "Japan",
+            "value": 2658
+        },
+        {
+            "name": "Jordan",
+            "value": 63
+        },
+        {
+            "name": "Kazakhstan",
+            "value": 106310
+        },
+        {
+            "name": "Kuwait",
+            "value": 68
+        },
+        {
+            "name": "Lebanon",
+            "value": 51
+        },
+        {
+            "name": "Macao",
+            "value": 2
+        },
+        {
+            "name": "Malaysia",
+            "value": 314
+        },
+        {
+            "name": "Maldives",
+            "value": 4
+        },
+        {
+            "name": "Nepal",
+            "value": 83
+        },
+        {
+            "name": "Oman",
+            "value": 1
+        },
+        {
+            "name": "Pakistan",
+            "value": 35893
+        },
+        {
+            "name": "Philippines",
+            "value": 267
+        },
+        {
+            "name": "Qatar",
+            "value": 6
+        },
+        {
+            "name": "Saudi Arabia",
+            "value": 100
+        },
+        {
+            "name": "Singapore",
+            "value": 113
+        },
+        {
+            "name": "South Korea",
+            "value": 152142
+        },
+        {
+            "name": "Sri Lanka",
+            "value": 300
+        },
+        {
+            "name": "Taiwan",
+            "value": 281
+        },
+        {
+            "name": "Thailand",
+            "value": 8847
+        },
+        {
+            "name": "Turkey",
+            "value": 22448
+        },
+        {
+            "name": "Turkmenistan",
+            "value": 1
+        },
+        {
+            "name": "United Arab Emirates",
+            "value": 81
+        },
+        {
+            "name": "Uzbekistan",
+            "value": 3
+        },
+        {
+            "name": "Vietnam",
+            "value": 40405
+        }
+    ]
+}
