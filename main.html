@@ -3,322 +3,473 @@
 <meta charset="utf-8">
 
 <style>
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 200px;
-  height: 50px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: lightsteelblue;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
 
-h1 {
-    text-align: center;
-    font: sans-serif;
-}
+    body {
+        font-family: sans-serif;
+    }
+
+    div.tooltip {
+        position: absolute;
+        text-align: center;
+        width: 200px;
+        height: 50px;
+        padding: 2px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 0px;
+        border-radius: 8px;
+        pointer-events: none;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 
 <body>
-    <div><h1>Country vs Removal Requests</h1> </div>
-    <script>
-        // Line Bubble Plot
+<div><h1>Country vs Removal Requests</h1></div>
+<div class="dropdown-wrapper">
+    Continent Displayed: <select id="continent-selection" class="dropdown"></select>
+</div>
+<script>
+    // Line Bubble Plot
 
-        //Plot vars
-        let width =  document.documentElement.clientWidth -100 , height =  document.body.clientHeight;
-        let margin = { top: 50, right: 100, bottom: 50, left: 100 };
-        let svg_bubble = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height)
+    //Plot vars
+    let width = document.documentElement.clientWidth - 100, height = document.body.clientHeight;
+    let margin = {top: 50, right: 100, bottom: 50, left: 100};
+    let quadrants=[0.25,0.50,0.75]
 
-        let tooltip = d3.select("body")
-            .append("div")
-            .style("opacity", 0)
-            .attr("class", "tooltip")
-            .style("background-color", "white")
-            .style("border", "solid")
-            .style("border-width", "2px")
-            .style("border-radius", "5px")
-            .style("padding", "5px")
-        let bubble_width = width - margin.left - margin.right;
-        let bubble_height = height - margin.top - margin.bottom;
+    let svg_bubble = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height)
 
-        //Variables using the products data
-        let products_data; 
-        let country_counts;
+    let tooltip = d3.select("body")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+    let bubble_width = width - margin.left - margin.right;
+    let bubble_height = height - margin.top - margin.bottom;
 
-        //Variables using the percent data
-        let percents_data;
-        let percents_items_normalized, percents_items, percents_removed_percent;
+    //Variables using the products data
+    let products_data;
+    let country_counts;
 
-        //Misc Variables
-        let continents_country = new d3.InternMap([]);
-        let country_continent = new d3.InternMap([]);
+    //Variables using the percent data
+    let percents_data;
+    let percents_items_normalized, percents_items, percents_removed_percent;
 
-        
+    //maps each continent to its abbreviation
+    const continent_mapping = {
+        "North America": "NA",
+        "South America": "SA",
+        "Asia": "AS",
+        "Oceania": "OC",
+        "Europe": "EU",
+        "Africa": "AF"
+    }
 
-        function aggregate_countries() {
-            country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+    //Variable that controls the dropdown
+    let current_continent = "All"
+    let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
 
-            //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
-            //can be changed
-            percents_items_normalized = d3.rollup(percents_data, v => d3.sum(v, d => (+d.items)*((+d.removed_legal+(+d.removed_policy))/100.0)), d => d.country)
-            percents_items = d3.rollup(percents_data, v => d3.sum(v, d => +d.items), d => d.country)
-            percents_removed_percent = new d3.InternMap()
-            Array.from(percents_items.keys()).forEach(e => {
-                percents_removed_percent.set(e, percents_items_normalized.get(e)/percents_items.get(e))
-            });
 
-            //remove countries from country counts that arent in the percentages table
-            Array.from(country_counts.keys()).forEach(e => {
-                if(!percents_removed_percent.has(e)) {
-                    country_counts.delete(e);
-                }
-            });
+    //Misc Variables
+    let country_to_continent = new Map();
+    let continent_to_country = new Map();
 
-            //Mapping for country to country abbreviation and vice versa
-            percents_data.forEach(e => {
-                var continent = e.continent;
-                var country = e.country;
-                if(!continents_country.has(continent)) {
-                    continents_country.set([country])
-                } else {
-                    continents_country.set(continents_country.get(continent).append(country))
-                }
-                if(!country_continent.has(country)) {
-                    country_continent.set(continent)
-                }
-            });
+
+    //Check to see if two circles intersect each other
+    //c1 - [x1, y1] circle 1 center
+    //r1 - radius of circle 1
+    //c2 - [x2, y2] circle 2 center
+    //r2 - radius of circle 2
+    const check_intersection = (c1, r1, c2, r2) => {
+        d = Math.sqrt((c1[0] - c2[0]) * (c1[0] - c2[0]) + (c1[1] - c2[1]) * (c1[1] - c2[1]))
+        if ((d <= r1 - r2) || (d <= r2 - r1) || (d < r1 + r2) || (d == r1 + r2))
+            return true
+        return false
+    };
+
+    //A circle takes up a x-span of space. i.e. [c-r, c+r]
+    //You can check to see if any circles cross that plane; they have to in order to intersect the circle
+    const check_breaks_plane = (c1, r1, c2, r2) => {
+        var left = c1[0] - r1;
+        var right = c1[0] + r1;
+        if (((c2[0] + r2 > left) && c2[0] <= c1[0]) || ((c2[0] - r2 < right) && c2[0] >= c1[0])) {
+            return true
         }
+        return false
+    };
 
-        //Check to see if two circles intersect each other
-        //c1 - [x1, y1] circle 1 center
-        //r1 - radius of circle 1
-        //c2 - [x2, y2] circle 2 center
-        //r2 - radius of circle 2
-        function check_intersection(c1, r1, c2, r2) {
-            d = Math.sqrt((c1[0] - c2[0]) * (c1[0] - c2[0]) + (c1[1] - c2[1]) * (c1[1] - c2[1]))
-            if((d <= r1 - r2) || (d <= r2 - r1) || (d < r1 + r2) || (d == r1 + r2))
-                return true
-            return false
-        }
-
-        //A circle takes up a x-span of space. i.e. [c-r, c+r]
-        //You can check to see if any circles cross that plane; they have to in order to intersect the circle
-        function check_breaks_plane(c1, r1, c2, r2) {
-            var left = c1[0] - r1;
-            var right = c1[0] + r1;
-            if(((c2[0]+r2 > left) && c2[0] <= c1[0]) || ((c2[0]-r2 < right) && c2[0] >= c1[0])){
-                return true
+    //Get all possible y-values of the circle to be placed
+    const get_possible = (c1, r1, c2, r2) => {
+        var min = margin.top, max = bubble_height, step = 0.01, diff = 0.01;
+        var works = []
+        var current = min;
+        do {
+            if (!check_intersection([c1[0], current], r1, c2, r2)) {
+                works.push(current)
             }
-            return false
+            current += step;
+        } while (current <= max)
+
+        //Only need the point closest to the axis
+        //Find the largest y-value thats above the center that's valid
+        var left = works.filter(function (d) {
+            return d < c2[1]
+        })
+        if (left.length == 0) {
+            left = 0
+        } else {
+            left = d3.max(left)
         }
 
-        //Get all possible y-values of the circle to be placed
-        function get_possible(c1, r1, c2, r2) {
-            var min=margin.top, max=bubble_height, step=0.01, diff=0.01;
-            var works = []
-            var current = min;
-            do {
-                if(!check_intersection([c1[0], current], r1, c2, r2)){
-                    works.push(current)
-                }
-                current += step;
-            } while(current<= max)
+        //Find the smallest y-value below the center that's valid
+        var right = works.filter(function (d) {
+            return d > c2[1]
+        })
+        if (right.length == 0) {
+            left = height
+        } else {
+            right = d3.min(right)
+        }
 
-            //Only need the point closest to the axis
-            //Find the largest y-value thats above the center that's valid
-            var left = works.filter(function (d) { return d < c2[1]})
-            if(left.length == 0){
-                left = 0
+        return [left, right]
+    };
+
+    //Let code merge ranges (because the ends are the "best" placements for the circles)
+    const merge_ranges = (intervals, r) => {
+        var result = [];
+        var previous = intervals[0];
+
+        for (let i = 1; i < intervals.length; i += 1) {
+            if (previous[1] >= intervals[i][0]) {
+                previous = [previous[0], Math.max(previous[1], intervals[i][1])];
             } else {
-                left = d3.max(left)
+                result.push(previous);
+                previous = intervals[i];
             }
-            
-            //Find the smallest y-value below the center that's valid
-            var right = works.filter(function (d) { return d > c2[1]})
-            if(right.length == 0){
-                left = height
-            } else {
-                right = d3.min(right)
-            }
-            
-            return [left, right]
         }
+        result.push(previous);
 
-        //Let code merge ranges (because the ends are the "best" placements for the circles)
-        function merge_ranges(intervals, r) {
-            var result = [];
-            var previous = intervals[0];
-            
-            for (let i = 1; i < intervals.length; i += 1) {
-                if (previous[1] >= intervals[i][0]) {
-                    previous = [previous[0], Math.max(previous[1], intervals[i][1])];
-                } else {
-                    result.push(previous);
-                    previous = intervals[i];
+        intervals = result
+        // console.log(intervals)
+        var previous = intervals[0];
+
+        //Find the value that closest to the axis
+        var best = previous[0];
+        for (let i = 1; i < intervals.length; i += 1) {
+            if (intervals[i][0] - previous[1] >= r * 2) { //Make sure that the space is large enough for the diameter
+                if (Math.abs(((bubble_height + margin.top) / 2.0) - previous[1]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
+                    best = previous[1]
+                }
+                if (Math.abs(((bubble_height + margin.top) / 2.0) - intervals[i][0]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
+                    best = intervals[i][0]
                 }
             }
-            result.push(previous);
-            
-            intervals = result
-            console.log(intervals)
-            var previous = intervals[0];
-            
-            //Find the value that closest to the axis
-            var best = previous[0];
-            for (let i = 1; i < intervals.length; i += 1) {
-                if (intervals[i][0] - previous[1] >= r*2) { //Make sure that the space is large enough for the diameter
-                    if(Math.abs(((bubble_height + margin.top)/2.0)-previous[1]) < Math.abs(((bubble_height + margin.top)/2.0)-best)){
-                        best = previous[1]
-                    }
-                    if(Math.abs(((bubble_height + margin.top)/2.0)-intervals[i][0]) < Math.abs(((bubble_height + margin.top)/2.0)-best)){
-                        best = intervals[i][0]
-                    }
-                }
-                previous = intervals[i]
-            }
-            if(Math.abs(((bubble_height + margin.top)/2.0)-previous[1]) < Math.abs(((bubble_height + margin.top)/2.0)-best)){
-                best = previous[1]
-            }
-
-            return best;
+            previous = intervals[i]
+        }
+        if (Math.abs(((bubble_height + margin.top) / 2.0) - previous[1]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
+            best = previous[1]
         }
 
+        return best;
+    };
 
-        //Find the best y-values for the points
-        function open_y(placed_circles, result_y, this_point, xScale, sizeScale) {
-            if(placed_circles.length == 0) {
-                return new Promise(resolve =>setTimeout(() => resolve(result_y), 1));
-            }
 
-            //Find the circles that broke the plane
-            temp_placed_circles = []
-            this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
-            this_radius = sizeScale(this_point[1])
-            placed_circles.forEach(function(d) {
-                other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
-                other_radius = sizeScale(d[1])
-                if(check_breaks_plane(this_center, this_radius, other_center, other_radius)){
-                    temp_placed_circles.push(d)
-                }
-            })
-            if(temp_placed_circles.length == 0)
-            {
-                return new Promise(resolve =>setTimeout(() => resolve(result_y), 1));
-            }
-
-            //For each circle that broke the plane, see the two ends of valid values
-            var valid_heights = []
-            temp_placed_circles.forEach(function(d) {
-                other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
-                other_radius = sizeScale(d[1])
-                valid_heights.push(get_possible(this_center, this_radius, other_center, other_radius))
-            })
-            
-            //Combine the ranges and pick a single best point
-            best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
-            return new Promise(resolve =>setTimeout(() => resolve(best_place), 1));
+    //Find the best y-values for the points
+    const open_y = (placed_circles, result_y, this_point, xScale, sizeScale) => {
+        if (placed_circles.length == 0) {
+            return new Promise(resolve => setTimeout(() => resolve(result_y), 1));
         }
 
-        async function drawBubble() {
+        //Find the circles that broke the plane
+        temp_placed_circles = []
+        this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
+        this_radius = sizeScale(this_point[1])
+        placed_circles.forEach(function (d) {
+            other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
+            other_radius = sizeScale(d[1])
+            if (check_breaks_plane(this_center, this_radius, other_center, other_radius)) {
+                temp_placed_circles.push(d)
+            }
+        })
+        if (temp_placed_circles.length == 0) {
+            return new Promise(resolve => setTimeout(() => resolve(result_y), 1));
+        }
 
-            const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width+margin.left])
-            const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1], d3.greatest(country_counts, ([, v]) => v)[1]]).range([5,50])
-            const countryColorScale = d3.scaleOrdinal().domain(continents_country.keys()).range(d3.schemeTableau10)
+        //For each circle that broke the plane, see the two ends of valid values
+        var valid_heights = []
+        temp_placed_circles.forEach(function (d) {
+            other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
+            other_radius = sizeScale(d[1])
+            valid_heights.push(get_possible(this_center, this_radius, other_center, other_radius))
+        })
 
+        //Combine the ranges and pick a single best point
+        best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
+        return new Promise(resolve => setTimeout(() => resolve(best_place), 1));
+    };
+
+    const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width])
+
+    async function drawBubble() {
+
+        const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1], d3.greatest(country_counts, ([, v]) => v)[1]]).range([5, 50])
+        const countryColorScale = d3.scaleOrdinal().domain(country_to_continent.keys()).range(d3.schemeTableau10)
+
+
+        function preprocess_countries() {
             //Sort most requests to least
-            var countries_sorted =  Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500})
+            var countries_sorted = Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500})
+            // console.log("countries sorted: ", countries_preprocessed)
+            //filter based on dropdown
+            switch (continent_mapping[current_continent]) {
+                case "NA":
+                    countries_sorted = countries_sorted.filter(d => continent_to_country.get("NA").has(d[0]))
+                    break;
+                case "SA":
+                    countries_sorted = countries_sorted.filter(d => continent_to_country.get("SA").has(d[0]))
+                    break;
+                case "AS":
+                    countries_sorted = countries_sorted.filter(d => continent_to_country.get("AS").has(d[0]))
+                    break;
+                case "OC":
+                    countries_sorted = countries_sorted.filter(d => continent_to_country.get("OC").has(d[0]))
+                    break;
+                case "AF":
+                    countries_sorted = countries_sorted.filter(d => continent_to_country.get("AF").has(d[0]))
+                    break;
+                case "EU":
+                    countries_sorted = countries_sorted.filter(d => continent_to_country.get("EU").has(d[0]))
+                    break;
 
-            countries_sorted.forEach(function (d, i){
-                countries_sorted[i] = countries_sorted[i].concat((bubble_height + margin.top)/2.0)
-            })
+            }
+            return countries_sorted;
+        }
 
-            //Create the circles after finding their best y-value
-            var temp_countries_sorted;
-            for(i in countries_sorted) {
-                countries_sorted[i][2] = await open_y(countries_sorted.filter(function (e,j) {return j<i}), countries_sorted[i][2], countries_sorted[i], xScale, sizeScale)
-                temp_countries_sorted = countries_sorted.filter(function (e,j) {return j<=i});
+        let countries_preprocessed = preprocess_countries();
 
-                svg_bubble.selectAll("circle")
-                .data(temp_countries_sorted)
+        //append initial y-value
+        countries_preprocessed.forEach(function (d, i) {
+            countries_preprocessed[i] = countries_preprocessed[i].concat((bubble_height + margin.top) / 2.0)
+        })
+
+        //Create the circles after finding their best y-value
+        var countries_sorted;
+
+        function getId(d) {
+            return d[0].toLowerCase().replace(/ /g, "-");
+        }
+
+        for (i in countries_preprocessed) {
+            countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter(function (e, j) {
+                return j < i
+            }), countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
+            countries_sorted = countries_preprocessed.filter(function (e, j) {
+                return j <= i
+            });
+
+            //create country flags
+            let defs = svg_bubble.append("defs");
+
+            defs.selectAll(".country-pattern")
+                .data(countries_sorted)
                 .join(
-                enter => enter.append("circle")
-                .attr("country", d=>d[0])
-                .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
-                .attr("cy", d => d[2])
-                .transition().duration(1000)
-                .attr("r", d => sizeScale(d[1]))
-                .attr("fill", d => countryColorScale(d[0]))
+                    enter => enter.append("pattern")
+                        .attr("class", "country-pattern")
+                        .attr("id", d => getId(d[0]))
+                        .attr("height", "100%")
+                        .attr("width", "100%")
+                        .attr("patternContentUnits", "objectBoundingBox")
+                        .append("image")
+                        .attr("height", 1)
+                        .attr("width", 1)
+                        .attr("preserveAspectRatio", "none")
+                        .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
+
+                    update => update
+                        .attr("class", "country-pattern")
+                        .attr("id", d => getId(d[0]))
+                        .attr("height", "100%")
+                        .attr("width", "100%")
+                        .attr("patternContentUnits", "objectBoundingBox")
+                        .append("image")
+                        .attr("height", 1)
+                        .attr("width", 1)
+                        .attr("preserveAspectRatio", "none")
+                        .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
+
+                    exit => exit
+                        .remove()
                 )
-                .on("mouseover", function(event, d) {
+
+            //draw circles
+            svg_bubble.selectAll("circle")
+                .data(countries_sorted)
+                .join(
+                    enter => enter.append("circle")
+                        .attr("country", d => d[0])
+                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                        .attr("cy", d => d[2])
+                        .transition().duration(1000)
+                        .attr("r", d => sizeScale(d[1]))
+                        // .attr("fill", d => countryColorScale(d[0]))
+                        .attr("fill", d => `url(#${getId(d[0])})`)
+                    ,
+
+                    update => update
+                        .attr("country", d => d[0])
+                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                        .attr("cy", d => d[2])
+                        .transition().duration(1000)
+                        .attr("r", d => sizeScale(d[1]))
+                        // .attr("fill", d => countryColorScale(d[0]))
+                        .attr("fill", d => `url(#${getId(d[0])})`)
+                    ,
+
+                    exit => exit.remove()
+                )
+                .on("mouseover", function (event, d) {
                     tooltip
-                    .style("opacity", 1)
+                        .style("opacity", 1)
                 })
-                .on("mousemove", function(event, d) {
+                .on("mousemove", function (event, d) {
                     tooltip
-                    .html('<u>' + d[0] + '</u>' + "<br>Removal Requests: " + d[1] + "<br>%Removed: " + percents_removed_percent.get(d[0]))
-                    .style("left", (event.pageX+20) + "px")
-                    .style("top", (event.pageY-30) + "px")
+                        .html('<u>' + d[0] + '</u>' + "<br>Removal Requests: " + d[1] + "<br>%Removed: " + percents_removed_percent.get(d[0]))
+                        .style("left", (event.pageX + 20) + "px")
+                        .style("top", (event.pageY - 30) + "px")
                 })
-                .on("mouseleave", function(event, d) {
+                .on("mouseleave", function (event, d) {
                     tooltip
-                    .style("opacity", 0)
+                        .style("opacity", 0)
                 })
+        }
+
+
+    }
+
+    //parse the csv files and perform calculations
+    function prep_data() {
+
+        country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+
+        //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
+        //can be changed
+        percents_items_normalized = d3.rollup(percents_data, v => d3.sum(v, d => (+d.items) * ((+d.removed_legal + (+d.removed_policy)) / 100.0)), d => d.country)
+        percents_items = d3.rollup(percents_data, v => d3.sum(v, d => +d.items), d => d.country)
+        percents_removed_percent = new d3.InternMap()
+        Array.from(percents_items.keys()).forEach(e => {
+            percents_removed_percent.set(e, percents_items_normalized.get(e) / percents_items.get(e))
+        });
+
+        //remove countries from country counts that aren't in the percentages table
+        Array.from(country_counts.keys()).forEach(e => {
+            if (!percents_removed_percent.has(e)) {
+                country_counts.delete(e);
+            }
+        });
+
+        //country_continents = d3.group(percents_data, d => d.continent, d=> d.country)
+
+        //create mappings: continents ->countries, country->continent
+        percents_data.forEach(e => {
+            let continent = e.continent;
+            let country = e.country;
+
+            //continents -> countries
+            if (!continent_to_country.has(continent)) {
+                continent_to_country.set(continent, new Set([country]));
+            } else {
+                continent_to_country.get(continent).add(country);
             }
 
-        }
+            //countries -> continents
+            country_to_continent.set(country, continent);
 
-        async function ready() {
-            products_data = await d3.csv("removal-requests-products.csv");
-            percents_data = await d3.csv("removal-requests-percents.csv");
+        });
 
-            //aggregate_countries()
+        // console.log(continent_to_country)
 
-            country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+    }
 
-            //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
-            //can be changed
-            percents_items_normalized = d3.rollup(percents_data, v => d3.sum(v, d => (+d.items)*((+d.removed_legal+(+d.removed_policy))/100.0)), d => d.country)
-            percents_items = d3.rollup(percents_data, v => d3.sum(v, d => +d.items), d => d.country)
-            percents_removed_percent = new d3.InternMap()
-            Array.from(percents_items.keys()).forEach(e => {
-                percents_removed_percent.set(e, percents_items_normalized.get(e)/percents_items.get(e))
-            });
+    async function ready() {
+        products_data = await d3.csv("removal-requests-products.csv");
+        percents_data = await d3.csv("removal-requests-percents.csv");
 
-            //remove countries from country counts that arent in the percentages table
-            Array.from(country_counts.keys()).forEach(e => {
-                if(!percents_removed_percent.has(e)) {
-                    country_counts.delete(e);
-                }
-            });
+        //load dropdown
+        d3.selectAll(".dropdown").selectAll('myOptions').data(dropdown_options).enter()
+            .append('option')
+            .text(function (d) {
+                return d;
+            }) // text showed in the menu
+            .attr("value", function (d) {
+                return d;
+            })
 
-            //country_continents = d3.group(percents_data, d => d.continent, d=> d.country)
-            percents_data.forEach(e => {
-                var continent = e.continent;
-                var country = e.country;
-                if(!continents_country.has(continent)) {
-                    continents_country.set([country])
-                } else {
-                    continents_country.set(continents_country.get(continent).append(country))
-                }
-                if(!country_continent.has(country)) {
-                    country_continent.set(continent)
-                }
-            });
+        d3.select(".dropdown")
+            .on("change", (e, d) => {
+                current_continent = e.currentTarget.value;
+                // console.log(current_continent);
 
-            drawBubble()
-        }
-        
+                //draw bubble again
+                drawBubble();
+            })
 
-        ready(); 
-    </script>
+
+        //add axis and text
+
+        let xAxis=svg_bubble.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", "translate(" + 0 + "," + (height/2) + ")")
+            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width+50])).tickValues([]).tickSize(0));
+
+        xAxis
+            .attr("stroke-width","5")
+
+
+        svg_bubble.append("text")
+            .attr("class", "x-axis-label")
+            .attr("transform", "translate(" + (width-100) + " ," +
+                (height-155) + ")")
+            .style("text-anchor", "middle")
+            .attr("dy", "12")
+            .text("% of Acceptance");
+
+
+        //draw lines that mark the quadrants
+        let quadrant_lines=svg_bubble.selectAll("lines.quadrant")
+            .data(quadrants)
+            .enter()
+            .append("line");
+        quadrant_lines.attr("class","quadrant")
+            .attr("x1",d=>xScale(d))
+            .attr("y1",margin.top+20)
+            .attr("x2",d=>xScale(d))
+            .attr("y2",height-100)
+            .attr("stroke","#f8e1ed")
+            .attr("stroke-width",5)
+
+        //quadrant labels above line
+
+
+        prep_data();
+
+        drawBubble();
+    }
+
+
+    ready();
+</script>
 
 </body>
 
