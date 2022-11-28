@@ -5,7 +5,7 @@
 <style>
 
     body {
-        font-family: sans-serif;
+        font-family: 'Poppins', sans-serif;
     }
 
     div.tooltip {
@@ -28,7 +28,10 @@
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet">
 
 <body>
 <div><h1>Country vs Removal Requests</h1></div>
@@ -46,6 +49,8 @@
     let svg_bubble = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height)
+
+    let defs = svg_bubble.append("defs");
 
     let tooltip = d3.select("body")
         .append("div")
@@ -225,7 +230,7 @@
     async function drawBubble() {
 
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1], d3.greatest(country_counts, ([, v]) => v)[1]]).range([5, 50])
-        const countryColorScale = d3.scaleOrdinal().domain(country_to_continent.keys()).range(d3.schemeTableau10)
+        // const countryColorScale = d3.scaleOrdinal().domain(country_to_continent.keys()).range(d3.schemeTableau10)
 
 
         function preprocess_countries() {
@@ -281,7 +286,7 @@
             });
 
             //create country flags
-            let defs = svg_bubble.append("defs");
+
 
             defs.selectAll(".country-pattern")
                 .data(countries_sorted)
@@ -298,17 +303,17 @@
                         .attr("preserveAspectRatio", "none")
                         .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
 
-                    update => update
-                        .attr("class", "country-pattern")
-                        .attr("id", d => getId(d[0]))
-                        .attr("height", "100%")
-                        .attr("width", "100%")
-                        .attr("patternContentUnits", "objectBoundingBox")
-                        .append("image")
-                        .attr("height", 1)
-                        .attr("width", 1)
-                        .attr("preserveAspectRatio", "none")
-                        .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
+                    // update => update
+                    //     .attr("class", "country-pattern")
+                    //     .attr("id", d => getId(d[0]))
+                    //     .attr("height", "100%")
+                    //     .attr("width", "100%")
+                    //     .attr("patternContentUnits", "objectBoundingBox")
+                    //     .append("image")
+                    //     .attr("height", 1)
+                    //     .attr("width", 1)
+                    //     .attr("preserveAspectRatio", "none")
+                    //     .attr("xlink:href", "https://cdn4.iconfinder.com/data/icons/seo-and-data/500/pencil-gear-128.png"),
 
                     exit => exit
                         .remove()
@@ -328,15 +333,15 @@
                         .attr("fill", d => `url(#${getId(d[0])})`)
                     ,
 
-                    update => update
-                        .attr("country", d => d[0])
-                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
-                        .attr("cy", d => d[2])
-                        .transition().duration(1000)
-                        .attr("r", d => sizeScale(d[1]))
-                        // .attr("fill", d => countryColorScale(d[0]))
-                        .attr("fill", d => `url(#${getId(d[0])})`)
-                    ,
+                    // update => update
+                    //     .attr("country", d => d[0])
+                    //     .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                    //     .attr("cy", d => d[2])
+                    //     .transition().duration(1000)
+                    //     .attr("r", d => sizeScale(d[1]))
+                    //     // .attr("fill", d => countryColorScale(d[0]))
+                    //     .attr("fill", d => `url(#${getId(d[0])})`)
+                    // ,
 
                     exit => exit.remove()
                 )
@@ -403,11 +408,70 @@
 
     }
 
-    async function ready() {
-        products_data = await d3.csv("removal-requests-products.csv");
-        percents_data = await d3.csv("removal-requests-percents.csv");
+    function set_up_axis_and_labels() {
+        //add axis and text
 
-        //load dropdown
+        let xAxis = svg_bubble.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", "translate(" + 0 + "," + (height / 2) + ")")
+            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0));
+
+        xAxis
+            .attr("stroke-width", "5")
+
+
+        svg_bubble.append("text")
+            .attr("class", "x-axis-label")
+            .attr("transform", "translate(" + (width - 100) + " ," +
+                (height / 2 + 50) + ")")
+            .style("text-anchor", "middle")
+            .attr("dy", "12")
+            .text("% of Acceptance");
+
+
+        //draw lines that mark the quadrants
+        let quadrant_lines = svg_bubble.selectAll("lines.quadrant-line")
+            .data(quadrants)
+            .enter()
+            .append("line");
+        quadrant_lines.attr("class", "quadrant-line")
+            .attr("x1", d => xScale(d))
+            .attr("y1", margin.top + 20)
+            .attr("x2", d => xScale(d))
+            .attr("y2", height - 100)
+            .attr("stroke", "#f8e1ed")
+            .attr("stroke-width", 5)
+
+        //quadrant labels above line
+        let quadrant_lines_label = svg_bubble.selectAll("text.quadrant-line-label")
+            .data(quadrants)
+            .enter()
+            .append("text")
+
+        quadrant_lines_label
+            .attr("class", "quadrant-line-label")
+            .attr("transform", d => "translate(" + (xScale(d)) + " ," +
+                (margin.top - 10) + ")")
+            .style("text-anchor", "middle")
+            .attr("dy", "12")
+            .text(d => `${d * 100}%`)
+
+        //add arrow at the end of x axis
+
+        defs.append("marker")
+            .attr("id", "arrowhead")
+            .attr("refX", 2)
+            .attr("refY", 7)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 13)
+            .attr("orient", "right")
+            .append("path")
+            .attr("d", "M2,2 L2,13 L8,7 L2,2");
+
+        xAxis.select("path").attr("marker-end", "url(#arrowhead)");
+    }
+
+    function set_up_dropdown() {
         d3.selectAll(".dropdown").selectAll('myOptions').data(dropdown_options).enter()
             .append('option')
             .text(function (d) {
@@ -425,48 +489,22 @@
                 //draw bubble again
                 drawBubble();
             })
+    }
 
+    async function ready() {
+        products_data = await d3.csv("removal-requests-products.csv");
+        percents_data = await d3.csv("removal-requests-percents.csv");
 
-        //add axis and text
+        //load dropdown
+        set_up_dropdown();
 
-        let xAxis = svg_bubble.append("g")
-            .attr("class", "x-axis")
-            .attr("transform", "translate(" + 0 + "," + (height / 2) + ")")
-            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0));
-
-        xAxis
-            .attr("stroke-width", "5")
-
-
-        svg_bubble.append("text")
-            .attr("class", "x-axis-label")
-            .attr("transform", "translate(" + (width - 100) + " ," +
-                (height - 155) + ")")
-            .style("text-anchor", "middle")
-            .attr("dy", "12")
-            .text("% of Acceptance");
-
-
-        //draw lines that mark the quadrants
-        let quadrant_lines = svg_bubble.selectAll("lines.quadrant")
-            .data(quadrants)
-            .enter()
-            .append("line");
-        quadrant_lines.attr("class", "quadrant")
-            .attr("x1", d => xScale(d))
-            .attr("y1", margin.top + 20)
-            .attr("x2", d => xScale(d))
-            .attr("y2", height - 100)
-            .attr("stroke", "#f8e1ed")
-            .attr("stroke-width", 5)
-
-        //quadrant labels above line
-
+        set_up_axis_and_labels();
 
         prep_data();
 
         drawBubble();
     }
+
 
 
     ready();
