@@ -28,7 +28,7 @@
 }
 
 </style>
-<svg width="860" height="860"></svg>
+<svg width="400" height="400"></svg>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 
@@ -58,7 +58,7 @@ var c_size = d3.scaleLog()
 
 var pack = d3.pack()
     .size([diameter - margin, diameter - margin])
-    .padding(10);
+    .padding(1);
 
 
 // //FOR FLARE DATA
@@ -153,8 +153,8 @@ function draw() {
     .enter().append("text")
         .attr("class", "label")
         .style("fill-opacity", function(d) { return d.parent === household ? 1 : 0; })
-        .style("display", function(d) { return d.parent === household ? "inline" : "none"; })
-        .text(function(d) { return d.data.name });
+        .style("display", function(d) { return d.parent === household ? "inline" : "none"; });
+        // .text(function(d) { return d.data.name });
         // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; });
 
         //hover for the number!!!!
@@ -164,8 +164,9 @@ function draw() {
     var node = g.selectAll("circle,text");
 
     svg
-        .style("background", "white")
-        .on("click", function() { zoom(household); });
+        .style("background", "#C7FFFE")
+        .on("click", function() { zoom(household); })
+        .style("margin-left", "20px");
     
     zoomTo([household.x, household.y, household.r * 2 + margin]);
     
@@ -189,19 +190,19 @@ function draw() {
         var k = diameter / v[2]; view = v;
         node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
         circle.attr("r", function(d) { 
-            // return Math.sqrt(d.value) / 20;
-            // return d.value / 2000.0;
-            // console.log(c_size(d.value));
             return c_size(d.value);
             // return d.r * k
-            // return c_size(d.value); 
         });
         }
 };
 
+// var c_size = d3.scaleLog()
+//     .domain([1, 510580, 1021158])
+//     .range([5, 50, 100]);
+
 async function ready() {
     //   household = await d3.json("household.json");
-    household = await d3.json("google.json");
+    household = await d3.json("europe.json");
       draw();
 }
 ready();

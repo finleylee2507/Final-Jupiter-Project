@@ -1,0 +1,178 @@
+{
+    "name": "EU",
+    "children": [
+        {
+            "name": "Albania",
+            "value": 164
+        },
+        {
+            "name": "Austria",
+            "value": 575
+        },
+        {
+            "name": "Belarus",
+            "value": 50
+        },
+        {
+            "name": "Belgium",
+            "value": 960
+        },
+        {
+            "name": "Bosnia & Herzegovina",
+            "value": 22
+        },
+        {
+            "name": "Bulgaria",
+            "value": 12
+        },
+        {
+            "name": "Croatia",
+            "value": 113
+        },
+        {
+            "name": "Czechia",
+            "value": 63
+        },
+        {
+            "name": "Denmark",
+            "value": 305
+        },
+        {
+            "name": "Estonia",
+            "value": 1382
+        },
+        {
+            "name": "Europol",
+            "value": 30
+        },
+        {
+            "name": "Finland",
+            "value": 329
+        },
+        {
+            "name": "France",
+            "value": 14708
+        },
+        {
+            "name": "Germany",
+            "value": 7116
+        },
+        {
+            "name": "Gibraltar",
+            "value": 1
+        },
+        {
+            "name": "Greece",
+            "value": 510
+        },
+        {
+            "name": "Hungary",
+            "value": 161
+        },
+        {
+            "name": "Iceland",
+            "value": 1
+        },
+        {
+            "name": "Ireland",
+            "value": 969
+        },
+        {
+            "name": "Isle of Man",
+            "value": 158
+        },
+        {
+            "name": "Italy",
+            "value": 5807
+        },
+        {
+            "name": "Latvia",
+            "value": 15
+        },
+        {
+            "name": "Lithuania",
+            "value": 62
+        },
+        {
+            "name": "Luxembourg",
+            "value": 36
+        },
+        {
+            "name": "Malta",
+            "value": 2
+        },
+        {
+            "name": "Moldova",
+            "value": 25
+        },
+        {
+            "name": "Monaco",
+            "value": 3
+        },
+        {
+            "name": "Netherlands",
+            "value": 849
+        },
+        {
+            "name": "North Macedonia",
+            "value": 1
+        },
+        {
+            "name": "Norway",
+            "value": 332
+        },
+        {
+            "name": "Poland",
+            "value": 735
+        },
+        {
+            "name": "Portugal",
+            "value": 464
+        },
+        {
+            "name": "Romania",
+            "value": 352
+        },
+        {
+            "name": "Russia",
+            "value": 1021158
+        },
+        {
+            "name": "San Marino",
+            "value": 1
+        },
+        {
+            "name": "Serbia",
+            "value": 18
+        },
+        {
+            "name": "Slovakia",
+            "value": 4
+        },
+        {
+            "name": "Slovenia",
+            "value": 5
+        },
+        {
+            "name": "Spain",
+            "value": 154976
+        },
+        {
+            "name": "Sweden",
+            "value": 36
+        },
+        {
+            "name": "Switzerland",
+            "value": 797
+        },
+        {
+            "name": "Ukraine",
+            "value": 1857
+        },
+        {
+            "name": "United Kingdom",
+            "value": 3945
+        }
+    ],
+    "value": 2500000
+}
