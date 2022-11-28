@@ -7,23 +7,18 @@
 }
 
 .node:hover {
-  stroke: #000;
-  stroke-width: 1.5px;
+  stroke: #000 !important;
+  stroke-width: 1.5px !important;
 }
 
 .node--leaf {
   fill: white;
 }
 
-.node--leaf:hover {
-  stroke: #000;
-  stroke-width: 1.5px;
-}
-
 .label {
   font: 20px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-anchor: middle;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+  /* text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff; */
 }
 
 .label,
@@ -148,11 +143,11 @@ function draw() {
     var circle = g.selectAll("circle")
     .data(nodes)
     .enter().append("circle")
-        // .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-        .style("class", function(d) { return d.children ? "node--leaf" : "node--root";})
+        .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+        // .style("class", function(d) { return d.children ? "node--root": "node--leaf";})
         .style("fill", function(d) { return d.children ? "#7FC2E9" : color2(d.value); })
-        .style("stroke", function(d) { return d.children ? "black" : null; })
-        .style("stroke-width", function(d) { return d.children ? "1.5px" : null; })
+        // .style("stroke", function(d) { return d.children ? "black" : null; })
+        // .style("stroke-width", function(d) { return d.children ? "1.5px" : null; })
         // .style("class", function(d) { return d.children ? "node--leaf" : "node";})
         .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation(); });
 
@@ -161,15 +156,19 @@ function draw() {
     .enter().append("text")
         .attr("class", "label")
         .style("fill-opacity", function(d) { return d.parent === household ? 1 : 0; })
-        .style("display", function(d) { return d.parent === household ? "inline" : "none"; });
-        // .text(function(d) { return d.data.name });
-        // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; });
+        .style("display", function(d) { return d.parent === household ? "inline" : "none"; })
+        .text(function(d) { return d.data.name })
+        .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; })
+        .style("font-color", "transparent");
 
         //hover for the number!!!!
 
 
 
-    var node = g.selectAll("circle,text");
+    var node = g.selectAll("circle,text")
+        .attr("class", "node")
+        // .text(function(d) { return d.data.name })
+        // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; });
 
     svg
         .style("background", "#7FC2E9")
