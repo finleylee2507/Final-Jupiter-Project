@@ -43,7 +43,7 @@ var color = d3.scaleLinear()
     .interpolate(d3.interpolateHcl);
 
 var color2 = d3.scaleLinear()
-    .domain([-1, 5])
+    .domain([1, 1021158])
     .range(["green", "blue"])
 
 var pack = d3.pack()
@@ -133,7 +133,7 @@ function draw() {
     .data(nodes)
     .enter().append("circle")
         .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-        .style("fill", function(d) { return d.children ? "white" : color2(d.depth); })
+        .style("fill", function(d) { return d.children ? "white" : color2(d.value); })
         .style("stroke", function(d) { return d.children ? "black" : null; })
         .style("stroke-width", function(d) { return d.children ? "1.5px" : null; })
         .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation(); });
