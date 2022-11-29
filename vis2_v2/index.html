@@ -22,8 +22,7 @@
 }
 
 .infobox {
-    font: 10px "Helvetica Neue", Helvetica, Arial, sans-serif;
-
+    font: 20px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .label,
@@ -80,12 +79,18 @@ function draw() {
         .style("fill", function(d) { return d.children ? "#7FC2E9" : color2(d.value); })
         .style("color", "black")
         .style("padding", "10px")
-        .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation(); })
+        .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation();
+                                            // info(d)
+                                        })
         .on("mouseover", function(d, i) {
-                console.log(i)
-                d3.select(".infobox").text(i.data.name);
-            });
-        // .on("mouseout", function(d) {
+                d3.select(".infobox").text(function() {
+                    // return i.data.name;
+                    // console.log(i)
+                    return i.children ? i.data.name : i.data.name + ": " + i.data.value
+                });
+            })
+        // .on("mouseout", function(d, i) {
+        //     console.log("hello")
         //     d3.select(".infobox").style("visibility", "hidden")
         // });
 
@@ -96,9 +101,11 @@ function draw() {
     //     .style("fill-opacity", function(d) { return d.parent === household ? 1 : 0; })
     //     .style("display", function(d) { 
     //         return d.parent === household ? "inline" : "none"; })
-        // .text(function(d) { return d.data.name })
-        // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; })
-        // .style("text-anchor", "middle");
+    //     // .text(function(d) { return d.data.name })
+    //     .text(function(d) { 
+    //         console.log(d)
+    //         return d.children ? d.data.name + ": " + d.data.value : d.data.name })
+    //     // .style("text-anchor", "middle");
 
     var node = g.selectAll("circle,text")
         .attr("class", "node")
@@ -119,8 +126,17 @@ function draw() {
                 return function(t) { zoomTo(i(t)); };
             });
 
+        d3.select(".infobox").text(function() {
+                return event.data.name + ": " + event.data.value;
+                // console.log(i)
+                // return i.children ? i.data.name : i.data.name + ": " + i.data.value
+            });
+
+        console.log(event)
+
         transition.selectAll("text")
-            .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+            .filter(function(d) { 
+                return d.parent === focus || this.style.display === "inline"; })
             .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
             .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
             .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
@@ -134,6 +150,14 @@ function draw() {
             return c_size(d.value);
             // return d.r * k
         })
+    }
+
+    function info(d) {
+        // console.log(d);
+        d3.select(".infobox").text(function() {
+            console.log(d)
+            return d.children ? d.data.name : d.data.name + ": " + d.data.value
+        });
     }
 };
 
@@ -150,8 +174,8 @@ ready();
     <!-- <h1 class="state">State</h1>
     <p>Population size: <strong class="population">population</strong></p>
     <p>Unemployment rate: <strong class="unemployment">unemployment</strong></p> -->
-    <p>hello</p>
-  </div>
+    <p>EU</p>
+</div>
 
 </body>
 
