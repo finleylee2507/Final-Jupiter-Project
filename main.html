@@ -131,7 +131,7 @@
         var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
         var placement = d3.scaleLinear().domain([0, numcircles]).range([window.innerWidth/4, (window.innerWidth*3)/4])
         var radius = 50
-        var timeinterval = 7000
+        var timeinterval = 8000
         
         if(timer_ctr == 0){
             console.log(elapsed)
@@ -168,7 +168,7 @@
                 .transition()
                 .ease(d3.easeLinear)
                     .style("fill", function(d, i) {
-                        if((timeinterval/(numcircles+1))*i < elapsed){
+                        if(((timeinterval/4)/(numcircles+1))*i < elapsed%(timeinterval/4)){
                             return circles_colors(i)
                         }
                         else {
