@@ -57,8 +57,8 @@
     // Line Bubble Plot
 
     //Plot vars
-    let width = document.documentElement.clientWidth - 100, height = 950
-    let margin = {top: 50, right: 100, bottom: 50, left: 100}
+    let width = document.documentElement.clientWidth, height = 950
+    let margin = {top: 50, right: 500, bottom: 50, left: 100}
     let quadrants = [0.25, 0.50, 0.75]
 
     let svg_bubble = d3.select("body").append("svg")
@@ -129,9 +129,9 @@
 
         var numcircles = 6
         var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
-        var placement = d3.scaleLinear().domain([0, numcircles]).range([window.innerWidth/4, (window.innerWidth*3)/4])
+        var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth/4, window.innerWidth*3/4.0])
         var radius = 50
-        var timeinterval = 8000
+        var timeinterval = 12000
         
         if(timer_ctr == 0){
             console.log(elapsed)
@@ -148,6 +148,15 @@
                 .attr("class", "loading_svg")
                 .attr("height", window.innerHeight)
                 .attr("width", window.innerWidth)
+
+            loading.append("text")
+            .attr("class", "loading-text")
+            .attr("transform", "translate(" + (window.innerWidth/2) + " ," +
+                (window.innerHeight / 2 - 150) + ")")
+            .style("text-anchor", "middle")
+            .style("font-size", 24)
+            .attr("dy", "20")
+            .text("Loading...")
 
             for(i = 0; i < numcircles; i++)
             {
@@ -168,7 +177,7 @@
                 .transition()
                 .ease(d3.easeLinear)
                     .style("fill", function(d, i) {
-                        if(((timeinterval/4)/(numcircles+1))*i < elapsed%(timeinterval/4)){
+                        if(((timeinterval/5)/(numcircles+1))*i < elapsed%(timeinterval/5)){
                             return circles_colors(i)
                         }
                         else {
@@ -357,7 +366,7 @@
     const preprocess_countries = async () => {
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1],
             (d3.least(country_counts, ([, v]) => v)[1] + d3.greatest(country_counts, ([, v]) => v)[1]) / 2.0,
-            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 45, (width / 1920) * 90])
+            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
         var countries_preprocessed = Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500});
 
         //append initial y-value and opacity is full
@@ -405,7 +414,7 @@
 
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1],
             (d3.least(country_counts, ([, v]) => v)[1] + d3.greatest(country_counts, ([, v]) => v)[1]) / 2.0,
-            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 45, (width / 1920) * 90])
+            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
 
         const get_halo_stroke_width = (radius) => {
             if (radius >= 5 && radius <= 10) {
@@ -453,9 +462,9 @@
         let country_selection = subset_countries()
         countries_sorted.forEach(function (d, i) {
             if (country_selection.includes(d)) {
-                countries_sorted[i][3] = false
-            } else {
                 countries_sorted[i][3] = true
+            } else {
+                countries_sorted[i][3] = false
             }
 
         })
@@ -477,19 +486,20 @@
                 ,
                 update => update
                     .style("opacity", function (d) {
-                        console.log(d)
                         if (d[3]) {
-                            return 0.1
+                            return 1
                         }
-                        return 1
+                        return 0.1
                     })
                 ,
 
                 exit => exit.remove()
             )
             .on("mouseover", (event, d) => {
-                tooltip
+                if(d[3]) {
+                    tooltip
                     .style("opacity", 1)
+                }
             })
             .on("mousemove", (event, d) => {
                 let html_content = `<u>${d[0]}</u>   <img src="${get_country_flag_small_icon_url(d[0])}"
@@ -502,6 +512,7 @@
                     .style("top", (event.pageY - 30) + "px")
                     .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
             })
+
             .on("mouseleave", (event, d) => {
                 tooltip
                     .style("opacity", 0)
@@ -511,17 +522,25 @@
                         .on("drag", dragged)
                         .on("end", dragended));
 
+            console.log("sadlfkjsalkfjaskl")
             var simulation = d3.forceSimulation()
                 .force("y", d3.forceY().strength(1).y(function(d){ return d[2]}))
                 .force("x", d3.forceX().strength(1).x(function(d){return xScale(percents_removed_percent.get(d[0]))}))
                 //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                //.force("charge", d3.forceManyBody().strength(-600))
-                .force("collide", d3.forceCollide().strength(2).radius(function(d){return sizeScale(d[1])+get_halo_stroke_width(sizeScale(d[1])) }).iterations(1))
+                //.force("charge", d3.forceManyBody().strength(-1))
+                .force("collide", d3.forceCollide().strength(0.25).radius(function(d){
+                    if(d[3]) {
+                        return sizeScale(d[1]); 
+                    } else {
+                        return -1;
+                        console.log(d)
+                    }}).iterations(1))
+
                 
             function dragstarted(event, d) {
                 if (!event.active) simulation.alphaTarget(.03).restart();
-                d.fx = d.x;
-                d.fy = d.y;
+                    d.fx = d.x;
+                    d.fy = d.y;
             }
             function dragged(event, d) {
                 d.fx = event.x;
@@ -529,17 +548,19 @@
             }
             function dragended(event, d) {
                 if (!event.active) simulation.alphaTarget(.03);
-                d.fx = null;
-                d.fy = null;
+                    d.fx = null;
+                    d.fy = null;
             }
-
+            
             simulation
                 .nodes(countries_sorted)
                 .on("tick", function(d){
                     node
                         .attr("cx", function(d){return d.x; })
-                        .attr("cy", function(d){ return d.y; })
+                        .attr("cy", function(d){return d.y; })
                 });
+                
+            
     }
 
 
@@ -593,7 +614,7 @@
                 .transition()
                 .ease(d3.easeLinear)
                 .duration(750)
-                    .attr("cx", width - margin.right - 30)
+                    .attr("cx", width - margin.right - 150)
                     .attr("cy", function(d, i) { return 100 + i * 25}) // 100 is where the first dot appears. 25 is the distance between dots
                     .attr("r", 7)
             return
@@ -611,8 +632,8 @@
 
         svg_bubble.append("text")
             .attr("class", "x-axis-label")
-            .attr("transform", "translate(" + (width - 100) + " ," +
-                (height / 2 + 50) + ")")
+            .attr("transform", "translate(" + (width - margin.right - 50) + " ," +
+                (height / 2 + 75) + ")")
             .style("text-anchor", "middle")
             .attr("dy", "12")
             .text("% of Acceptance")
@@ -661,7 +682,7 @@
 
         //add legend
         if(!loadingtimer){
-            var placement = d3.scaleLinear().domain([0, 6]).range([window.innerWidth/4, (window.innerWidth*3)/4])
+            var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth/4, (window.innerWidth*3)/4])
             var radius = 50
             var element = document.getElementsByClassName("dropdown-wrapper")[0]
             var dropdown_bounds = element.getBoundingClientRect();
@@ -688,7 +709,7 @@
             .enter()
             .append("text")
             .attr("class", "legend-label")
-            .attr("x", width - margin.right - 20)
+            .attr("x", width - margin.right - 140)
             .attr("y", (d, i) => 100 + i * 25)
             .style("fill", d => continentColorScale(continent_mapping_a[d]))
             .text(d => d)
@@ -712,9 +733,6 @@
             })
     }
 
-    const nudgeabit = async () => {
-
-    }
 
     const ready = async () => {
         products_data = await d3.csv("removal-requests-products.csv")
@@ -732,7 +750,6 @@
         await preprocess_countries()
         await createIcons()
         drawBubble()
-        floattimer = d3.intervals(nudgeabit, 1000)
     }
 
 
