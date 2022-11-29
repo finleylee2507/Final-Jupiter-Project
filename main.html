@@ -20,6 +20,15 @@
         pointer-events: none;
     }
 
+    div.loading{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index:1000;
+        top:0px;
+        left:0px;
+    }
+
     h1 {
         text-align: center;
     }
@@ -38,6 +47,7 @@
       rel="stylesheet">
 
 <body>
+<div class="loading"></div>
 <div><h1>Country vs Removal Requests</h1></div>
 <div class="dropdown-wrapper">
     Continent Displayed: <select class="dropdown" id="continent-selection"></select>
@@ -52,6 +62,7 @@
     let quadrants = [0.25, 0.50, 0.75]
 
     let svg_bubble = d3.select("body").append("svg")
+        .attr("class", "svg_bubble")
         .attr("width", width)
         .attr("height", height)
 
@@ -110,7 +121,78 @@
     //Misc Variables
     let country_to_continent = new Map()
     let continent_to_country = new Map()
+    let timer, floattimer, timer_ctr = 0;
+    var loadingtimer = false;
 
+    const make_loading_screen = (elapsed) => {
+        var loading_background = d3.select(".loading")
+
+        var numcircles = 6
+        var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
+        var placement = d3.scaleLinear().domain([0, numcircles]).range([window.innerWidth/4, (window.innerWidth*3)/4])
+        var radius = 50
+        var timeinterval = 7000
+        
+        if(timer_ctr == 0){
+            console.log(elapsed)
+            var divs = document.getElementsByTagName("div");
+            for(var i = 0; i < divs.length; i++){
+                //do something to each div like
+                divs[i].style = 'visibility : hidden';
+            }
+            loading_background
+                .style("background-color", "white")
+                .style("visibility", "visible")
+            
+            var loading = loading_background.append("svg")
+                .attr("class", "loading_svg")
+                .attr("height", window.innerHeight)
+                .attr("width", window.innerWidth)
+
+            for(i = 0; i < numcircles; i++)
+            {
+                loading.append("circle")
+                    .attr("cx", placement(i))
+                    .attr("cy", window.innerHeight/2)
+                    .attr("r", radius)
+                    .style("fill", "white")
+                    .attr("stroke", "black")
+            }
+            //document.getElementsByTagName("body")[0].style = 'margin: 0; height: 100%; overflow: hidden';
+        }
+        else
+        {
+            var loading = loading_background.select("svg")
+            
+            loading.selectAll("circle")
+                .transition()
+                .ease(d3.easeLinear)
+                    .style("fill", function(d, i) {
+                        if((timeinterval/(numcircles+1))*i < elapsed){
+                            return circles_colors(i)
+                        }
+                        else {
+                            return "white"
+                        }
+                    })
+        }
+        
+        if (elapsed > timeinterval){
+            console.log("Timer stopped")
+            document.getElementsByTagName("body")[0].style = ''
+            var divs = document.getElementsByTagName("div");
+            for(var i = 0; i < divs.length; i++){
+                //do something to each div like
+                divs[i].style = 'visibility : visible';
+            }
+            loading_background
+                .style("visibility", "hidden")
+            loadingtimer = true;
+            set_up_axis_and_labels()
+            timer.stop();
+        }
+        timer_ctr += 1;
+    }
 
     const get_countrget_country_flag_big_icon_url_icon_url = (country_name) => {
         //console.log(country_name)
@@ -377,9 +459,8 @@
             }
 
         })
-        console.log(countries_sorted)
         //draw circles
-        svg_bubble.selectAll("circle.country")
+        var node = svg_bubble.selectAll("circle.country")
             .data(countries_sorted)
             .join(
                 enter => enter.append("circle")
@@ -425,6 +506,40 @@
                 tooltip
                     .style("opacity", 0)
             })
+            .call(d3.drag() // call specific function when circle is dragged
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended));
+
+            var simulation = d3.forceSimulation()
+                .force("y", d3.forceY().strength(1).y(function(d){ return d[2]}))
+                .force("x", d3.forceX().strength(1).x(function(d){return xScale(percents_removed_percent.get(d[0]))}))
+                //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                //.force("charge", d3.forceManyBody().strength(-600))
+                .force("collide", d3.forceCollide().strength(2).radius(function(d){return sizeScale(d[1])+get_halo_stroke_width(sizeScale(d[1])) }).iterations(1))
+                
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(.03).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(.03);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            simulation
+                .nodes(countries_sorted)
+                .on("tick", function(d){
+                    node
+                        .attr("cx", function(d){return d.x; })
+                        .attr("cy", function(d){ return d.y; })
+                });
     }
 
 
@@ -473,6 +588,16 @@
     }
 
     const set_up_axis_and_labels = () => {
+        if(loadingtimer) {
+            svg_bubble.selectAll(".mydots")
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(750)
+                    .attr("cx", width - margin.right - 30)
+                    .attr("cy", function(d, i) { return 100 + i * 25}) // 100 is where the first dot appears. 25 is the distance between dots
+                    .attr("r", 7)
+            return
+        }
         //add axis and text
 
         let xAxis = svg_bubble.append("g")
@@ -535,15 +660,28 @@
         xAxis.select("path").attr("marker-end", "url(#arrowhead)")
 
         //add legend
-        svg_bubble.selectAll("circles.mydots")
-            .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
-            .enter()
-            .append("circle")
-            .attr("class", "mydots")
-            .attr("cx", width - margin.right - 30)
-            .attr("cy", (d, i) => 100 + i * 25) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", d => continentColorScale(continent_mapping_a[d]))
+        if(!loadingtimer){
+            var placement = d3.scaleLinear().domain([0, 6]).range([window.innerWidth/4, (window.innerWidth*3)/4])
+            var radius = 50
+            var element = document.getElementsByClassName("dropdown-wrapper")[0]
+            var dropdown_bounds = element.getBoundingClientRect();
+            var circles_colors = d3.scaleOrdinal().domain(d3.range(6)).range(d3.schemeTableau10)
+
+            for(i = 0; i < 6; i++) {
+                svg_bubble
+                    .append("circle")
+                    .attr("class", "mydots")
+                    .attr("cx", placement(i)-dropdown_bounds.left)
+                    .attr("cy", function() {
+                        return (window.innerHeight/2) - dropdown_bounds.bottom;
+                    })
+                    .attr("r", radius)
+                    .style("fill", circles_colors(i))
+                    .attr("stroke", "black")
+            }
+            
+        }
+        
 
         svg_bubble.selectAll("text.legend-label")
             .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
@@ -574,10 +712,16 @@
             })
     }
 
+    const nudgeabit = async () => {
+
+    }
+
     const ready = async () => {
         products_data = await d3.csv("removal-requests-products.csv")
         percents_data = await d3.csv("removal-requests-percents.csv")
         country_code_mapping = await d3.json("country-code-mapping.json")
+
+        timer = d3.timer(make_loading_screen)
 
         //load dropdown
         set_up_dropdown()
@@ -588,6 +732,7 @@
         await preprocess_countries()
         await createIcons()
         drawBubble()
+        floattimer = d3.intervals(nudgeabit, 1000)
     }
 
 
