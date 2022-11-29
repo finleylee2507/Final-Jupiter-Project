@@ -21,13 +21,19 @@
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
 }
 
+.infobox {
+    font: 10px "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+
 .label,
 .node--root,
 .node--leaf {
   pointer-events: none;
 }
-
 </style>
+
+<body>
 <svg width="400" height="400"></svg>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
@@ -53,6 +59,7 @@ var c_size = d3.scaleLog()
 
 var pack = d3.pack()
     .size([diameter - margin, diameter - margin])
+    // .size([400, 400])
     .padding(40);
 
 var household;
@@ -70,30 +77,31 @@ function draw() {
     .data(nodes)
     .enter().append("circle")
         .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-        // .style("class", function(d) { return d.children ? "node--root": "node--leaf";})
         .style("fill", function(d) { return d.children ? "#7FC2E9" : color2(d.value); })
-        // .style("stroke", function(d) { return d.children ? "black" : null; })
-        // .style("stroke-width", function(d) { return d.children ? "1.5px" : null; })
-        // .style("class", function(d) { return d.children ? "node--leaf" : "node";})
-        .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation(); });
+        .style("color", "black")
+        .style("padding", "10px")
+        .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation(); })
+        .on("mouseover", function(d, i) {
+                console.log(i)
+                d3.select(".infobox").text(i.data.name);
+            });
+        // .on("mouseout", function(d) {
+        //     d3.select(".infobox").style("visibility", "hidden")
+        // });
 
-    var text = g.selectAll("text")
-    .data(nodes)
-    .enter().append("text")
-        .attr("class", "label")
-        .style("fill-opacity", function(d) { return d.parent === household ? 1 : 0; })
-        .style("display", function(d) { return d.parent === household ? "inline" : "none"; })
+    // var text = g.selectAll("text")
+    // .data(nodes)
+    // .enter().append("text")
+    //     .attr("class", "label")
+    //     .style("fill-opacity", function(d) { return d.parent === household ? 1 : 0; })
+    //     .style("display", function(d) { 
+    //         return d.parent === household ? "inline" : "none"; })
         // .text(function(d) { return d.data.name })
         // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; })
-        // .style("font-color", "transparent");
+        // .style("text-anchor", "middle");
 
     var node = g.selectAll("circle,text")
         .attr("class", "node")
-        .style("text-anchor", "middle")
-        .on("hover", function(d) { return d.data.name;
-        })
-        // .text(function(d) { return d.data.name });
-        // .text(function(d) { return d.children ? d.data.name : d.data.name + ": " + d.data.value; });
 
     svg
         .style("background", "#7FC2E9")
@@ -121,12 +129,12 @@ function draw() {
     function zoomTo(v) {
         var k = diameter / v[2]; view = v;
         node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-        // node.attr("text", function(d) {return d.data.name; })
-        circle.attr("r", function(d) { 
+        circle
+        .attr("r", function(d) { 
             return c_size(d.value);
             // return d.r * k
-        });
-        }
+        })
+    }
 };
 
 async function ready() {
@@ -137,3 +145,14 @@ async function ready() {
 ready();
 
 </script>
+
+<div class="infobox">
+    <!-- <h1 class="state">State</h1>
+    <p>Population size: <strong class="population">population</strong></p>
+    <p>Unemployment rate: <strong class="unemployment">unemployment</strong></p> -->
+    <p>hello</p>
+  </div>
+
+</body>
+
+</html>
