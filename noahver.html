@@ -300,7 +300,7 @@
                         .append("image")
                         .attr("height", 1)
                         .attr("width", 1)
-                        .attr("preserveAspectRatio", "none")
+                        .attr("preserveAspectRatio", "xMidYMin slice")
                         .attr("xlink:href", d => get_country_icon_url(d[0])
                         ),
                     exit => exit
@@ -389,7 +389,7 @@
                     .style("opacity", function (d) {
                         console.log(d); 
                         if(d[3]) {
-                            return 0.25;
+                            return 0.1;
                         } 
                         return 1})
                 ,
