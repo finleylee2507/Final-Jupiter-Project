@@ -20,6 +20,15 @@
         pointer-events: none;
     }
 
+    div.loading {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        top: 0px;
+        left: 0px;
+    }
+
     h1 {
         text-align: center;
     }
@@ -38,6 +47,7 @@
       rel="stylesheet">
 
 <body>
+<div class="loading"></div>
 <div><h1>Country vs Removal Requests</h1></div>
 <div class="dropdown-wrapper">
     Continent Displayed: <select class="dropdown" id="continent-selection"></select>
@@ -47,11 +57,12 @@
     // Line Bubble Plot
 
     //Plot vars
-    let width = document.documentElement.clientWidth - 100, height = 950
-    let margin = {top: 50, right: 100, bottom: 50, left: 100}
+    let width = document.documentElement.clientWidth, height = 950
+    let margin = {top: 50, right: 500, bottom: 50, left: 100}
     let quadrants = [0.25, 0.50, 0.75]
 
     let svg_bubble = d3.select("body").append("svg")
+        .attr("class", "svg_bubble")
         .attr("width", width)
         .attr("height", height)
 
@@ -110,7 +121,90 @@
     //Misc Variables
     let country_to_continent = new Map()
     let continent_to_country = new Map()
+    let timer, floattimer, timer_ctr = 0
+    var finishedLoading = false
 
+    const make_loading_screen = (elapsed) => {
+        var loading_background = d3.select(".loading")
+
+        var numcircles = 6
+        var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
+        var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, window.innerWidth * 3 / 4.0])
+        var radius = 50
+        var timeinterval = 12000
+
+        if (timer_ctr == 0) { //prior to loading, set up the loading dots
+            console.log(elapsed)
+            let divs = document.getElementsByTagName("div")
+
+            //disable scrolling
+            let body = document.getElementsByTagName("body")[0]
+            body.style.cssText = "margin: 0; height: 100%; overflow: hidden"
+
+            //hide all other divs except for the loading screen
+            for (let i = 0; i < divs.length; i++) {
+                //do something to each div like
+                divs[i].style = 'visibility : hidden'
+            }
+            loading_background
+                .style("background-color", "white")
+                .style("visibility", "visible")
+
+
+            let loading = loading_background.append("svg")
+                .attr("class", "loading_svg")
+                .attr("height", window.innerHeight)
+                .attr("width", window.innerWidth)
+
+            loading.append("text")
+                .attr("class", "loading-text")
+                .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                    (window.innerHeight / 2 - 150) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", 24)
+                .attr("dy", "20")
+                .text("Loading...")
+
+            //set up loading dots (empty initially)
+            for (i = 0; i < numcircles; i++) {
+                loading.append("circle")
+                    .attr("cx", placement(i))
+                    .attr("cy", window.innerHeight / 2)
+                    .attr("r", radius)
+                    .style("fill", "white")
+                    .attr("stroke", "black")
+            }
+            //document.getElementsByTagName("body")[0].style = 'margin: 0; height: 100%; overflow: hidden';
+        } else if (elapsed > timeinterval) { //finished loading
+            console.log("Timer stopped")
+            document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
+            let divs = document.getElementsByTagName("div")
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].style = 'visibility : visible'
+            }
+            loading_background  //hide loading screen
+                .style("visibility", "hidden")
+            finishedLoading = true
+            set_up_axis_and_labels()
+            timer.stop()
+        } else { //during loading
+
+            var loading = loading_background.select("svg")
+
+            loading.selectAll("circle")
+                .transition()
+                .ease(d3.easeLinear)
+                .style("fill", function (d, i) { //filling magic
+                    if (((timeinterval / 5) / (numcircles + 1)) * i < elapsed % (timeinterval / 5)) {
+                        return circles_colors(i)
+                    } else {
+                        return "white"
+                    }
+                })
+
+        }
+        timer_ctr += 1
+    }
 
     const get_countrget_country_flag_big_icon_url_icon_url = (country_name) => {
         //console.log(country_name)
@@ -151,7 +245,7 @@
 
     //Get all possible y-values of the circle to be placed
     const get_possible = (c1, r1, c2, r2) => {
-        let min = margin.top, max = bubble_height, step = 0.01, diff = 0.01
+        let min = margin.top, max = bubble_height, step = 0.1, diff = 0.01
         let works = []
         let current = min
         do {
@@ -275,7 +369,7 @@
     const preprocess_countries = async () => {
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1],
             (d3.least(country_counts, ([, v]) => v)[1] + d3.greatest(country_counts, ([, v]) => v)[1]) / 2.0,
-            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 45, (width / 1920) * 90])
+            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
         var countries_preprocessed = Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500});
 
         //append initial y-value and opacity is full
@@ -284,11 +378,12 @@
             countries_preprocessed[i] = countries_preprocessed[i].concat(true)
         })
         for (let i in countries_preprocessed) {
+            console.log(i)
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
                 countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
         }
         countries_sorted = countries_preprocessed
-
+        console.log("finished processing")
     }
 
     const createIcons = async () => {
@@ -323,7 +418,7 @@
 
         const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1],
             (d3.least(country_counts, ([, v]) => v)[1] + d3.greatest(country_counts, ([, v]) => v)[1]) / 2.0,
-            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 45, (width / 1920) * 90])
+            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
 
         const get_halo_stroke_width = (radius) => {
             if (radius >= 5 && radius <= 10) {
@@ -371,15 +466,16 @@
         let country_selection = subset_countries()
         countries_sorted.forEach(function (d, i) {
             if (country_selection.includes(d)) {
-                countries_sorted[i][3] = false
-            } else {
                 countries_sorted[i][3] = true
+            } else {
+                countries_sorted[i][3] = false
             }
 
         })
-        console.log(countries_sorted)
+
+
         //draw circles
-        svg_bubble.selectAll("circle.country")
+        var node = svg_bubble.selectAll("circle.country")
             .data(countries_sorted)
             .join(
                 enter => enter.append("circle")
@@ -396,19 +492,20 @@
                 ,
                 update => update
                     .style("opacity", function (d) {
-                        console.log(d)
                         if (d[3]) {
-                            return 0.1
+                            return 1
                         }
-                        return 1
+                        return 0.1
                     })
                 ,
 
                 exit => exit.remove()
             )
             .on("mouseover", (event, d) => {
-                tooltip
-                    .style("opacity", 1)
+                if (d[3]) {
+                    tooltip
+                        .style("opacity", 1)
+                }
             })
             .on("mousemove", (event, d) => {
                 let html_content = `<u>${d[0]}</u>   <img src="${get_country_flag_small_icon_url(d[0])}"
@@ -421,10 +518,65 @@
                     .style("top", (event.pageY - 30) + "px")
                     .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
             })
+
             .on("mouseleave", (event, d) => {
                 tooltip
                     .style("opacity", 0)
             })
+            .call(d3.drag() // call specific function when circle is dragged
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+
+        var simulation = d3.forceSimulation()
+            .force("y", d3.forceY().strength(1).y(function (d) {
+                return d[2]
+            }))
+            .force("x", d3.forceX().strength(1).x(function (d) {
+                return xScale(percents_removed_percent.get(d[0]))
+            }))
+            //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+            //.force("charge", d3.forceManyBody().strength(-1))
+            .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                if (d[3]) {
+                    return sizeScale(d[1])
+                } else {
+                    return -1
+                    console.log(d)
+                }
+            }).iterations(1))
+
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(.03).restart()
+            d.fx = d.x
+            d.fy = d.y
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x
+            d.fy = event.y
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(.03)
+            d.fx = null
+            d.fy = null
+        }
+
+        simulation
+            .nodes(countries_sorted)
+            .on("tick", function (d) {
+                node
+                    .attr("cx", function (d) {
+                        return d.x
+                    })
+                    .attr("cy", function (d) {
+                        return d.y
+                    })
+            })
+
+
     }
 
 
@@ -473,89 +625,117 @@
     }
 
     const set_up_axis_and_labels = () => {
-        //add axis and text
+        if (finishedLoading) { //move "loading dots" to legend location
+            svg_bubble.selectAll(".mydots")
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(750)
+                .attr("cx", width - margin.right - 150)
+                .attr("cy", function (d, i) {
+                    return 100 + i * 25
+                }) // 100 is where the first dot appears. 25 is the distance between dots
+                .attr("r", 7)
+            return
+        } else {
+            //add axis and text
 
-        let xAxis = svg_bubble.append("g")
-            .attr("class", "x-axis")
-            .attr("transform", "translate(" + 0 + "," + (bubble_height + margin.top) / 2.0 + ")")
-            .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0))
+            //x-axis
+            let xAxis = svg_bubble.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(" + 0 + "," + (bubble_height + margin.top) / 2.0 + ")")
+                .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0))
 
-        xAxis
-            .attr("stroke-width", "5")
+            xAxis
+                .attr("stroke-width", "5")
+
+            //x-axis label
+            svg_bubble.append("text")
+                .attr("class", "x-axis-label")
+                .attr("transform", "translate(" + (width - margin.right - 50) + " ," +
+                    (height / 2 + 75) + ")")
+                .style("text-anchor", "middle")
+                .attr("dy", "12")
+                .text("% of Acceptance")
 
 
-        svg_bubble.append("text")
-            .attr("class", "x-axis-label")
-            .attr("transform", "translate(" + (width - 100) + " ," +
-                (height / 2 + 50) + ")")
-            .style("text-anchor", "middle")
-            .attr("dy", "12")
-            .text("% of Acceptance")
+            //draw lines that mark the quadrants
+            let quadrant_lines = svg_bubble.selectAll("lines.quadrant-line")
+                .data(quadrants)
+                .enter()
+                .append("line")
+            quadrant_lines.attr("class", "quadrant-line")
+                .attr("x1", d => xScale(d))
+                .attr("y1", margin.top + 20)
+                .attr("x2", d => xScale(d))
+                .attr("y2", height - 100)
+                .attr("stroke", "#f8e1ed")
+                .attr("stroke-width", 5)
+
+            //quadrant labels above line
+            let quadrant_lines_label = svg_bubble.selectAll("text.quadrant-line-label")
+                .data(quadrants)
+                .enter()
+                .append("text")
+
+            quadrant_lines_label
+                .attr("class", "quadrant-line-label")
+                .attr("transform", d => "translate(" + (xScale(d)) + " ," +
+                    (margin.top - 10) + ")")
+                .style("text-anchor", "middle")
+                .attr("dy", "12")
+                .text(d => `${d * 100}%`)
+
+            //add arrow at the end of x axis
+
+            defs.append("marker")
+                .attr("id", "arrowhead")
+                .attr("refX", 2)
+                .attr("refY", 7)
+                .attr("markerWidth", 8)
+                .attr("markerHeight", 13)
+                .attr("orient", "right")
+                .append("path")
+                .attr("d", "M2,2 L2,13 L8,7 L2,2")
+
+            xAxis.select("path").attr("marker-end", "url(#arrowhead)")
+
+            //add legend
+
+            var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, (window.innerWidth * 3) / 4])
+            var radius = 50
+            var element = document.getElementsByClassName("dropdown-wrapper")[0]
+            var dropdown_bounds = element.getBoundingClientRect()
+            var circles_colors = d3.scaleOrdinal().domain(d3.range(6)).range(d3.schemeTableau10)
+
+            for (i = 0; i < 6; i++) {
+                svg_bubble
+                    .append("circle")
+                    .attr("class", "mydots")
+                    .attr("cx", placement(i) - dropdown_bounds.left)
+                    .attr("cy", function () {
+                        return (window.innerHeight / 2) - dropdown_bounds.bottom
+                    })
+                    .attr("r", radius)
+                    .style("fill", circles_colors(i))
+                    .attr("stroke", "black")
+            }
 
 
-        //draw lines that mark the quadrants
-        let quadrant_lines = svg_bubble.selectAll("lines.quadrant-line")
-            .data(quadrants)
-            .enter()
-            .append("line")
-        quadrant_lines.attr("class", "quadrant-line")
-            .attr("x1", d => xScale(d))
-            .attr("y1", margin.top + 20)
-            .attr("x2", d => xScale(d))
-            .attr("y2", height - 100)
-            .attr("stroke", "#f8e1ed")
-            .attr("stroke-width", 5)
+            //legend text
+            svg_bubble.selectAll("text.legend-label")
+                .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
+                .enter()
+                .append("text")
+                .attr("class", "legend-label")
+                .attr("x", width - margin.right - 140)
+                .attr("y", (d, i) => 100 + i * 25)
+                .style("fill", d => continentColorScale(continent_mapping_a[d]))
+                .text(d => d)
+                .attr("text-anchor", "left")
+                .style("alignment-baseline", "middle")
 
-        //quadrant labels above line
-        let quadrant_lines_label = svg_bubble.selectAll("text.quadrant-line-label")
-            .data(quadrants)
-            .enter()
-            .append("text")
+        }
 
-        quadrant_lines_label
-            .attr("class", "quadrant-line-label")
-            .attr("transform", d => "translate(" + (xScale(d)) + " ," +
-                (margin.top - 10) + ")")
-            .style("text-anchor", "middle")
-            .attr("dy", "12")
-            .text(d => `${d * 100}%`)
-
-        //add arrow at the end of x axis
-
-        defs.append("marker")
-            .attr("id", "arrowhead")
-            .attr("refX", 2)
-            .attr("refY", 7)
-            .attr("markerWidth", 8)
-            .attr("markerHeight", 13)
-            .attr("orient", "right")
-            .append("path")
-            .attr("d", "M2,2 L2,13 L8,7 L2,2")
-
-        xAxis.select("path").attr("marker-end", "url(#arrowhead)")
-
-        //add legend
-        svg_bubble.selectAll("circles.mydots")
-            .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
-            .enter()
-            .append("circle")
-            .attr("class", "mydots")
-            .attr("cx", width - margin.right - 30)
-            .attr("cy", (d, i) => 100 + i * 25) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", d => continentColorScale(continent_mapping_a[d]))
-
-        svg_bubble.selectAll("text.legend-label")
-            .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
-            .enter()
-            .append("text")
-            .attr("class", "legend-label")
-            .attr("x", width - margin.right - 20)
-            .attr("y", (d, i) => 100 + i * 25)
-            .style("fill", d => continentColorScale(continent_mapping_a[d]))
-            .text(d => d)
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle")
     }
 
     const set_up_dropdown = () => {
@@ -574,10 +754,13 @@
             })
     }
 
+
     const ready = async () => {
         products_data = await d3.csv("removal-requests-products.csv")
         percents_data = await d3.csv("removal-requests-percents.csv")
         country_code_mapping = await d3.json("country-code-mapping.json")
+
+        timer = d3.timer(make_loading_screen)
 
         //load dropdown
         set_up_dropdown()
