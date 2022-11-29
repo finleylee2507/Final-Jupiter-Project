@@ -146,7 +146,9 @@ function draw() {
         .style("fill", function(d) { return d.children ? "white" : color2(d.value); })
         .style("stroke", function(d) { return d.children ? "black" : null; })
         .style("stroke-width", function(d) { return d.children ? "1.5px" : null; })
-        .on("click", function(event, d) { if (focus !== d) zoom(d), event.stopPropagation(); });
+        .on("click", function(event, d) { 
+            if (focus !== d) zoom(d), event.stopPropagation(); 
+        });
 
     var text = g.selectAll("text")
     .data(nodes)
@@ -160,8 +162,10 @@ function draw() {
         //hover for the number!!!!
 
 
+    var node = g.selectAll("circle,text")
+        .attr("class", "node")
 
-    var node = g.selectAll("circle,text");
+    // var node = g.selectAll("circle,text");
 
     svg
         .style("background", "white")
@@ -192,8 +196,8 @@ function draw() {
             // return Math.sqrt(d.value) / 20;
             // return d.value / 2000.0;
             // console.log(c_size(d.value));
-            return c_size(d.value);
-            // return d.r * k
+            // return c_size(d.value);
+            return d.r * k
             // return c_size(d.value); 
         });
         }
