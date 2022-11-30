@@ -6,6 +6,7 @@
 
     body {
         font-family: 'Poppins', sans-serif;
+        ba
     }
 
     div {
@@ -70,6 +71,12 @@
         .attr("class", "svg_bubble")
         .attr("width", width)
         .attr("height", height)
+        .on("click", function(){tutorialCtr += 1;
+            console.log(tutorialCtr);
+            if(tutorialCtr >= tutorialSteps) {
+                drawBubble()
+            }
+                })
 
     let defs = svg_bubble.append("defs")
 
@@ -117,17 +124,40 @@
     }
 
     let countries_sorted
+    let countries_pre_tutorial
 
     //Variable that controls the dropdown
     let current_continent = "All"
     let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
+    
+    //
+    let simulation = d3.forceSimulation()
+                .force("y", d3.forceY().strength(2).y(function (d) {return d[2]}))
+                .force("x", d3.forceX().strength(2).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
+                //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                //.force("charge", d3.forceManyBody().strength(-1))
+                .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                    if (d[3]) {
+                        return sizeScale(d[1])
+                    } else {
+                        return -1
+                        console.log(d)
+                    }
+                }).iterations(1))
 
+    //tutorial
+    let tutorialSteps = 2;
+    let tutorialCtr = 0
+    let tutorial_intro = false;
 
     //Misc Variables
     let country_to_continent = new Map()
     let continent_to_country = new Map()
     let timer, floattimer, timer_ctr = 0
+    var removeLoading = false
     var finishedLoading = false
+    var removeLoadingCreated = false
+    var simulationCreated = false
 
     const make_loading_screen = (elapsed) => {
         var loading_background = d3.select(".loading")
@@ -135,7 +165,7 @@
         var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
         var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, window.innerWidth * 3 / 4.0])
         var radius = 10
-        var timeinterval = 5000
+        var timeinterval = 200
 
         if (timer_ctr == 0) { //prior to loading, set up the loading dots
             console.log(elapsed)
@@ -143,7 +173,7 @@
 
             //disable scrolling
             let body = document.getElementsByTagName("body")[0]
-            body.style.cssText = "margin: 0; height: 100%; overflow: hidden"
+            body.style.cssText = "margin: 0; height: 200%; overflow: hidden"
 
             loading_background
                 .style("background-color", "white")
@@ -159,32 +189,104 @@
                 .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
                     (window.innerHeight / 2 - 150) + ")")
                 .style("text-anchor", "middle")
-                .style("font-size", 24)
+                .style("font-size", 36)
                 .attr("dy", "20")
-                .text("You wanna see some cool stuff? (replace with first paragraph of intro)")
+                .text("Visualizing Removal Requests")
+
+            loading.append("text")
+                .attr("class", "loading-text")
+                .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                    (window.innerHeight / 2 - 125) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", 12)
+                .attr("dy", "20")
+                .text("Made by Judy Ahn, Olivia Escousse, Finley Li, Noah Shen, Ploen Voraprukpisut")
+            
+
+            loading.append("text")
+                .attr("class", "loading-words")
+                .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                    (window.innerHeight*2/3 - 100) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", 16)
+                .attr("dy", "20")
+                .text("Loading...")
 
             //set up loading dots (empty initially)
             for (let i = 0; i < numcircles; i++) {
                 loading.append("circle")
                     .attr("cx", placement(i))
-                    .attr("cy", window.innerHeight * 3 / 4)
+                    .attr("cy", window.innerHeight * 2 / 3)
                     .attr("r", radius)
                     .style("fill", "white")
                     .attr("stroke", "black")
             }
 
         } else if (elapsed > timeinterval) { //finished loading
-            console.log("Timer stopped")
-            document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
-            let divs = document.getElementsByTagName("div") //rerender all elements
-            for (let i = 0; i < divs.length; i++) {
-                divs[i].style = 'visibility : visible'
+            var loading = loading_background.select("svg")
+                    .on("click", function() {removeLoading = true})
+            if(!removeLoadingCreated) {
+                                loading.selectAll("text").remove()
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 36)
+                    .attr("dy", "20")
+                    .text("Now what")
+                
+                loading.append("text")
+                    .attr("class", "loading-words")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight*2/3 - 100) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 16)
+                    .attr("dy", "20")
+                    .text("Click to continue...")
+                    .attr("stroke", "black")
+
+                loading.selectAll("g").remove()
+                var block = loading.append("g")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight*2/3 - 50) + ")")
+                
+                block.append("rect")
+                    .attr("transform", "rotate(45)")
+                    .attr("height", 20)
+                    .attr("width", 20)
+                    .style("fill", "black")
+                    .attr("stroke", "black")
+
+                removeLoadingCreated = true;
+            } else {
+                loading.selectAll("rect")
+                    .transition()
+                    .ease(d3.easeLinear)
+                    .style("fill", function(d) {
+                        //console.log(elapsed);
+                        if(elapsed%2000 > 1000)
+                            return "white";
+                        return "black"
+                    })
             }
-            loading_background  //hide loading screen
-                .style("visibility", "hidden")
-            finishedLoading = true
-            set_up_axis_and_labels()
-            timer.stop()
+            
+
+            
+            if(removeLoading)
+            {
+                document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
+                let divs = document.getElementsByTagName("div") //rerender all elements
+                for (let i = 0; i < divs.length; i++) {
+                    divs[i].style = 'visibility : visible'
+                }
+                loading_background  //hide loading screen
+                    .style("visibility", "hidden")
+                finishedLoading = true
+                set_up_axis_and_labels()
+                console.log("Timer stopped")
+                timer.stop()
+            }            
         } else { //during loading
 
             var loading = loading_background.select("svg")
@@ -195,9 +297,18 @@
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
                         (window.innerHeight / 2 - 150) + ")")
                     .style("text-anchor", "middle")
-                    .style("font-size", 24)
+                    .style("font-size", 36)
                     .attr("dy", "20")
                     .text("Now what")
+                
+                loading.append("text")
+                    .attr("class", "loading-words")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight*2/3 - 100) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 16)
+                    .attr("dy", "20")
+                    .text("Loading...")
             }
             loading.selectAll("circle")
                 .transition()
@@ -386,21 +497,27 @@
     const continentColorScale = d3.scaleOrdinal().domain(continent_to_country.keys()).range(d3.schemeTableau10)
 
     const preprocess_countries = async () => {
-        const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1],
-            (d3.least(country_counts, ([, v]) => v)[1] + d3.greatest(country_counts, ([, v]) => v)[1]) / 2.0,
-            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
-        var countries_preprocessed = Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500});
+        const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
+            (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
+            d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
+        var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500});
+        countries_pre_tutorial = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
 
         //append initial y-value and opacity is full
         countries_preprocessed.forEach((d, i) => {
             countries_preprocessed[i] = countries_preprocessed[i].concat((bubble_height + margin.top) / 2.0)
             countries_preprocessed[i] = countries_preprocessed[i].concat(true)
+            countries_pre_tutorial[i] = [...countries_preprocessed[i]]
+            var random = d3.randomUniform(-100000, -1000)()
+            if(i != 0)
+                countries_pre_tutorial[i][2] = random//random
         })
         for (let i in countries_preprocessed) {
             console.log(i)
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
                 countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
         }
+        countries_pre_tutorial[0][2] = countries_preprocessed[0][2]
         countries_sorted = countries_preprocessed
         console.log("finished processing")
     }
@@ -435,9 +552,9 @@
     const drawBubble = async () => {
         const getId = d => d.toLowerCase().replace(/ /g, "-")
 
-        const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1],
-            (d3.least(country_counts, ([, v]) => v)[1] + d3.greatest(country_counts, ([, v]) => v)[1]) / 2.0,
-            d3.greatest(country_counts, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
+        const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
+            (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
+            d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
 
         const get_halo_stroke_width = (radius) => {
             if (radius >= 5 && radius <= 10) {
@@ -492,111 +609,167 @@
 
         })
 
+        if(tutorialCtr < tutorialSteps){
+            var node = svg_bubble.selectAll("circle.country")
+                .data(countries_pre_tutorial)
+                .join(
+                    enter => enter.append("circle")
+                        .attr("class", "country")
+                        .attr("country", d => d[0])
+                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                        .attr("cy", d => d[2])
+                        .transition().duration(1000)
+                        .attr("r", (d,i) => sizeScale(d[1]))
+                        // .attr("fill", d => countryColorScale(d[0]))
+                        .attr("fill", d => `url(#${getId(d[0])})`)
+                        .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
+                        .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
+                    ,
+                    update => update
+                        .style("opacity", function (d) {
+                            if (d[3]) {
+                                return 1
+                            }
+                            return 0.1
+                        })
+                    ,
 
-        //draw circles
-        var node = svg_bubble.selectAll("circle.country")
-            .data(countries_sorted)
-            .join(
-                enter => enter.append("circle")
-                    .attr("class", "country")
-                    .attr("country", d => d[0])
-                    .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
-                    .attr("cy", d => d[2])
-                    .transition().duration(1000)
-                    .attr("r", d => sizeScale(d[1]))
-                    // .attr("fill", d => countryColorScale(d[0]))
-                    .attr("fill", d => `url(#${getId(d[0])})`)
-                    .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
-                    .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
-                ,
-                update => update
-                    .style("opacity", function (d) {
-                        if (d[3]) {
-                            return 1
-                        }
-                        return 0.1
-                    })
-                ,
+                    exit => exit.remove()
+                )
+        } else {
+            //draw circles
+            var node = svg_bubble.selectAll("circle.country")
+                .data(countries_sorted)
+                .join(
+                    enter => enter.append("circle")
+                        .attr("class", "country")
+                        .attr("country", d => d[0])
+                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                        .attr("cy", d => d[2])
+                        .attr("r", d => sizeScale(d[1]))
+                        // .attr("fill", d => countryColorScale(d[0]))
+                        .attr("fill", d => `url(#${getId(d[0])})`)
+                        .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
+                        .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
+                    ,
+                    update => update
+                        .style("opacity", function (d) {
+                            if (d[3]) {
+                                return 1
+                            }
+                            return 0.1
+                        })
+                    ,
 
-                exit => exit.remove()
-            )
-            .on("mouseover", (event, d) => {
-                if (d[3]) {
+                    exit => exit.remove()
+                )
+                .on("mouseover", (event, d) => {
+                    if (d[3]) {
+                        tooltip
+                            .style("opacity", 1)
+                            .style("display","block")
+                    }
+                })
+                .on("mousemove", (event, d) => {
+                    let html_content = `<u>${d[0]}</u>   <img src="${get_country_flag_small_icon_url(d[0])}"
+                            class="tool-tip-flag-icon"/>
+                            <br>Removal Requests: ${d[1]}<br>%Removed: ${Math.round(percents_removed_percent.get(d[0]) * 10000) / 100}`
+
                     tooltip
-                        .style("opacity", 1)
-                        .style("display","block")
-                }
-            })
-            .on("mousemove", (event, d) => {
-                let html_content = `<u>${d[0]}</u>   <img src="${get_country_flag_small_icon_url(d[0])}"
-                        class="tool-tip-flag-icon"/>
-                        <br>Removal Requests: ${d[1]}<br>%Removed: ${Math.round(percents_removed_percent.get(d[0]) * 10000) / 100}`
+                        .html(html_content)
+                        .style("left", (event.pageX + 20) + "px")
+                        .style("top", (event.pageY - 30) + "px")
+                        .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
+                })
 
-                tooltip
-                    .html(html_content)
-                    .style("left", (event.pageX + 20) + "px")
-                    .style("top", (event.pageY - 30) + "px")
-                    .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
-            })
+                .on("mouseleave", (event, d) => {
+                    tooltip
+                        .style("opacity", 0)
+                })
+                .call(d3.drag() // call specific function when circle is dragged
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+            
 
-            .on("mouseleave", (event, d) => {
-                tooltip
-                    .style("opacity", 0)
-            })
-            .call(d3.drag() // call specific function when circle is dragged
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended))
+            function fixPosition(d) {
+                d.fx = d3.randomUniform(-1000, 1000)()
+                d.fy = d3.randomUniform(-2000, -1000)()
+            }
+            function movePosition(d){
+                simulation.alphaTarget(0.03).restart()
+                d.fx = null
+                d.fy = null
+            }
 
-        var simulation = d3.forceSimulation()
-            .force("y", d3.forceY().strength(1).y(function (d) {
-                return d[2]
-            }))
-            .force("x", d3.forceX().strength(1).x(function (d) {
-                return xScale(percents_removed_percent.get(d[0]))
-            }))
-            //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-            //.force("charge", d3.forceManyBody().strength(-1))
-            .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
-                if (d[3]) {
-                    return sizeScale(d[1])
-                } else {
-                    return -1
-                    console.log(d)
-                }
-            }).iterations(1))
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(.03).restart()
+                d.fx = d.x
+                d.fy = d.y
+            }
 
+            function dragged(event, d) {
+                d.fx = event.x
+                d.fy = event.y
+            }
 
-        function dragstarted(event, d) {
-            if (!event.active) simulation.alphaTarget(.03).restart()
-            d.fx = d.x
-            d.fy = d.y
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(.03)
+                d.fx = null
+                d.fy = null
+            }
+
+            if(!simulationCreated) {
+                simulation = d3.forceSimulation()
+                .force("y", d3.forceY().strength(.5).y(function (d) {return d[2]}))
+                .force("x", d3.forceX().strength(.5).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
+                //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                //.force("charge", d3.forceManyBody().strength(-1))
+                .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                    if (d[3]) {
+                        return sizeScale(d[1])
+                    } else {
+                        return -1
+                        console.log(d)
+                    }
+                }).iterations(1))
+
+                simulation
+                .nodes(countries_sorted)
+                .on("tick", function () {
+                    if(tutorialCtr == tutorialSteps){
+                        svg_bubble.selectAll("circle.country").each(function (d,i) {
+                            if(i != 0)
+                                fixPosition(d)
+                        })
+                    } else if(tutorialCtr == tutorialSteps+1) {
+                        node
+                        .attr("cx", function (d) {
+                            return d.x
+                        })
+                        .attr("cy", function (d) {
+                            return d.y
+                        })
+                        svg_bubble.selectAll("circle.country").each(function (d) {
+                            movePosition(d)
+                        })
+                        simulation.alpha(0.05);
+                    } else {
+                        node
+                        .attr("cx", function (d) {
+                            return d.x
+                        })
+                        .attr("cy", function (d) {
+                            return d.y
+                        })
+                    }
+                    simulation.restart()
+                })
+                simulationCreated = true;
+            }
+            simulation.restart()
+            
         }
-
-        function dragged(event, d) {
-            d.fx = event.x
-            d.fy = event.y
-        }
-
-        function dragended(event, d) {
-            if (!event.active) simulation.alphaTarget(.03)
-            d.fx = null
-            d.fy = null
-        }
-
-        simulation
-            .nodes(countries_sorted)
-            .on("tick", function (d) {
-                node
-                    .attr("cx", function (d) {
-                        return d.x
-                    })
-                    .attr("cy", function (d) {
-                        return d.y
-                    })
-            })
-
-
     }
 
 
@@ -649,7 +822,7 @@
             svg_bubble.selectAll(".mydots")
                 .transition()
                 .ease(d3.easeLinear)
-                .duration(750)
+                .duration(1250)
                 .attr("cx", width - margin.right - 150)
                 .attr("cy", function (d, i) {
                     return 100 + i * 25
@@ -733,7 +906,7 @@
                     .attr("class", "mydots")
                     .attr("cx", placement(i) - dropdown_bounds.left)
                     .attr("cy", function () {
-                        return (window.innerHeight / 2) - dropdown_bounds.bottom
+                        return (window.innerHeight * 2 / 3) - dropdown_bounds.bottom
                     })
                     .attr("r", radius)
                     .style("fill", circles_colors(i))
@@ -774,6 +947,54 @@
             })
     }
 
+    const startTutorial = async () => {
+        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([8, 12,16])
+
+        var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of our key features"],
+                          ["Here is a country (Russia).", " It's size represents how many removal requsts they've submitted.", "The larger the more requests!"],
+                          ["The further to the right the country is,", "the more frequently their requests have been accepted by Google"],
+                          ["Oh yeah, the y-axis doesn't mean anything.", "That means there can be multiple countries that share the same acceptance rate!"],
+                          ["You can filter by continent up here!"],
+                          ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
+        
+        var placements = [[bubble_width / 3, (bubble_height/4), bubble_height/6, bubble_width/2]]
+        
+        var currentBlurb = textBlurbs[tutorialCtr]
+        svg_bubble.selectAll("g.textbox").remove()
+        var block = svg_bubble.append("g")
+            .attr("class", "textbox")
+
+        var translateTextBoxX = placements[tutorialCtr][0]
+        var translateTextBoxY = placements[tutorialCtr][1]
+        var textBoxHeight = placements[tutorialCtr][2]
+        var textBoxWidth = placements[tutorialCtr][3]
+
+        block.append("rect") //textbox
+            .attr("transform", "translate(" + translateTextBoxX + " ," + translateTextBoxY + ")")
+            .attr("height",textBoxHeight)
+            .attr("width", textBoxWidth)
+            .style("fill", "grey")
+            .attr("stroke", "black")
+            .attr("stroke-width", 5)
+            .style("opacity", 0.2)
+            
+        block.append("rect")
+            .attr("class", "loading-square-thingy")
+            .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," + (translateTextBoxY+textBoxHeight-40) + ")rotate(45)")
+            .attr("height", 20)
+            .attr("width", 20)
+            .style("fill", "black")
+            .attr("stroke", "black")
+
+        console.log(scaleText(bubble_width))
+        for(i = 0; i < currentBlurb.length; i++) {
+            block.append("text")
+                .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," +(translateTextBoxY+(textBoxHeight*(i+1))/(currentBlurb.length+1)) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", function(d) {console.log(scaleText(bubble_width)); return scaleText(bubble_width)})
+                .text(currentBlurb[i])
+        }        
+    }
 
     const ready = async () => {
         products_data = await d3.csv("removal-requests-products.csv")
@@ -790,7 +1011,10 @@
         set_up_axis_and_labels()
         await preprocess_countries()
         await createIcons()
+        
         drawBubble()
+        startTutorial()
+        
     }
 
 
