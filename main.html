@@ -8,6 +8,10 @@
         font-family: 'Poppins', sans-serif;
     }
 
+    div {
+        visibility: hidden;
+    }
+
     div.tooltip {
         position: absolute;
         text-align: center;
@@ -18,6 +22,7 @@
         background: lightsteelblue;
         border-radius: 8px;
         pointer-events: none;
+        display: none;
     }
 
     div.loading {
@@ -126,12 +131,11 @@
 
     const make_loading_screen = (elapsed) => {
         var loading_background = d3.select(".loading")
-
         var numcircles = 6
         var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
         var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, window.innerWidth * 3 / 4.0])
-        var radius = 50
-        var timeinterval = 12000
+        var radius = 10
+        var timeinterval = 5000
 
         if (timer_ctr == 0) { //prior to loading, set up the loading dots
             console.log(elapsed)
@@ -141,15 +145,9 @@
             let body = document.getElementsByTagName("body")[0]
             body.style.cssText = "margin: 0; height: 100%; overflow: hidden"
 
-            //hide all other divs except for the loading screen
-            for (let i = 0; i < divs.length; i++) {
-                //do something to each div like
-                divs[i].style = 'visibility : hidden'
-            }
             loading_background
                 .style("background-color", "white")
                 .style("visibility", "visible")
-
 
             let loading = loading_background.append("svg")
                 .attr("class", "loading_svg")
@@ -163,22 +161,22 @@
                 .style("text-anchor", "middle")
                 .style("font-size", 24)
                 .attr("dy", "20")
-                .text("Loading...")
+                .text("You wanna see some cool stuff? (replace with first paragraph of intro)")
 
             //set up loading dots (empty initially)
-            for (i = 0; i < numcircles; i++) {
+            for (let i = 0; i < numcircles; i++) {
                 loading.append("circle")
                     .attr("cx", placement(i))
-                    .attr("cy", window.innerHeight / 2)
+                    .attr("cy", window.innerHeight * 3 / 4)
                     .attr("r", radius)
                     .style("fill", "white")
                     .attr("stroke", "black")
             }
-            //document.getElementsByTagName("body")[0].style = 'margin: 0; height: 100%; overflow: hidden';
+
         } else if (elapsed > timeinterval) { //finished loading
             console.log("Timer stopped")
             document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
-            let divs = document.getElementsByTagName("div")
+            let divs = document.getElementsByTagName("div") //rerender all elements
             for (let i = 0; i < divs.length; i++) {
                 divs[i].style = 'visibility : visible'
             }
@@ -190,7 +188,17 @@
         } else { //during loading
 
             var loading = loading_background.select("svg")
-
+            if (elapsed >= timeinterval / 2) { //display second paragraph
+                loading.selectAll("text").remove()
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 24)
+                    .attr("dy", "20")
+                    .text("Now what")
+            }
             loading.selectAll("circle")
                 .transition()
                 .ease(d3.easeLinear)
@@ -244,35 +252,46 @@
     }
 
     //Get all possible y-values of the circle to be placed
+    // const get_possible = (c1, r1, c2, r2) => {
+    //     let min = margin.top, max = bubble_height, step = 0.1, diff = 0.01
+    //     let works = []
+    //     let current = min
+    //     do {
+    //         if (!check_intersection([c1[0], current], r1, c2, r2)) {
+    //             works.push(current)
+    //         }
+    //         current += step
+    //     } while (current <= max)
+    //
+    //     //Only need the point closest to the axis
+    //     //Find the largest y-value thats above the center that's valid
+    //     let left = works.filter(d => d < c2[1])
+    //     if (left.length == 0) {
+    //         left = 0
+    //     } else {
+    //         left = d3.max(left)
+    //     }
+    //
+    //     //Find the smallest y-value below the center that's valid
+    //     let right = works.filter(d => d > c2[1])
+    //     if (right.length == 0) {
+    //         left = height
+    //     } else {
+    //         right = d3.min(right)
+    //     }
+    //
+    //     return [left, right]
+    // }
+
     const get_possible = (c1, r1, c2, r2) => {
-        let min = margin.top, max = bubble_height, step = 0.1, diff = 0.01
-        let works = []
-        let current = min
-        do {
-            if (!check_intersection([c1[0], current], r1, c2, r2)) {
-                works.push(current)
-            }
-            current += step
-        } while (current <= max)
-
-        //Only need the point closest to the axis
-        //Find the largest y-value thats above the center that's valid
-        let left = works.filter(d => d < c2[1])
-        if (left.length == 0) {
-            left = 0
-        } else {
-            left = d3.max(left)
+        var xlen = Math.abs(c1[0]-c2[0])
+        var hypot = Math.abs(r1+r2)
+        if(xlen == 0)
+        {
+            return [c2[1]-r2-r1, c2[1]+r2+r1]
         }
-
-        //Find the smallest y-value below the center that's valid
-        let right = works.filter(d => d > c2[1])
-        if (right.length == 0) {
-            left = height
-        } else {
-            right = d3.min(right)
-        }
-
-        return [left, right]
+        var delta = Math.sqrt(Math.pow(hypot,2)-Math.pow(xlen, 2))
+        return [c2[1]-delta, c2[1]+delta]
     }
 
     //Let code merge ranges (because the ends are the "best" placements for the circles)
@@ -505,6 +524,7 @@
                 if (d[3]) {
                     tooltip
                         .style("opacity", 1)
+                        .style("display","block")
                 }
             })
             .on("mousemove", (event, d) => {
