@@ -1390,7 +1390,7 @@
 
         var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 12, 16])
 
-        var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of our key features"],
+        var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of its key features"],
             ["Here is the United States.", " It's size is proportional to # of removal requsts they've submitted.", "The larger the circle, the more requests!"],
             ["The further to the right the country is, the more", "frequently their requests have been accepted by Google"],
             ["A country's placement on y-axis doesn't mean anything.", "Multiple countries can share the same acceptance rate!"],
@@ -1402,11 +1402,11 @@
             tutorial_finished=true
             return
         }
-        var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3],
-            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.75],
+        var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 2.8],
+            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
             [bubble_width / 1.45, bubble_height / 2.5, bubble_height / 9, bubble_width / 3],
-            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.75],
-            [bubble_width / 100, bubble_height / 25, bubble_height / 9, bubble_width / 3.5],
+            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
+            [bubble_width / 100, bubble_height / 10, bubble_height / 9, bubble_width / 3.5],
             [bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3]]
 
         var currentBlurb = textBlurbs[tutorialCtr]
