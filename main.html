@@ -725,6 +725,192 @@
 
         })
 
+        function draw_bar_chart(d, split_text) {
+            tooltip
+                .style("display", "block")
+                .style("opacity", 1)
+
+                .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
+
+            tooltip.select("u").html(d[0])
+            tooltip.select("img").attr("src", get_country_flag_small_icon_url(d[0]))
+            tooltip.select("#removal-request-num").html(d[1])
+            tooltip.select("#percent-removed").html(Math.round(percents_removed_percent.get(d[0]) * 10000) / 100)
+
+
+            //display bar chart (only showing top 5)
+            let barChartWidth = (document.documentElement.clientWidth * 0.3 - 120)
+            let barchartHeight = 200
+            let innerMapPlatforms = Array.from(country_platforms.get(d[0]))
+            let innerMapReasons = Array.from(country_reasons.get(d[0]))
+
+            //calculate percentage for both maps
+            let platformsTotal = innerMapPlatforms.reduce((a, b) => a + b[1], 0)
+            let reasonsTotal = innerMapReasons.reduce((a, b) => a + b[1], 0)
+
+            innerMapPlatforms = innerMapPlatforms.map(d => [d[0], d[1] / platformsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapPlatforms.length, 5)).reverse()
+            innerMapReasons = innerMapReasons.map(d => [d[0], d[1] / reasonsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapReasons.length, 5)).reverse()
+
+            let xScaleBarChart = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, barChartWidth - 5])
+
+            let yScaleBarChartPlatforms = d3.scaleBand()
+                .domain(innerMapPlatforms.map(d => d[0]))
+                .range([barchartHeight, 0]).paddingInner(0.1)
+
+
+            let yScaleBarChartReasons = d3.scaleBand()
+                .domain(innerMapReasons.map(d => d[0]))
+                .range([barchartHeight, 0]).paddingInner(0.1)
+
+            let barChartColorScalePlatforms = d3.scaleOrdinal().domain(innerMapPlatforms.map(d => d[0])).range(d3.schemeTableau10)
+            let barChartColorScaleReasons = d3.scaleOrdinal().domain(innerMapReasons.map(d => d[0])).range(d3.schemeTableau10)
+
+            let barChartXAxis = d3.axisBottom(xScaleBarChart)
+            let firstBarChartYAxis = d3.axisLeft(yScaleBarChartPlatforms)
+            let secondBarChartYAxis = d3.axisLeft(yScaleBarChartReasons)
+
+            //clear previous charts
+            tooltip.selectAll(".bar-chart-container svg").remove()
+
+            //first bar chart
+            let firstBarChart = tooltip.select("#first-bar-chart-container").append("svg")
+                .style("width", "100%")
+                .style("height", "100%")
+                .attr("class", "bar-chart")
+                .attr("id", "first-bar-chart")
+
+
+            firstBarChart.append("g")
+                .attr("class", "first-bar-chart-x-axis")
+                .attr("transform", "translate(110," + barchartHeight + ")")
+                .call(barChartXAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .style("font-size", "13")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)")
+
+            firstBarChart.append("g")
+                .attr("class", "first-bar-chart-y-axis")
+                .attr("transform", "translate(110,0)")
+                .call(firstBarChartYAxis)
+                .selectAll("text")
+                .style("font-size", "13")
+                .call(split_text())
+            // .attr("transform","rotate(-15)")
+
+            firstBarChart.append("text")
+                .text("Percentage(of all platforms)")
+                .style("font-size", "15px")
+                .style("text-anchor", "right")
+                .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
+            firstBarChart.selectAll("rect.bar")
+                .data(innerMapPlatforms)
+                .join(
+                    enter => enter
+                        .append("rect")
+                        .attr("class", "bar")
+                        .attr("x", d => xScaleBarChart(0) + 110)
+                        .attr("height", yScaleBarChartPlatforms.bandwidth())
+                        .attr("y", d => yScaleBarChartPlatforms(d[0]))
+                        .attr("fill", continentColorScale(country_to_continent.get(d[0])))
+                        .attr("width", 0)
+                        .transition().duration(500)
+                        .attr("width", d => xScaleBarChart(d[1]))
+                )
+
+            firstBarChart.selectAll("text.bar")
+                .data(innerMapPlatforms)
+                .enter()
+                .append("text")
+                .attr("class", "bar")
+                .attr("text-anchor", "start")
+                .attr("x", d => {
+                    let temp = xScaleBarChart(d[1])
+                    if (temp >= xScaleBarChart.range()[1] - 30) { //if the text is too close to the end of the bar, display inside the bar
+                        return temp + 70
+                    } else {
+                        return temp + 115
+                    }
+
+                })
+                .attr("y", d => yScaleBarChartPlatforms(d[0]) + yScaleBarChartPlatforms.bandwidth() / 2 + 5)
+                .style("font-size", "13px")
+                .text(d => Math.round(d[1] * 100) / 100)
+
+            //second bar chart
+            let secondBarChart = tooltip.select("#second-bar-chart-container").append("svg")
+                .style("width", "100%")
+                .style("height", "100%")
+                .attr("class", "bar-chart")
+                .attr("id", "second-bar-chart")
+
+
+            secondBarChart.append("g")
+                .attr("class", "second-bar-chart-x-axis")
+                .attr("transform", "translate(110," + barchartHeight + ")")
+                .call(barChartXAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .style("font-size", "13")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)")
+
+            secondBarChart.append("g")
+                .attr("class", "second-bar-chart-y-axis")
+                .attr("transform", "translate(110,0)")
+                .call(secondBarChartYAxis)
+                .selectAll("text")
+                .style("font-size", "13")
+                .call(split_text())
+            // .attr("transform","rotate(-15)")
+
+            secondBarChart.append("text")
+                .text("Percentage(of all products)")
+                .style("font-size", "15px")
+                .style("text-anchor", "right")
+                .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
+
+
+            secondBarChart.selectAll("rect.bar")
+                .data(innerMapReasons)
+                .join(
+                    enter => enter
+                        .append("rect")
+                        .attr("class", "bar")
+                        .attr("x", d => xScaleBarChart(0) + 110)
+                        .attr("height", yScaleBarChartReasons.bandwidth())
+                        .attr("y", d => yScaleBarChartReasons(d[0]))
+                        .attr("fill", continentColorScale(country_to_continent.get(d[0])))
+                        .attr("width", 0)
+                        .transition().duration(500)
+                        .attr("width", d => xScaleBarChart(d[1]))
+                )
+
+            secondBarChart.selectAll("text.bar")
+                .data(innerMapReasons)
+                .enter()
+                .append("text")
+                .attr("class", "bar")
+                .attr("text-anchor", "start")
+                .attr("x", d => {
+                    let temp = xScaleBarChart(d[1])
+                    if (temp >= xScaleBarChart.range()[1] - 15) { //if the text is too close to the end of the bar, display inside the bar
+                        return temp + 70
+                    } else {
+                        return temp + 115
+                    }
+
+                })
+                .attr("y", d => yScaleBarChartReasons(d[0]) + yScaleBarChartReasons.bandwidth() / 2 + 5)
+                .style("font-size", "13px")
+                .text(d => Math.round(d[1] * 100) / 100)
+        }
+
         if (tutorialCtr < tutorialSteps) {
             var node = svg_bubble.selectAll("circle.country")
                 .data(countries_pre_tutorial)
@@ -790,189 +976,7 @@
                 .on("mouseover", (event, d) => {
 
                     if (d[3]) { //only if node is active
-                        tooltip
-                            .style("display", "block")
-                            .style("opacity", 1)
-
-                            .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
-
-                        tooltip.select("u").html(d[0])
-                        tooltip.select("img").attr("src", get_country_flag_small_icon_url(d[0]))
-                        tooltip.select("#removal-request-num").html(d[1])
-                        tooltip.select("#percent-removed").html(Math.round(percents_removed_percent.get(d[0]) * 10000) / 100)
-
-
-                        //display bar chart (only showing top 5)
-                        let barChartWidth = (document.documentElement.clientWidth * 0.3 - 120)
-                        let barchartHeight = 200
-                        let innerMapPlatforms = Array.from(country_platforms.get(d[0]))
-                        let innerMapReasons = Array.from(country_reasons.get(d[0]))
-
-                        //calculate percentage for both maps
-                        let platformsTotal = innerMapPlatforms.reduce((a, b) => a + b[1], 0)
-                        let reasonsTotal = innerMapReasons.reduce((a, b) => a + b[1], 0)
-
-                        innerMapPlatforms = innerMapPlatforms.map(d => [d[0], d[1] / platformsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapPlatforms.length, 5)).reverse()
-                        innerMapReasons = innerMapReasons.map(d => [d[0], d[1] / reasonsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapReasons.length, 5)).reverse()
-
-                        let xScaleBarChart = d3.scaleLinear()
-                            .domain([0, 100])
-                            .range([0, barChartWidth - 5])
-
-                        let yScaleBarChartPlatforms = d3.scaleBand()
-                            .domain(innerMapPlatforms.map(d => d[0]))
-                            .range([barchartHeight, 0]).paddingInner(0.1)
-
-
-                        let yScaleBarChartReasons = d3.scaleBand()
-                            .domain(innerMapReasons.map(d => d[0]))
-                            .range([barchartHeight, 0]).paddingInner(0.1)
-
-                        let barChartColorScalePlatforms = d3.scaleOrdinal().domain(innerMapPlatforms.map(d => d[0])).range(d3.schemeTableau10)
-                        let barChartColorScaleReasons = d3.scaleOrdinal().domain(innerMapReasons.map(d => d[0])).range(d3.schemeTableau10)
-
-                        let barChartXAxis = d3.axisBottom(xScaleBarChart)
-                        let firstBarChartYAxis = d3.axisLeft(yScaleBarChartPlatforms)
-                        let secondBarChartYAxis = d3.axisLeft(yScaleBarChartReasons)
-
-                        //clear previous charts
-                        tooltip.selectAll(".bar-chart-container svg").remove()
-
-                        //first bar chart
-                        let firstBarChart = tooltip.select("#first-bar-chart-container").append("svg")
-                            .style("width", "100%")
-                            .style("height", "100%")
-                            .attr("class", "bar-chart")
-                            .attr("id", "first-bar-chart")
-
-
-                        firstBarChart.append("g")
-                            .attr("class", "first-bar-chart-x-axis")
-                            .attr("transform", "translate(110," + barchartHeight + ")")
-                            .call(barChartXAxis)
-                            .selectAll("text")
-                            .style("text-anchor", "end")
-                            .style("font-size", "13")
-                            .attr("dx", "-.8em")
-                            .attr("dy", ".15em")
-                            .attr("transform", "rotate(-65)")
-
-                        firstBarChart.append("g")
-                            .attr("class", "first-bar-chart-y-axis")
-                            .attr("transform", "translate(110,0)")
-                            .call(firstBarChartYAxis)
-                            .selectAll("text")
-                            .style("font-size", "13")
-                            .call(split_text())
-                        // .attr("transform","rotate(-15)")
-
-                        firstBarChart.append("text")
-                            .text("Percentage(of all platforms)")
-                            .style("font-size", "15px")
-                            .style("text-anchor", "right")
-                            .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
-                        firstBarChart.selectAll("rect.bar")
-                            .data(innerMapPlatforms)
-                            .join(
-                                enter => enter
-                                    .append("rect")
-                                    .attr("class", "bar")
-                                    .attr("x", d => xScaleBarChart(0) + 110)
-                                    .attr("height", yScaleBarChartPlatforms.bandwidth())
-                                    .attr("y", d => yScaleBarChartPlatforms(d[0]))
-                                    .attr("fill", continentColorScale(country_to_continent.get(d[0])))
-                                    .attr("width", 0)
-                                    .transition().duration(500)
-                                    .attr("width", d => xScaleBarChart(d[1]))
-                            )
-
-                        firstBarChart.selectAll("text.bar")
-                            .data(innerMapPlatforms)
-                            .enter()
-                            .append("text")
-                            .attr("class", "bar")
-                            .attr("text-anchor", "start")
-                            .attr("x", d => {
-                                let temp = xScaleBarChart(d[1])
-                                if (temp >= xScaleBarChart.range()[1] - 30) { //if the text is too close to the end of the bar, display inside the bar
-                                    return temp + 70
-                                } else {
-                                    return temp + 115
-                                }
-
-                            })
-                            .attr("y", d => yScaleBarChartPlatforms(d[0]) + yScaleBarChartPlatforms.bandwidth() / 2 + 5)
-                            .style("font-size", "13px")
-                            .text(d => Math.round(d[1] * 100) / 100)
-
-                        //second bar chart
-                        let secondBarChart = tooltip.select("#second-bar-chart-container").append("svg")
-                            .style("width", "100%")
-                            .style("height", "100%")
-                            .attr("class", "bar-chart")
-                            .attr("id", "second-bar-chart")
-
-
-                        secondBarChart.append("g")
-                            .attr("class", "second-bar-chart-x-axis")
-                            .attr("transform", "translate(110," + barchartHeight + ")")
-                            .call(barChartXAxis)
-                            .selectAll("text")
-                            .style("text-anchor", "end")
-                            .style("font-size", "13")
-                            .attr("dx", "-.8em")
-                            .attr("dy", ".15em")
-                            .attr("transform", "rotate(-65)")
-
-                        secondBarChart.append("g")
-                            .attr("class", "second-bar-chart-y-axis")
-                            .attr("transform", "translate(110,0)")
-                            .call(secondBarChartYAxis)
-                            .selectAll("text")
-                            .style("font-size", "13")
-                            .call(split_text())
-                        // .attr("transform","rotate(-15)")
-
-                        secondBarChart.append("text")
-                            .text("Percentage(of all products)")
-                            .style("font-size", "15px")
-                            .style("text-anchor", "right")
-                            .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
-
-
-                        secondBarChart.selectAll("rect.bar")
-                            .data(innerMapReasons)
-                            .join(
-                                enter => enter
-                                    .append("rect")
-                                    .attr("class", "bar")
-                                    .attr("x", d => xScaleBarChart(0) + 110)
-                                    .attr("height", yScaleBarChartReasons.bandwidth())
-                                    .attr("y", d => yScaleBarChartReasons(d[0]))
-                                    .attr("fill", continentColorScale(country_to_continent.get(d[0])))
-                                    .attr("width", 0)
-                                    .transition().duration(500)
-                                    .attr("width", d => xScaleBarChart(d[1]))
-                            )
-
-                        secondBarChart.selectAll("text.bar")
-                            .data(innerMapReasons)
-                            .enter()
-                            .append("text")
-                            .attr("class", "bar")
-                            .attr("text-anchor", "start")
-                            .attr("x", d => {
-                                let temp = xScaleBarChart(d[1])
-                                if (temp >= xScaleBarChart.range()[1] - 15) { //if the text is too close to the end of the bar, display inside the bar
-                                    return temp + 70
-                                } else {
-                                    return temp + 115
-                                }
-
-                            })
-                            .attr("y", d => yScaleBarChartReasons(d[0]) + yScaleBarChartReasons.bandwidth() / 2 + 5)
-                            .style("font-size", "13px")
-                            .text(d => Math.round(d[1] * 100) / 100)
+                        draw_bar_chart(d, split_text)
 
                     }
 
