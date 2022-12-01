@@ -70,8 +70,8 @@
     .text-container p {
         margin: 0;
         font-size: 15px;
-        letter-spacing: 1px;
-        padding: 20px;
+        /*letter-spacing: 1px;*/
+        /*padding: 20px;*/
     }
 
     .bar-chart-title {
@@ -89,7 +89,7 @@
 
     #detailed-info {
         text-align: center;
-        height: 75%;
+        height: 70%;
         padding: 2px;
         background: lightsteelblue;
         border-radius: 8px;
@@ -1017,6 +1017,7 @@
                 .join(
                     enter => enter.append("circle")
                         .attr("class", "country")
+                        .attr("id", d => d[0].replace(/\s+/g, '-').toLowerCase())
                         .attr("country", d => d[0])
                         .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
                         .attr("cy", d => d[2])
@@ -1047,6 +1048,7 @@
                 .join(
                     enter => enter.append("circle")
                         .attr("class", "country")
+                        .attr("id", d => d[0].replace(/\s+/g, '-').toLowerCase())
                         .attr("country", d => d[0])
                         .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
                         .attr("cy", d => d[2])
@@ -1397,7 +1399,7 @@
                 .attr("x1", d => xScale(d))
                 .attr("y1", margin.top + 20)
                 .attr("x2", d => xScale(d))
-                .attr("y2", height - 100)
+                .attr("y2", height - 150)
                 .attr("stroke", "#f8e1ed")
                 .attr("stroke-width", 5)
 
@@ -1498,6 +1500,10 @@
         if (tutorialCtr > textBlurbs.length - 1) {
             svg_bubble.selectAll("g.textbox").remove()
             tutorial_finished=true
+
+            //reset opacity
+            svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 1)
+
             return
         }
         var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 2.8],
@@ -1506,6 +1512,19 @@
             [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
             [bubble_width / 100, bubble_height / 10, bubble_height / 9, bubble_width / 3.5],
             [bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3]]
+
+        let highlights = ["", ["#united-states"], ["#united-states", ".x-axis", ".quadrant-line", ".quadrant-line-label"],
+            ["#united-states", ".quadrant-line", ".quadrant-line-label", ".x-axis", "#brazil"],
+            ["#united-states", "#brazil", ".quadrant-line",".quadrant-line-label", ".dropdown-wrapper", ".button"],
+            ["#united-states", "#brazil", ".quadrant-line",".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"]]
+
+
+        //hide non-highlighted elements
+        var currentBlurb = textBlurbs[tutorialCtr]
+        d3.select(".dropdown-wrapper").style("opacity", 0.5)
+        d3.select(".button").style("opacity", 0.5)
+        svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 0.3)
+
 
         var currentBlurb = textBlurbs[tutorialCtr]
         if (!tutorialCreatedStep) {
@@ -1554,6 +1573,12 @@
                         return "white"
                     return "black"
                 })
+        }
+
+        //show highlighted elements
+        let highlighted = highlights[tutorialCtr]
+        for (let i = 0; i < highlighted.length; i++) {
+            d3.selectAll(highlighted[i]).style("opacity", 1)
         }
 
 
