@@ -1,0 +1,635 @@
+{
+    "name": "World",
+    "children": [
+        {
+            "name": "AF",
+            "children": [
+                {
+                    "name": "Algeria",
+                    "value": 107,
+                    "percentage": 88.8411214953271
+                },
+                {
+                    "name": "Egypt",
+                    "value": 20,
+                    "percentage": 45.150000000000006
+                },
+                {
+                    "name": "Ethiopia",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Kenya",
+                    "value": 115,
+                    "percentage": 22.669565217391305
+                },
+                {
+                    "name": "Libya",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Malawi",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Mauritius",
+                    "value": 7,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Morocco",
+                    "value": 7,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Nigeria",
+                    "value": 102,
+                    "percentage": 23.52941176470588
+                },
+                {
+                    "name": "R\u00e9union",
+                    "value": 6,
+                    "percentage": 33.33333333333333
+                },
+                {
+                    "name": "Senegal",
+                    "value": 76,
+                    "percentage": 94.73684210526315
+                },
+                {
+                    "name": "Somalia",
+                    "value": 5,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "South Africa",
+                    "value": 19,
+                    "percentage": 15.789473684210526
+                },
+                {
+                    "name": "Tunisia",
+                    "value": 7,
+                    "percentage": 71.42857142857143
+                }
+            ]
+        },
+        {
+            "name": "AS",
+            "children": [
+                {
+                    "name": "Afghanistan",
+                    "value": 1,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Azerbaijan",
+                    "value": 69,
+                    "percentage": 28.985507246376812
+                },
+                {
+                    "name": "Bahrain",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Bangladesh",
+                    "value": 2407,
+                    "percentage": 19.729954299958454
+                },
+                {
+                    "name": "Bhutan",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Cambodia",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "China",
+                    "value": 4897,
+                    "percentage": 0.3638962630181744
+                },
+                {
+                    "name": "Cyprus",
+                    "value": 7,
+                    "percentage": 28.57142857142857
+                },
+                {
+                    "name": "Hong Kong",
+                    "value": 295,
+                    "percentage": 23.31236784695419
+                },
+                {
+                    "name": "India",
+                    "value": 40783,
+                    "percentage": 39.84834579870708
+                },
+                {
+                    "name": "Indonesia",
+                    "value": 275492,
+                    "percentage": 14.420575730783192
+                },
+                {
+                    "name": "Iraq",
+                    "value": 30,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Israel",
+                    "value": 2990,
+                    "percentage": 52.25672911772783
+                },
+                {
+                    "name": "Japan",
+                    "value": 2658,
+                    "percentage": 52.15980796725271
+                },
+                {
+                    "name": "Jordan",
+                    "value": 63,
+                    "percentage": 4.7458714125380785
+                },
+                {
+                    "name": "Kazakhstan",
+                    "value": 106310,
+                    "percentage": 2.50675261487206
+                },
+                {
+                    "name": "Kuwait",
+                    "value": 68,
+                    "percentage": 29.397204426324986
+                },
+                {
+                    "name": "Lebanon",
+                    "value": 51,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Macao",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Malaysia",
+                    "value": 314,
+                    "percentage": 69.31642495459737
+                },
+                {
+                    "name": "Maldives",
+                    "value": 4,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Nepal",
+                    "value": 83,
+                    "percentage": 16.903137301681973
+                },
+                {
+                    "name": "Oman",
+                    "value": 1,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Pakistan",
+                    "value": 35893,
+                    "percentage": 69.77614421827899
+                },
+                {
+                    "name": "Philippines",
+                    "value": 267,
+                    "percentage": 37.64949753402306
+                },
+                {
+                    "name": "Qatar",
+                    "value": 6,
+                    "percentage": 33.33333333333333
+                },
+                {
+                    "name": "Saudi Arabia",
+                    "value": 100,
+                    "percentage": 64.900099009901
+                },
+                {
+                    "name": "Singapore",
+                    "value": 113,
+                    "percentage": 44.20380268115308
+                },
+                {
+                    "name": "South Korea",
+                    "value": 152142,
+                    "percentage": 67.66165941829819
+                },
+                {
+                    "name": "Sri Lanka",
+                    "value": 300,
+                    "percentage": 7.926363636363637
+                },
+                {
+                    "name": "Taiwan",
+                    "value": 281,
+                    "percentage": 11.85317642084493
+                },
+                {
+                    "name": "Thailand",
+                    "value": 8847,
+                    "percentage": 80.90650143345972
+                },
+                {
+                    "name": "Turkey",
+                    "value": 22448,
+                    "percentage": 34.23624441471232
+                },
+                {
+                    "name": "Turkmenistan",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "United Arab Emirates",
+                    "value": 81,
+                    "percentage": 20.962962962962965
+                },
+                {
+                    "name": "Uzbekistan",
+                    "value": 3,
+                    "percentage": 33.33333333333333
+                },
+                {
+                    "name": "Vietnam",
+                    "value": 40405,
+                    "percentage": 83.2934236945536
+                }
+            ]
+        },
+        {
+            "name": "EU",
+            "children": [
+                {
+                    "name": "Albania",
+                    "value": 164,
+                    "percentage": 89.64024390243902
+                },
+                {
+                    "name": "Austria",
+                    "value": 575,
+                    "percentage": 68.54144927536233
+                },
+                {
+                    "name": "Belarus",
+                    "value": 50,
+                    "percentage": 12.01939393939394
+                },
+                {
+                    "name": "Belgium",
+                    "value": 960,
+                    "percentage": 16.494987623762377
+                },
+                {
+                    "name": "Bosnia & Herzegovina",
+                    "value": 22,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Bulgaria",
+                    "value": 12,
+                    "percentage": 33.33333333333333
+                },
+                {
+                    "name": "Croatia",
+                    "value": 113,
+                    "percentage": 70.13265574345044
+                },
+                {
+                    "name": "Czechia",
+                    "value": 63,
+                    "percentage": 71.50793650793649
+                },
+                {
+                    "name": "Denmark",
+                    "value": 305,
+                    "percentage": 51.39602583209141
+                },
+                {
+                    "name": "Estonia",
+                    "value": 1382,
+                    "percentage": 2.4240231548480464
+                },
+                {
+                    "name": "Europol",
+                    "value": 30,
+                    "percentage": 96.8
+                },
+                {
+                    "name": "Finland",
+                    "value": 329,
+                    "percentage": 27.8419452887538
+                },
+                {
+                    "name": "France",
+                    "value": 14708,
+                    "percentage": 52.20169574123058
+                },
+                {
+                    "name": "Germany",
+                    "value": 7116,
+                    "percentage": 66.7974763658623
+                },
+                {
+                    "name": "Gibraltar",
+                    "value": 1,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Greece",
+                    "value": 510,
+                    "percentage": 51.83513880799845
+                },
+                {
+                    "name": "Hungary",
+                    "value": 161,
+                    "percentage": 66.41614906832298
+                },
+                {
+                    "name": "Iceland",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Ireland",
+                    "value": 969,
+                    "percentage": 87.92671816201228
+                },
+                {
+                    "name": "Isle of Man",
+                    "value": 158,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Italy",
+                    "value": 5807,
+                    "percentage": 72.86314985898453
+                },
+                {
+                    "name": "Latvia",
+                    "value": 15,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Lithuania",
+                    "value": 62,
+                    "percentage": 77.53209837112745
+                },
+                {
+                    "name": "Luxembourg",
+                    "value": 36,
+                    "percentage": 72.1391694725028
+                },
+                {
+                    "name": "Malta",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Moldova",
+                    "value": 25,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Monaco",
+                    "value": 3,
+                    "percentage": 66.66666666666666
+                },
+                {
+                    "name": "Netherlands",
+                    "value": 849,
+                    "percentage": 59.08310100739166
+                },
+                {
+                    "name": "North Macedonia",
+                    "value": 1,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Norway",
+                    "value": 332,
+                    "percentage": 42.945783132530124
+                },
+                {
+                    "name": "Poland",
+                    "value": 735,
+                    "percentage": 41.06651848858355
+                },
+                {
+                    "name": "Portugal",
+                    "value": 464,
+                    "percentage": 81.56681034482759
+                },
+                {
+                    "name": "Romania",
+                    "value": 352,
+                    "percentage": 31.26076386047696
+                },
+                {
+                    "name": "Russia",
+                    "value": 1021158,
+                    "percentage": 74.4011264020293
+                },
+                {
+                    "name": "San Marino",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Serbia",
+                    "value": 18,
+                    "percentage": 5.555555555555555
+                },
+                {
+                    "name": "Slovakia",
+                    "value": 4,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Slovenia",
+                    "value": 5,
+                    "percentage": 20.0
+                },
+                {
+                    "name": "Spain",
+                    "value": 154976,
+                    "percentage": 93.88511372366331
+                },
+                {
+                    "name": "Sweden",
+                    "value": 36,
+                    "percentage": 55.44554455445545
+                },
+                {
+                    "name": "Switzerland",
+                    "value": 797,
+                    "percentage": 46.08039875505743
+                },
+                {
+                    "name": "Ukraine",
+                    "value": 1857,
+                    "percentage": 22.906321811502636
+                },
+                {
+                    "name": "United Kingdom",
+                    "value": 3945,
+                    "percentage": 70.9061489836451
+                }
+            ]
+        },
+        {
+            "name": "NA",
+            "children": [
+                {
+                    "name": "Canada",
+                    "value": 2582,
+                    "percentage": 80.93130969359751
+                },
+                {
+                    "name": "Costa Rica",
+                    "value": 24,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Cura\u00e7ao",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Dominican Republic",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "El Salvador",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Guadeloupe",
+                    "value": 777,
+                    "percentage": 76.22388725359022
+                },
+                {
+                    "name": "Jamaica",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Mexico",
+                    "value": 267,
+                    "percentage": 11.602996254681647
+                },
+                {
+                    "name": "Nicaragua",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Puerto Rico",
+                    "value": 2,
+                    "percentage": 50.0
+                },
+                {
+                    "name": "St. Vincent & Grenadines",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Trinidad & Tobago",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "United States",
+                    "value": 134483,
+                    "percentage": 60.78377567457986
+                }
+            ]
+        },
+        {
+            "name": "OC",
+            "children": [
+                {
+                    "name": "Australia",
+                    "value": 7356,
+                    "percentage": 59.524547846301765
+                },
+                {
+                    "name": "New Zealand",
+                    "value": 346,
+                    "percentage": 52.38510845304184
+                },
+                {
+                    "name": "Papua New Guinea",
+                    "value": 1,
+                    "percentage": 100.0
+                },
+                {
+                    "name": "Vanuatu",
+                    "value": 1,
+                    "percentage": 0.0
+                }
+            ]
+        },
+        {
+            "name": "SA",
+            "children": [
+                {
+                    "name": "Argentina",
+                    "value": 5873,
+                    "percentage": 66.83948275638053
+                },
+                {
+                    "name": "Bolivia",
+                    "value": 2,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Brazil",
+                    "value": 24108,
+                    "percentage": 60.104798010423046
+                },
+                {
+                    "name": "Chile",
+                    "value": 46,
+                    "percentage": 15.217391304347828
+                },
+                {
+                    "name": "Colombia",
+                    "value": 144,
+                    "percentage": 30.444581958195815
+                },
+                {
+                    "name": "Ecuador",
+                    "value": 102,
+                    "percentage": 7.0588235294117645
+                },
+                {
+                    "name": "Peru",
+                    "value": 238,
+                    "percentage": 1.680672268907563
+                },
+                {
+                    "name": "Uruguay",
+                    "value": 1,
+                    "percentage": 0.0
+                },
+                {
+                    "name": "Venezuela",
+                    "value": 39,
+                    "percentage": 0.0
+                }
+            ]
+        }
+    ]
+}
