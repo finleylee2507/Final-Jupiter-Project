@@ -101,6 +101,7 @@
     }
 
 
+
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -1520,7 +1521,7 @@
 
     const tutorial = async (elapsed) => {
 
-        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 12, 16])
+        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 9, 16])
 
         var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of its key features"],
             ["Here is the United States.", " It's size is proportional to # of removal requsts they've submitted.", "The larger the circle, the more requests!"],
@@ -1553,12 +1554,10 @@
 
 
         //hide non-highlighted elements
-        if (tutorialCtr == 1) {
-            var currentBlurb = textBlurbs[tutorialCtr]
-            d3.select(".dropdown-wrapper").style("opacity", 0.3)
-            d3.select(".button").style("opacity", 0.3)
-            svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 0.3)
-        }
+        var currentBlurb = textBlurbs[tutorialCtr]
+        d3.select(".dropdown-wrapper").style("opacity", 0.5)
+        d3.select(".button").style("opacity", 0.5)
+        svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 0.3)
 
 
         var currentBlurb = textBlurbs[tutorialCtr]
