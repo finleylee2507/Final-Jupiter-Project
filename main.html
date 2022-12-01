@@ -701,6 +701,19 @@
             return subset_countries
         }
 
+        //hide/show axis based on radio button value
+
+        if (visChanged) {
+            svg_bubble.selectAll(".x-axis").style("opacity", "0")
+            svg_bubble.selectAll(".x-axis-label").style("opacity", "0")
+            svg_bubble.selectAll(".quadrant-line").style("opacity", "0")
+            svg_bubble.selectAll(".quadrant-line-label").style("opacity", "0")
+        } else {
+            svg_bubble.selectAll(".x-axis").style("opacity", "1")
+            svg_bubble.selectAll(".x-axis-label").style("opacity", "1")
+            svg_bubble.selectAll(".quadrant-line").style("opacity", "1")
+            svg_bubble.selectAll(".quadrant-line-label").style("opacity", "1")
+        }
         //set active countries based on current select continent
         let country_selection = subset_countries()
         countries_sorted.forEach(function (d, i) {
