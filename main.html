@@ -171,7 +171,6 @@
             tutorialCreatedStep = false
             if (tutorialCtr == 3) {
                 countries_pre_tutorial[9][2] = countries_sorted[9][2]
-                console.log("pre-tutorials", countries_pre_tutorial)
                 drawBubble()
             }
             if (tutorialCtr >= tutorialSteps && !completed) {
@@ -225,18 +224,21 @@
     }
 
     let countries_sorted
+    let countries_sorted_location
+    let countries_sorted_acceptance
     let countries_pre_tutorial
 
     //Variable that controls the dropdown
     let current_continent = "All"
     let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
-    var visChanged = true;
+    var visChanged = false;
+    var visPhysicsDealt = true;
     
     d3.select(".button").on("change", function () {
         visChanged = !visChanged;
-        console.log(visChanged)
-        //simulationCreated = false
+        simulationCreated = false
         drawBubble()
+        //simulation.restart()
     } )
 
     //
@@ -254,7 +256,6 @@
                 return sizeScale(d[1])
             } else {
                 return -1
-                console.log(d)
             }
         }).iterations(1))
 
@@ -283,7 +284,6 @@
         var timeinterval = 8000
 
         if (timer_ctr == 0) { //prior to loading, set up the loading dots
-            console.log(elapsed)
             let divs = document.getElementsByTagName("div")
 
 
@@ -406,7 +406,6 @@
                 }
                 if (!tutorial_finished) {
                     tutorial(elapsed)
-                    console.log("lets see: ",tutorial_finished)
                 } else {
                     console.log("Timer stopped")
                     timer.stop()
@@ -593,8 +592,12 @@
         const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
             (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
             d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
+        var latScale = d3.scaleLinear().domain([90, -60]).range([0, bubble_height])
+        var longScale = d3.scaleLinear().domain([-140, 180]).range([0, bubble_width])
+        
         var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
         countries_pre_tutorial = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
+        countries_sorted_location = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
 
         //append initial y-value and opacity is full
         countries_preprocessed.forEach((d, i) => {
@@ -604,6 +607,8 @@
             var random = d3.randomUniform(-100000, -1000)()
             if (i != 4)
                 countries_pre_tutorial[i][2] = random//random location off the screen
+            countries_sorted_location[i][1] = longScale(country_location.get(country_code_mapping[d[0]])[0])
+            countries_sorted_location[i][2] = latScale(country_location.get(country_code_mapping[d[0]])[1])
         })
         for (let i in countries_preprocessed) {
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
@@ -612,6 +617,7 @@
         countries_pre_tutorial[4][2] = countries_preprocessed[4][2]
 
         countries_sorted = countries_preprocessed
+        countries_sorted_acceptance = countries_preprocessed
         console.log("finished processing")
     }
 
@@ -758,7 +764,7 @@
                             }
                             return 0.1
                         })
-                        .transition().ease(d3.easeLinear).duration(1000)
+                        .transition().ease(d3.easeLinear).duration(10000)
                         .attr("fill", function (d){
                             if(visChanged)
                                 return fillScale(percents_removed_percent.get(d[0]))
@@ -795,7 +801,6 @@
 
                         innerMapPlatforms = innerMapPlatforms.map(d => [d[0], d[1] / platformsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapPlatforms.length, 5)).reverse()
                         innerMapReasons = innerMapReasons.map(d => [d[0], d[1] / reasonsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapReasons.length, 5)).reverse()
-                        console.log(innerMapPlatforms)
 
                         let xScaleBarChart = d3.scaleLinear()
                             .domain([0, 100])
@@ -853,7 +858,6 @@
                             .style("font-size", "15px")
                             .style("text-anchor", "right")
                             .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
-                        console.log(innerMapPlatforms)
                         firstBarChart.selectAll("rect.bar")
                             .data(innerMapPlatforms)
                             .join(
@@ -963,9 +967,7 @@
                         return function (t) {
                             t.each(function (d) {
                                 let self = d3.select(this)
-                                console.log(self.text(), self.text().length)
                                 let s = self.text().split('/').join(' ').split(' ')
-                                console.log(s)
                                 if (s.length == 2 && self.text().length > 15) {
                                     self.text(null)
                                     self.append("tspan")
@@ -1075,6 +1077,7 @@
                 d.fy = null
             }
 
+
             if (!simulationCreated) {
                 simulation = d3.forceSimulation()
                     .force("y", d3.forceY().strength(.5).y(function (d) {
@@ -1095,7 +1098,8 @@
                             console.log(d)
                         }
                     }).iterations(1))
-
+                
+                
                 simulation
                     .nodes(countries_sorted)
                     .on("tick", function () {
@@ -1116,6 +1120,7 @@
                                 movePosition(d)
                             })
                             simulation.alpha(0.05)
+                            tutorialCtr += 1
                         } else {
                             node
                                 .attr("cx", function (d) {
@@ -1195,8 +1200,6 @@
                     found = true
                 }
             })
-            if(!found)
-                console.log(g.country)
         })
         // console.log(continent_to_country)
 
