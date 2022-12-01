@@ -6,28 +6,30 @@
 
     body {
         font-family: 'Poppins', sans-serif;
-        ba
+        overflow-x: hidden;
+        box-sizing: border-box;
+        min-width: 100%;
+        margin: 0;
+
     }
 
     div {
         visibility: hidden;
     }
 
-    div.tooltip {
-        position: absolute;
-        text-align: center;
-        width: 200px;
-        height: 50px;
-        padding: 2px;
-        font-size: 12px;
-        background: lightsteelblue;
-        border-radius: 8px;
-        pointer-events: none;
-        display: none;
+    .dropdown-wrapper {
+        margin-left: 30px;
     }
+
+    .plot-section {
+        width: 70%;
+        border: 1px solid purple;
+    }
+
 
     div.loading {
         position: absolute;
+        /*takes up the entire screen*/
         width: 100%;
         height: 100%;
         z-index: 1000;
@@ -44,6 +46,55 @@
         top: 2px;
     }
 
+    .text-container {
+        /*border: 1px solid black;*/
+        min-width: 30%;
+        left: 70%;
+        position: absolute;
+        margin: 0;
+        top: 70px;
+        padding: 0;
+        height: 100%;
+
+    }
+
+    .text-container div {
+        /*height: 100%;*/
+        display: block;
+    }
+
+
+    .text-container p {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 20px;
+    }
+
+    .bar-chart-title {
+        font-weight: 500;
+        display: block;
+        margin-top: 10px;
+    }
+
+    .bar-chart-container {
+        border: 1px solid red;
+        height: 16rem;
+
+
+    }
+
+    #detailed-info {
+        text-align: center;
+        height: 75%;
+        padding: 2px;
+        background: lightsteelblue;
+        border-radius: 8px;
+        pointer-events: none;
+        display: none;
+
+    }
+
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -53,54 +104,88 @@
       rel="stylesheet">
 
 <body>
-<div class="loading"></div>
 <div><h1>Country vs Removal Requests</h1></div>
-<div class="dropdown-wrapper">
-    Continent Displayed: <select class="dropdown" id="continent-selection"></select>
+<div class="plot-section">
+    <div class="loading">
+        <div class="scroll-down-indicator"></div>
+    </div>
+
+    <div class="dropdown-wrapper">
+        Continent Displayed: <select class="dropdown" id="continent-selection"></select>
+    </div>
 </div>
+
+
+<div class="text-container">
+    <!--    text on first plot-->
+    <p>The plot on the left displays the countries and their respective number of requests alongside the percentages
+        of their requests that were actually accepted by Google.
+    </p>
+
+    <div id="detailed-info">
+        <!--where the tooltip goes-->
+
+        <u> </u> <img src="" class="tool-tip-flag-icon"/>
+        <br>Removal Requests: <span id="removal-request-num"></span>
+        <br>%Removed: <span id="percent-removed"></span> <br>
+
+        <span class="bar-chart-title">
+          Top platforms for removal:
+        </span>
+
+        <div id="first-bar-chart-container" class="bar-chart-container"></div>
+
+        <span class="bar-chart-title">
+          Top reasons for removal:
+       </span>
+        <div id="second-bar-chart-container" class="bar-chart-container"></div>
+    </div>
+
+
+</div>
+
 <script>
 
     // Line Bubble Plot
 
     //Plot vars
-    let width = document.documentElement.clientWidth, height = 950
-    let margin = {top: 50, right: 500, bottom: 50, left: 100}
+    let width = document.documentElement.clientWidth * 0.7, height = 950
+    let margin = {top: 50, right: 50, bottom: 50, left: 30}
     let quadrants = [0.25, 0.50, 0.75]
+    let completed = false
 
-    let svg_bubble = d3.select("body").append("svg")
+    let svg_bubble = d3.select(".plot-section").append("svg")
         .attr("class", "svg_bubble")
         .attr("width", width)
         .attr("height", height)
-        .on("click", function(){tutorialCtr += 1;
-            console.log(tutorialCtr);
-            tutorialCreatedStep = false;
-            if(tutorialCtr == 3) {
+        .on("click", () => {
+            tutorialCtr += 1
+            console.log(tutorialCtr)
+            tutorialCreatedStep = false
+            if (tutorialCtr == 3) {
                 countries_pre_tutorial[9][2] = countries_sorted[9][2]
-                console.log(countries_pre_tutorial)
-                drawBubble()
-            } 
-            if(tutorialCtr >= tutorialSteps) {
+                console.log("pre-tutorials", countries_pre_tutorial)
                 drawBubble()
             }
-                })
+            if (tutorialCtr >= tutorialSteps && !completed) {
+                drawBubble()
+                completed = true
+            }
+        })
 
     let defs = svg_bubble.append("defs")
 
-    let tooltip = d3.select("body")
-        .append("div")
+    let tooltip = d3.select("#detailed-info")
         .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px")
+
     let bubble_width = width - margin.left - margin.right
     let bubble_height = height - margin.top - margin.bottom
 
     //Variables using the products data
     let products_data
     let country_counts
+    let country_reasons
+    let country_platforms
 
     //mapping from country name to country code supported by the api
     let country_code_mapping
@@ -135,28 +220,32 @@
     //Variable that controls the dropdown
     let current_continent = "All"
     let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
-    
+
     //
     let simulation = d3.forceSimulation()
-                .force("y", d3.forceY().strength(2).y(function (d) {return d[2]}))
-                .force("x", d3.forceX().strength(2).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
-                //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                //.force("charge", d3.forceManyBody().strength(-1))
-                .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
-                    if (d[3]) {
-                        return sizeScale(d[1])
-                    } else {
-                        return -1
-                        console.log(d)
-                    }
-                }).iterations(1))
+        .force("y", d3.forceY().strength(2).y(function (d) {
+            return d[2]
+        }))
+        .force("x", d3.forceX().strength(2).x(function (d) {
+            return xScale(percents_removed_percent.get(d[0]))
+        }))
+        //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+        //.force("charge", d3.forceManyBody().strength(-1))
+        .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+            if (d[3]) {
+                return sizeScale(d[1])
+            } else {
+                return -1
+                console.log(d)
+            }
+        }).iterations(1))
 
     //tutorial
-    let tutorialSteps = 5;
+    let tutorialSteps = 5
     let tutorialCtr = 0
-    let tutorial_started = false;
-    let tutorial_finished = false;
-    let tutorialCreatedStep = false;
+    let tutorial_started = false
+    let tutorial_finished = false
+    let tutorialCreatedStep = false
 
     //Misc Variables
     let country_to_continent = new Map()
@@ -178,6 +267,7 @@
         if (timer_ctr == 0) { //prior to loading, set up the loading dots
             console.log(elapsed)
             let divs = document.getElementsByTagName("div")
+
 
             //disable scrolling
             let body = document.getElementsByTagName("body")[0]
@@ -209,12 +299,12 @@
                 .style("font-size", 12)
                 .attr("dy", "20")
                 .text("Made by Judy Ahn, Olivia Escousse, Finley Li, Noah Shen, Ploen Voraprukpisut")
-            
+
 
             loading.append("text")
                 .attr("class", "loading-words")
                 .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                    (window.innerHeight*2/3 - 100) + ")")
+                    (window.innerHeight * 2 / 3 - 100) + ")")
                 .style("text-anchor", "middle")
                 .style("font-size", 16)
                 .attr("dy", "20")
@@ -232,9 +322,11 @@
 
         } else if (elapsed > timeinterval) { //finished loading
             var loading = loading_background.select("svg")
-                    .on("click", function() {removeLoading = true})
-            if(!removeLoadingCreated) {
-                                loading.selectAll("text").remove()
+                .on("click", function () {
+                    removeLoading = true
+                })
+            if (!removeLoadingCreated) {
+                loading.selectAll("text").remove()
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -243,22 +335,23 @@
                     .style("font-size", 36)
                     .attr("dy", "20")
                     .text("Now what")
-                
+
                 loading.append("text")
                     .attr("class", "loading-words")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight*2/3 - 100) + ")")
+                        (window.innerHeight * 2 / 3 - 100) + ")")
                     .style("text-anchor", "middle")
                     .style("font-size", 24)
                     .attr("dy", "20")
                     .text("Click to continue...")
+                    .attr("cursor", "pointer")
                     .attr("stroke", "black")
 
                 loading.selectAll("g").remove()
                 var block = loading.append("g")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight*2/3 - 50) + ")")
-                
+                        (window.innerHeight * 2 / 3 - 50) + ")")
+
                 block.append("rect")
                     .attr("transform", "rotate(45)")
                     .attr("height", 20)
@@ -266,24 +359,22 @@
                     .style("fill", "black")
                     .attr("stroke", "black")
 
-                removeLoadingCreated = true;
+                removeLoadingCreated = true
             } else {
                 loading.selectAll("rect")
                     .transition()
                     .ease(d3.easeLinear)
-                    .style("fill", function(d) {
+                    .style("fill", function (d) {
                         //console.log(elapsed);
-                        if(elapsed%2000 > 1000)
-                            return "white";
+                        if (elapsed % 2000 > 1000)
+                            return "white"
                         return "black"
                     })
             }
-            
 
-            
-            if(removeLoading)
-            {
-                //document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
+
+            if (removeLoading) { //hide loading screen
+                // document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
                 let divs = document.getElementsByTagName("div") //rerender all elements
                 for (let i = 0; i < divs.length; i++) {
                     divs[i].style = 'visibility : visible'
@@ -291,18 +382,19 @@
                 loading_background  //hide loading screen
                     .style("visibility", "hidden")
                 finishedLoading = true
-                if(!tutorial_started){
+                if (!tutorial_started) {
                     set_up_axis_and_labels()
-                    tutorial_started = true;
+                    tutorial_started = true
                 }
-                if(!tutorial_finished) {
-                    var tutorial_finished = tutorial(elapsed)
-                }else {
+                if (!tutorial_finished) {
+                    tutorial(elapsed)
+                    console.log("lets see: ",tutorial_finished)
+                } else {
                     console.log("Timer stopped")
                     timer.stop()
-                }  
-                
-            }            
+                }
+
+            }
         } else { //during loading
 
             var loading = loading_background.select("svg")
@@ -316,11 +408,11 @@
                     .style("font-size", 36)
                     .attr("dy", "20")
                     .text("Now what")
-                
+
                 loading.append("text")
                     .attr("class", "loading-words")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight*2/3 - 100) + ")")
+                        (window.innerHeight * 2 / 3 - 100) + ")")
                     .style("text-anchor", "middle")
                     .style("font-size", 16)
                     .attr("dy", "20")
@@ -378,47 +470,14 @@
         return false
     }
 
-    //Get all possible y-values of the circle to be placed
-    // const get_possible = (c1, r1, c2, r2) => {
-    //     let min = margin.top, max = bubble_height, step = 0.1, diff = 0.01
-    //     let works = []
-    //     let current = min
-    //     do {
-    //         if (!check_intersection([c1[0], current], r1, c2, r2)) {
-    //             works.push(current)
-    //         }
-    //         current += step
-    //     } while (current <= max)
-    //
-    //     //Only need the point closest to the axis
-    //     //Find the largest y-value thats above the center that's valid
-    //     let left = works.filter(d => d < c2[1])
-    //     if (left.length == 0) {
-    //         left = 0
-    //     } else {
-    //         left = d3.max(left)
-    //     }
-    //
-    //     //Find the smallest y-value below the center that's valid
-    //     let right = works.filter(d => d > c2[1])
-    //     if (right.length == 0) {
-    //         left = height
-    //     } else {
-    //         right = d3.min(right)
-    //     }
-    //
-    //     return [left, right]
-    // }
-
     const get_possible = (c1, r1, c2, r2) => {
-        var xlen = Math.abs(c1[0]-c2[0])
-        var hypot = Math.abs(r1+r2)
-        if(xlen == 0)
-        {
-            return [c2[1]-r2-r1, c2[1]+r2+r1]
+        var xlen = Math.abs(c1[0] - c2[0])
+        var hypot = Math.abs(r1 + r2)
+        if (xlen == 0) {
+            return [c2[1] - r2 - r1, c2[1] + r2 + r1]
         }
-        var delta = Math.sqrt(Math.pow(hypot,2)-Math.pow(xlen, 2))
-        return [c2[1]-delta, c2[1]+delta]
+        var delta = Math.sqrt(Math.pow(hypot, 2) - Math.pow(xlen, 2))
+        return [c2[1] - delta, c2[1] + delta]
     }
 
     //Let code merge ranges (because the ends are the "best" placements for the circles)
@@ -516,7 +575,7 @@
         const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
             (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
             d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
-        var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500});
+        var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
         countries_pre_tutorial = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
 
         //append initial y-value and opacity is full
@@ -525,8 +584,8 @@
             countries_preprocessed[i] = countries_preprocessed[i].concat(true)
             countries_pre_tutorial[i] = [...countries_preprocessed[i]]
             var random = d3.randomUniform(-100000, -1000)()
-            if(i != 4)
-                countries_pre_tutorial[i][2] = random//random
+            if (i != 4)
+                countries_pre_tutorial[i][2] = random//random location off the screen
         })
         for (let i in countries_preprocessed) {
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
@@ -541,7 +600,6 @@
     const createIcons = async () => {
 
         const getId = d => d.toLowerCase().replace(/ /g, "-")
-
 
         //create country flags
         //console.log(countries_sorted)
@@ -615,6 +673,7 @@
             return subset_countries
         }
 
+        //set active countries based on current select continent
         let country_selection = subset_countries()
         countries_sorted.forEach(function (d, i) {
             if (country_selection.includes(d)) {
@@ -625,7 +684,7 @@
 
         })
 
-        if(tutorialCtr < tutorialSteps){
+        if (tutorialCtr < tutorialSteps) {
             var node = svg_bubble.selectAll("circle.country")
                 .data(countries_pre_tutorial)
                 .join(
@@ -635,8 +694,7 @@
                         .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
                         .attr("cy", d => d[2])
                         .transition().duration(1000)
-                        .attr("r", (d,i) => sizeScale(d[1]))
-                        // .attr("fill", d => countryColorScale(d[0]))
+                        .attr("r", (d, i) => sizeScale(d[1]))
                         .attr("fill", d => `url(#${getId(d[0])})`)
                         .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
                         .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
@@ -649,8 +707,7 @@
                             return 0.1
                         })
                         .transition().ease(d3.easeExpOut).duration(1000)
-                            .attr("cy", d => d[2])
-                        
+                        .attr("cy", d => d[2])
                     ,
 
                     exit => exit.remove()
@@ -684,22 +741,272 @@
                     exit => exit.remove()
                 )
                 .on("mouseover", (event, d) => {
-                    if (d[3]) {
-                        tooltip
-                            .style("opacity", 1)
-                            .style("display","block")
-                    }
-                })
-                .on("mousemove", (event, d) => {
-                    let html_content = `<u>${d[0]}</u>   <img src="${get_country_flag_small_icon_url(d[0])}"
-                            class="tool-tip-flag-icon"/>
-                            <br>Removal Requests: ${d[1]}<br>%Removed: ${Math.round(percents_removed_percent.get(d[0]) * 10000) / 100}`
 
-                    tooltip
-                        .html(html_content)
-                        .style("left", (event.pageX + 20) + "px")
-                        .style("top", (event.pageY - 30) + "px")
-                        .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
+                    if (d[3]) { //only if node is active
+                        tooltip
+                            .style("display", "block")
+                            .style("opacity", 1)
+
+                            .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
+
+                        tooltip.select("u").html(d[0])
+                        tooltip.select("img").attr("src", get_country_flag_small_icon_url(d[0]))
+                        tooltip.select("#removal-request-num").html(d[1])
+                        tooltip.select("#percent-removed").html(Math.round(percents_removed_percent.get(d[0]) * 10000) / 100)
+
+
+                        //display bar chart (only showing top 5)
+                        let barChartWidth = (document.documentElement.clientWidth * 0.3 - 120)
+                        let barchartHeight = 200
+                        let innerMapPlatforms = Array.from(country_platforms.get(d[0]))
+                        let innerMapReasons = Array.from(country_reasons.get(d[0]))
+
+                        //calculate percentage for both maps
+                        let platformsTotal = innerMapPlatforms.reduce((a, b) => a + b[1], 0)
+                        let reasonsTotal = innerMapReasons.reduce((a, b) => a + b[1], 0)
+
+                        innerMapPlatforms = innerMapPlatforms.map(d => [d[0], d[1] / platformsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapPlatforms.length, 5)).reverse()
+                        innerMapReasons = innerMapReasons.map(d => [d[0], d[1] / reasonsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapReasons.length, 5)).reverse()
+                        console.log(innerMapPlatforms)
+
+                        let xScaleBarChart = d3.scaleLinear()
+                            .domain([0, 100])
+                            .range([0, barChartWidth - 5])
+
+                        let yScaleBarChartPlatforms = d3.scaleBand()
+                            .domain(innerMapPlatforms.map(d => d[0]))
+                            .range([barchartHeight, 0]).paddingInner(0.1)
+
+
+                        let yScaleBarChartReasons = d3.scaleBand()
+                            .domain(innerMapReasons.map(d => d[0]))
+                            .range([barchartHeight, 0]).paddingInner(0.1)
+
+                        let barChartColorScalePlatforms = d3.scaleOrdinal().domain(innerMapPlatforms.map(d => d[0])).range(d3.schemeTableau10)
+                        let barChartColorScaleReasons = d3.scaleOrdinal().domain(innerMapReasons.map(d => d[0])).range(d3.schemeTableau10)
+
+                        let barChartXAxis = d3.axisBottom(xScaleBarChart)
+                        let firstBarChartYAxis = d3.axisLeft(yScaleBarChartPlatforms)
+                        let secondBarChartYAxis = d3.axisLeft(yScaleBarChartReasons)
+
+                        //clear previous charts
+                        tooltip.selectAll(".bar-chart-container svg").remove()
+
+                        //first bar chart
+                        let firstBarChart = tooltip.select("#first-bar-chart-container").append("svg")
+                            .style("width", "100%")
+                            .style("height", "100%")
+                            .attr("class", "bar-chart")
+                            .attr("id", "first-bar-chart")
+
+
+                        firstBarChart.append("g")
+                            .attr("class", "first-bar-chart-x-axis")
+                            .attr("transform", "translate(110," + barchartHeight + ")")
+                            .call(barChartXAxis)
+                            .selectAll("text")
+                            .style("text-anchor", "end")
+                            .style("font-size", "13")
+                            .attr("dx", "-.8em")
+                            .attr("dy", ".15em")
+                            .attr("transform", "rotate(-65)")
+
+                        firstBarChart.append("g")
+                            .attr("class", "first-bar-chart-y-axis")
+                            .attr("transform", "translate(110,0)")
+                            .call(firstBarChartYAxis)
+                            .selectAll("text")
+                            .style("font-size", "13")
+                            .call(split_text())
+                        // .attr("transform","rotate(-15)")
+
+                        firstBarChart.append("text")
+                            .text("Percentage(of all platforms)")
+                            .style("font-size", "15px")
+                            .style("text-anchor", "right")
+                            .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
+                        console.log(innerMapPlatforms)
+                        firstBarChart.selectAll("rect.bar")
+                            .data(innerMapPlatforms)
+                            .join(
+                                enter => enter
+                                    .append("rect")
+                                    .attr("class", "bar")
+                                    .attr("x", d => xScaleBarChart(0) + 110)
+                                    .attr("height", yScaleBarChartPlatforms.bandwidth())
+                                    .attr("y", d => yScaleBarChartPlatforms(d[0]))
+                                    .attr("fill", continentColorScale(country_to_continent.get(d[0])))
+                                    .attr("width", 0)
+                                    .transition().duration(500)
+                                    .attr("width", d => xScaleBarChart(d[1]))
+                            )
+
+                        firstBarChart.selectAll("text.bar")
+                            .data(innerMapPlatforms)
+                            .enter()
+                            .append("text")
+                            .attr("class", "bar")
+                            .attr("text-anchor", "start")
+                            .attr("x", d => {
+                                let temp = xScaleBarChart(d[1])
+                                if (temp >= xScaleBarChart.range()[1] - 30) { //if the text is too close to the end of the bar, display inside the bar
+                                    return temp + 70
+                                } else {
+                                    return temp + 115
+                                }
+
+                            })
+                            .attr("y", d => yScaleBarChartPlatforms(d[0]) + yScaleBarChartPlatforms.bandwidth() / 2 + 5)
+                            .style("font-size", "13px")
+                            .text(d => Math.round(d[1] * 100) / 100)
+
+                        //second bar chart
+                        let secondBarChart = tooltip.select("#second-bar-chart-container").append("svg")
+                            .style("width", "100%")
+                            .style("height", "100%")
+                            .attr("class", "bar-chart")
+                            .attr("id", "second-bar-chart")
+
+
+                        secondBarChart.append("g")
+                            .attr("class", "second-bar-chart-x-axis")
+                            .attr("transform", "translate(110," + barchartHeight + ")")
+                            .call(barChartXAxis)
+                            .selectAll("text")
+                            .style("text-anchor", "end")
+                            .style("font-size", "13")
+                            .attr("dx", "-.8em")
+                            .attr("dy", ".15em")
+                            .attr("transform", "rotate(-65)")
+
+                        secondBarChart.append("g")
+                            .attr("class", "second-bar-chart-y-axis")
+                            .attr("transform", "translate(110,0)")
+                            .call(secondBarChartYAxis)
+                            .selectAll("text")
+                            .style("font-size", "13")
+                            .call(split_text())
+                        // .attr("transform","rotate(-15)")
+
+                        secondBarChart.append("text")
+                            .text("Percentage(of all products)")
+                            .style("font-size", "15px")
+                            .style("text-anchor", "right")
+                            .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
+
+
+                        secondBarChart.selectAll("rect.bar")
+                            .data(innerMapReasons)
+                            .join(
+                                enter => enter
+                                    .append("rect")
+                                    .attr("class", "bar")
+                                    .attr("x", d => xScaleBarChart(0) + 110)
+                                    .attr("height", yScaleBarChartReasons.bandwidth())
+                                    .attr("y", d => yScaleBarChartReasons(d[0]))
+                                    .attr("fill", continentColorScale(country_to_continent.get(d[0])))
+                                    .attr("width", 0)
+                                    .transition().duration(500)
+                                    .attr("width", d => xScaleBarChart(d[1]))
+                            )
+
+                        secondBarChart.selectAll("text.bar")
+                            .data(innerMapReasons)
+                            .enter()
+                            .append("text")
+                            .attr("class", "bar")
+                            .attr("text-anchor", "start")
+                            .attr("x", d => {
+                                let temp = xScaleBarChart(d[1])
+                                if (temp >= xScaleBarChart.range()[1] - 15) { //if the text is too close to the end of the bar, display inside the bar
+                                    return temp + 70
+                                } else {
+                                    return temp + 115
+                                }
+
+                            })
+                            .attr("y", d => yScaleBarChartReasons(d[0]) + yScaleBarChartReasons.bandwidth() / 2 + 5)
+                            .style("font-size", "13px")
+                            .text(d => Math.round(d[1] * 100) / 100)
+
+                    }
+
+                    function split_text() { //split a long y axis label into multiple lines
+                        return function (t) {
+                            t.each(function (d) {
+                                let self = d3.select(this)
+                                console.log(self.text(), self.text().length)
+                                let s = self.text().split('/').join(' ').split(' ')
+                                console.log(s)
+                                if (s.length == 2 && self.text().length > 15) {
+                                    self.text(null)
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .text(s[0])
+
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 15)
+                                        .text(s[1])
+                                }
+                                if (s.length >= 5 && self.text().length > 30) {
+                                    //split into 3 lines
+                                    self.text(null)
+
+                                    //line 1
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .text(s[0] + " " + s[1])
+
+                                    //line 2
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 10)
+                                        .text(s[2] + " " + s[3])
+
+                                    //line 3
+                                    let temp = ""
+                                    for (let i = 4; i < s.length; i++) {
+                                        if (i != s.length - 1) {
+                                            temp += s[i] + " "
+                                        } else {
+                                            temp += s[i]
+                                        }
+
+                                    }
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 10)
+                                        .text(temp)
+
+
+                                } else if (s.length > 2) {
+                                    self.text(null)
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .text(s[0] + " " + s[1])
+
+                                    let temp = ""
+                                    for (let i = 2; i < s.length; i++) {
+                                        if (i != s.length - 1) {
+                                            temp += s[i] + " "
+                                        } else {
+                                            temp += s[i]
+                                        }
+
+                                    }
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 15)
+                                        .text(temp)
+
+                                } else {
+                                    return
+                                }
+
+                            })
+                        }
+                    }
                 })
 
                 .on("mouseleave", (event, d) => {
@@ -710,13 +1017,14 @@
                     .on("start", dragstarted)
                     .on("drag", dragged)
                     .on("end", dragended))
-            
+
 
             function fixPosition(d) {
                 d.fx = d3.randomUniform(-1000, 1000)()
                 d.fy = d3.randomUniform(-2000, -1000)()
             }
-            function movePosition(d){
+
+            function movePosition(d) {
                 simulation.alphaTarget(0.03).restart()
                 d.fx = null
                 d.fy = null
@@ -739,56 +1047,60 @@
                 d.fy = null
             }
 
-            if(!simulationCreated) {
+            if (!simulationCreated) {
                 simulation = d3.forceSimulation()
-                .force("y", d3.forceY().strength(.5).y(function (d) {return d[2]}))
-                .force("x", d3.forceX().strength(.5).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
-                //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                //.force("charge", d3.forceManyBody().strength(-1))
-                .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
-                    if (d[3]) {
-                        return sizeScale(d[1])
-                    } else {
-                        return -1
-                        console.log(d)
-                    }
-                }).iterations(1))
+                    .force("y", d3.forceY().strength(.5).y(function (d) {
+                        return d[2]
+                    }))
+                    .force("x", d3.forceX().strength(.5).x(function (d) {
+                        return xScale(percents_removed_percent.get(d[0]))
+                    }))
+                    //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                    //.force("charge", d3.forceManyBody().strength(-1))
+                    .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                        if (d[3]) {
+                            return sizeScale(d[1])
+                        } else {
+                            return -1
+                            console.log(d)
+                        }
+                    }).iterations(1))
 
                 simulation
-                .nodes(countries_sorted)
-                .on("tick", function () {
-                    if(tutorialCtr == tutorialSteps){
-                        svg_bubble.selectAll("circle.country").each(function (d,i) {
-                            if(i != 4 && i != 9)
-                                fixPosition(d)
-                        })
-                    } else if(tutorialCtr == tutorialSteps+1) {
-                        node
-                        .attr("cx", function (d) {
-                            return d.x
-                        })
-                        .attr("cy", function (d) {
-                            return d.y
-                        })
-                        svg_bubble.selectAll("circle.country").each(function (d) {
-                            movePosition(d)
-                        })
-                        simulation.alpha(0.05);
-                    } else {
-                        node
-                        .attr("cx", function (d) {
-                            return d.x
-                        })
-                        .attr("cy", function (d) {
-                            return d.y
-                        })
-                    }
-                    simulation.restart()
-                })
-                simulationCreated = true;
+                    .nodes(countries_sorted)
+                    .on("tick", function () {
+                        if (tutorialCtr == tutorialSteps) {
+                            svg_bubble.selectAll("circle.country").each(function (d, i) {
+                                if (i != 4 && i != 9)
+                                    fixPosition(d)
+                            })
+                        } else if (tutorialCtr == tutorialSteps + 1) {
+                            node
+                                .attr("cx", function (d) {
+                                    return d.x
+                                })
+                                .attr("cy", function (d) {
+                                    return d.y
+                                })
+                            svg_bubble.selectAll("circle.country").each(function (d) {
+                                movePosition(d)
+                            })
+                            simulation.alpha(0.05)
+                        } else {
+                            node
+                                .attr("cx", function (d) {
+                                    return d.x
+                                })
+                                .attr("cy", function (d) {
+                                    return d.y
+                                })
+                        }
+                        simulation.restart()
+                    })
+                simulationCreated = true
             }
             simulation.restart()
-            
+
         }
     }
 
@@ -797,6 +1109,8 @@
     const prep_data = () => {
 
         country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+        country_platforms = d3.rollup(products_data, v => d3.sum(v, d => d.total), d => d.country, d => d.product)
+        country_reasons = d3.rollup(products_data, v => d3.sum(v, d => d.total), d => d.country, d => d.reason)
 
         //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
         //can be changed
@@ -968,30 +1282,30 @@
     }
 
     const tutorial = async (elapsed) => {
-        
-        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 12,16])
+
+        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 12, 16])
 
         var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of our key features"],
-                          ["Here is the United States.", " It's size is proportional to # of removal requsts they've submitted.", "The larger the circle, the more requests!"],
-                          ["The further to the right the country is, the more", "frequently their requests have been accepted by Google"],
-                          ["A country's placement on y-axis doesn't mean anything.", "Multiple countries can share the same acceptance rate!"],
-                          ["You can filter by continent up here!"],
-                          ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
-        
-        if (tutorialCtr > textBlurbs.length-1)
-        {
+            ["Here is the United States.", " It's size is proportional to # of removal requsts they've submitted.", "The larger the circle, the more requests!"],
+            ["The further to the right the country is, the more", "frequently their requests have been accepted by Google"],
+            ["A country's placement on y-axis doesn't mean anything.", "Multiple countries can share the same acceptance rate!"],
+            ["You can filter by continent up here!"],
+            ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
+
+        if (tutorialCtr > textBlurbs.length - 1) {
             svg_bubble.selectAll("g.textbox").remove()
-            return true
+            tutorial_finished=true
+            return
         }
-        var placements = [[bubble_width / 2.695, bubble_height/4, bubble_height/9, bubble_width/3],
-                          [bubble_width / 2.2, bubble_height/3.5, bubble_height/9, bubble_width/2.75],
-                          [bubble_width / 1.45, bubble_height/2.5, bubble_height/9, bubble_width/3],
-                          [bubble_width / 2.2, bubble_height/3.5, bubble_height/9, bubble_width/2.75],
-                          [bubble_width / 100, bubble_height/100, bubble_height/9, bubble_width/5],
-                          [bubble_width / 2.695, bubble_height/4, bubble_height/9, bubble_width/3]]
-        
+        var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3],
+            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.75],
+            [bubble_width / 1.45, bubble_height / 2.5, bubble_height / 9, bubble_width / 3],
+            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.75],
+            [bubble_width / 100, bubble_height / 100, bubble_height / 9, bubble_width / 5],
+            [bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3]]
+
         var currentBlurb = textBlurbs[tutorialCtr]
-        if(!tutorialCreatedStep) {
+        if (!tutorialCreatedStep) {
             svg_bubble.selectAll("g.textbox").remove()
             var block = svg_bubble.append("g")
                 .attr("class", "textbox")
@@ -1003,41 +1317,43 @@
 
             block.append("rect") //textbox
                 .attr("transform", "translate(" + translateTextBoxX + " ," + translateTextBoxY + ")")
-                .attr("height",textBoxHeight)
+                .attr("height", textBoxHeight)
                 .attr("width", textBoxWidth)
                 .style("fill", "grey")
                 .attr("stroke", "black")
                 .attr("stroke-width", 5)
                 .style("opacity", 0.2)
-                
+
             block.append("rect")
                 .attr("class", "loading-square-thingy")
-                .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," + (translateTextBoxY+textBoxHeight-20) + ")rotate(45)")
+                .attr("transform", "translate(" + (translateTextBoxX + textBoxWidth / 2) + " ," + (translateTextBoxY + textBoxHeight - 20) + ")rotate(45)")
                 .attr("height", 10)
                 .attr("width", 10)
                 .style("fill", "black")
                 .attr("stroke", "black")
 
-            for(i = 0; i < currentBlurb.length; i++) {
+            for (i = 0; i < currentBlurb.length; i++) {
                 block.append("text")
-                    .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," +(translateTextBoxY+(textBoxHeight*(i+1))/(currentBlurb.length+1)) + ")")
+                    .attr("transform", "translate(" + (translateTextBoxX + textBoxWidth / 2) + " ," + (translateTextBoxY + (textBoxHeight * (i + 1)) / (currentBlurb.length + 1)) + ")")
                     .style("text-anchor", "middle")
-                    .style("font-size", function(d) {return scaleText(bubble_width)})
+                    .style("font-size", function (d) {
+                        return scaleText(bubble_width)
+                    })
                     .text(currentBlurb[i])
             }
-            tutorialCreatedStep = true;
+            tutorialCreatedStep = true
         } else {
             svg_bubble.selectAll("g.textbox").selectAll("rect.loading-square-thingy")
                 .transition()
-                        .ease(d3.easeLinear)
-                .style("fill", function(d) {
-                                if(elapsed%2000 > 1000)
-                                    return "white";
-                                return "black"
-                            })
+                .ease(d3.easeLinear)
+                .style("fill", function (d) {
+                    if (elapsed % 2000 > 1000)
+                        return "white"
+                    return "black"
+                })
         }
-        
-        return false
+
+
     }
 
     const ready = async () => {
@@ -1055,8 +1371,8 @@
         set_up_axis_and_labels()
         await preprocess_countries()
         await createIcons()
-        
-        drawBubble()        
+
+        drawBubble()
     }
 
 
