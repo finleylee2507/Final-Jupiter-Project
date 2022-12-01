@@ -177,6 +177,8 @@
                 drawBubble()
                 completed = true
                 document.getElementById("vis2").removeAttribute('disabled')
+                if(tutorialCtr == tutorialSteps + 1)
+                 simulation.stop()
             }
         })
 
@@ -238,7 +240,6 @@
         visChanged = !visChanged;
         simulationCreated = false
         drawBubble()
-        //simulation.restart()
     } )
 
     //
@@ -274,6 +275,7 @@
     var finishedLoading = false
     var removeLoadingCreated = false
     var simulationCreated = false
+    let simulationExtra = false
 
     const make_loading_screen = (elapsed) => {
         var loading_background = d3.select(".loading")
@@ -597,7 +599,6 @@
         
         var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
         countries_pre_tutorial = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
-        countries_sorted_location = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
 
         //append initial y-value and opacity is full
         countries_preprocessed.forEach((d, i) => {
@@ -607,8 +608,7 @@
             var random = d3.randomUniform(-100000, -1000)()
             if (i != 4)
                 countries_pre_tutorial[i][2] = random//random location off the screen
-            countries_sorted_location[i][1] = longScale(country_location.get(country_code_mapping[d[0]])[0])
-            countries_sorted_location[i][2] = latScale(country_location.get(country_code_mapping[d[0]])[1])
+
         })
         for (let i in countries_preprocessed) {
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
@@ -617,7 +617,6 @@
         countries_pre_tutorial[4][2] = countries_preprocessed[4][2]
 
         countries_sorted = countries_preprocessed
-        countries_sorted_acceptance = countries_preprocessed
         console.log("finished processing")
     }
 
@@ -934,7 +933,7 @@
                             return 0.1
                         })
                         .transition().ease(d3.easeExpOut).duration(1000)
-                        .attr("cy", d => d[2])
+                            .attr("cy", d => d[2])
                     ,
 
                     exit => exit.remove()
@@ -1096,15 +1095,40 @@
 
 
             if (!simulationCreated) {
-                simulation = d3.forceSimulation()
-                    .force("y", d3.forceY().strength(.5).y(function (d) {
-                    if(visChanged) 
-                        return latScale(country_location.get(country_code_mapping[d[0]])[1])
-                    return d[2]}))
-                    .force("x", d3.forceX().strength(.5).x(function (d) {
-                    if(visChanged) 
-                        return longScale(country_location.get(country_code_mapping[d[0]])[0]) 
-                    return xScale(percents_removed_percent.get(d[0]))}))
+                console.log(visChanged)
+                if(simulationExtra) {
+                    console.log("in extra")
+                    if(visChanged) {
+                        simulation.force("y", d3.forceY().strength(.5).y(function (d) {return latScale(country_location.get(country_code_mapping[d[0]])[1])}))
+                    .force("x", d3.forceX().strength(.5).x(function (d) {return longScale(country_location.get(country_code_mapping[d[0]])[0])}))
+                    //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                    //.force("charge", d3.forceManyBody().strength(-1))
+                    .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                        if (d[3]) {
+                            return sizeScale(d[1])
+                        } else {
+                            return -1
+                            console.log(d)
+                        }
+                    }).iterations(1)).alpha(0.05)
+                    } else {
+                        simulation.force("y", d3.forceY().strength(.5).y(function (d) {return d[2]}))
+                    .force("x", d3.forceX().strength(.5).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
+                    //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                    //.force("charge", d3.forceManyBody().strength(-1))
+                    .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                        if (d[3]) {
+                            return sizeScale(d[1])
+                        } else {
+                            return -1
+                            console.log(d)
+                        }
+                    }).iterations(1)).alpha(0.05)
+                    }
+                } else {
+                    simulation = d3.forceSimulation()
+                    .force("y", d3.forceY().strength(.5).y(function (d) {return d[2]}))
+                    .force("x", d3.forceX().strength(.5).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
                     //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
                     //.force("charge", d3.forceManyBody().strength(-1))
                     .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
@@ -1115,11 +1139,11 @@
                             console.log(d)
                         }
                     }).iterations(1))
-                
-                
-                simulation
+
+                    simulation
                     .nodes(countries_sorted)
                     .on("tick", function () {
+                        //console.log(simulation.alpha());
                         if (tutorialCtr == tutorialSteps) {
                             svg_bubble.selectAll("circle.country").each(function (d, i) {
                                 if (i != 4 && i != 9)
@@ -1141,18 +1165,23 @@
                         } else {
                             node
                                 .attr("cx", function (d) {
+                                    //if(visChanged) 
+                                      //  return longScale(country_location.get(country_code_mapping[d[0]])[0])
+                                    //if(d[0] == 'Russia')
+                                     //   console.log(d)
                                     return d.x
                                 })
                                 .attr("cy", function (d) {
+                                    //if(visChanged) 
+                                      //  return latScale(country_location.get(country_code_mapping[d[0]])[1])
                                     return d.y
                                 })
                         }
-                        simulation.restart()
                     })
+                    simulationExtra = true
+                }
                 simulationCreated = true
             }
-            simulation.restart()
-
         }
     }
 
