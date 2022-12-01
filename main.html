@@ -173,7 +173,7 @@
         var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
         var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, window.innerWidth * 3 / 4.0])
         var radius = 10
-        var timeinterval = 200
+        var timeinterval = 8000
 
         if (timer_ctr == 0) { //prior to loading, set up the loading dots
             console.log(elapsed)
