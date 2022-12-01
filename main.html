@@ -178,7 +178,10 @@
                 completed = true
                 document.getElementById("vis2").removeAttribute('disabled')
                 if(tutorialCtr == tutorialSteps + 1)
-                 simulation.stop()
+                {
+                    simulation.stop()
+                }
+                    
             }
         })
 
@@ -1126,6 +1129,7 @@
                     }).iterations(1)).alpha(0.05)
                     }
                 } else {
+                    console.log("in")
                     simulation = d3.forceSimulation()
                     .force("y", d3.forceY().strength(.5).y(function (d) {return d[2]}))
                     .force("x", d3.forceX().strength(.5).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
@@ -1149,6 +1153,7 @@
                                 if (i != 4 && i != 9)
                                     fixPosition(d)
                             })
+                            simulation.alpha(0.05).restart()
                         } else if (tutorialCtr == tutorialSteps + 1) {
                             node
                                 .attr("cx", function (d) {
