@@ -113,6 +113,10 @@
     <div class="dropdown-wrapper">
         Continent Displayed: <select class="dropdown" id="continent-selection"></select>
     </div>
+    <div id="button">
+        <input type="radio" name="button" value="vis1" checked> Organize Country<br>
+        <input type="radio" name="button" value="vis2"> Organize Contient<br>
+    </div>
 </div>
 
 
@@ -186,6 +190,8 @@
     let country_counts
     let country_reasons
     let country_platforms
+    let country_location_temp;
+    let country_location;
 
     //mapping from country name to country code supported by the api
     let country_code_mapping
@@ -220,6 +226,15 @@
     //Variable that controls the dropdown
     let current_continent = "All"
     let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
+    var visChanged = false;
+    
+    d3.select("#button").on("change", function () {
+        visChanged = !visChanged;
+        console.log(visChanged)
+        simulationCreated = false
+        drawBubble()
+        
+    } )
 
     //
     let simulation = d3.forceSimulation()
@@ -624,11 +639,15 @@
     }
 
     const drawBubble = async () => {
+        var latScale = d3.scaleLinear().domain([90, -60]).range([0, bubble_height])
+        var longScale = d3.scaleLinear().domain([-140, 180]).range([0, bubble_width])
         const getId = d => d.toLowerCase().replace(/ /g, "-")
 
         const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
             (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
             d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
+
+        const fillScale = d3.scaleLinear().domain([0.0, 1.0]).range(["white", "black"])
 
         const get_halo_stroke_width = (radius) => {
             if (radius >= 5 && radius <= 10) {
@@ -735,6 +754,12 @@
                                 return 1
                             }
                             return 0.1
+                        })
+                        .transition().ease(d3.easeLinear).duration(1000)
+                        .attr("fill", function (d){
+                            if(visChanged)
+                                return fillScale(percents_removed_percent.get(d[0]))
+                            return `url(#${getId(d[0])})`
                         })
                     ,
 
@@ -1147,6 +1172,27 @@
 
         })
 
+        country_location = new d3.InternMap()
+        country_location_temp.forEach(e => {
+            let country_code = e.country_code.toLowerCase()
+            percents_data.forEach(g => {
+                if(country_code_mapping[g.country] == country_code) {
+                    country_location.set(country_code, [e.longitude, e.latitude])
+                }
+            })
+        })
+
+        percents_data.forEach(g => {
+            let found = false
+            country_location_temp.forEach(e => {
+                let country_code = e.country_code.toLowerCase()
+                if(country_code_mapping[g.country] == country_code) {
+                    found = true
+                }
+            })
+            if(!found)
+                console.log(g.country)
+        })
         // console.log(continent_to_country)
 
     }
@@ -1360,6 +1406,7 @@
         products_data = await d3.csv("removal-requests-products.csv")
         percents_data = await d3.csv("removal-requests-percents.csv")
         country_code_mapping = await d3.json("country-code-mapping.json")
+        country_location_temp = await d3.csv("country_location.csv")
 
         timer = d3.timer(make_loading_screen)
 
