@@ -230,7 +230,7 @@
     //Variable that controls the dropdown
     let current_continent = "All"
     let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
-    var visChanged = false;
+    var visChanged = true;
     
     d3.select(".button").on("change", function () {
         visChanged = !visChanged;
@@ -1078,11 +1078,13 @@
             if (!simulationCreated) {
                 simulation = d3.forceSimulation()
                     .force("y", d3.forceY().strength(.5).y(function (d) {
-                        return d[2]
-                    }))
+                    if(visChanged) 
+                        return latScale(country_location.get(country_code_mapping[d[0]])[1])
+                    return d[2]}))
                     .force("x", d3.forceX().strength(.5).x(function (d) {
-                        return xScale(percents_removed_percent.get(d[0]))
-                    }))
+                    if(visChanged) 
+                        return longScale(country_location.get(country_code_mapping[d[0]])[0]) 
+                    return xScale(percents_removed_percent.get(d[0]))}))
                     //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
                     //.force("charge", d3.forceManyBody().strength(-1))
                     .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
