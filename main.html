@@ -73,6 +73,7 @@
         font-size: 15px;
         letter-spacing: 1px;
         padding: 20px;
+        display: none;
     }
 
     .bar-chart-title {
@@ -98,6 +99,8 @@
         display: none;
 
     }
+
+
 
 </style>
 
@@ -1527,13 +1530,14 @@
             ["You can filter/organize by continent up here!"],
             ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
 
-        if (tutorialCtr > textBlurbs.length - 1) {
+        if (tutorialCtr > textBlurbs.length - 1) { //tutorial finished
             svg_bubble.selectAll("g.textbox").remove()
             tutorial_finished = true
 
             //reset opacity
             svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 1)
 
+            displayParagraphs()
             return
         }
         var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 2.8],
@@ -1632,7 +1636,6 @@
         await createIcons()
 
         drawBubble()
-        displayParagraphs()
     }
 
 
