@@ -127,6 +127,10 @@
     <!--    text on first plot-->
     <p>The plot on the left displays the countries and their respective number of requests alongside the percentages
         of their requests that were actually accepted by Google.
+        <br> <br>
+        By continent, <span style="color: #76b7b2;"><b>Oceania</b></span> has the highest average accepted request rate, at <b>52.98%</b>, followed by <span style="color: #f28e2c";><b>Europe</b></span> at <b>51.15%</b>. <br>
+        <span style="color: #4e79a7";><b>Asia</b></span> (<b>31.69%</b>), <span style="color: #edc949";><b>Africa</b></span> (<b>28.25%</b>), and <span style="color: #59a14f";><b>North America</b></span> (<b>21.5%</b>) have significantly lower average rates, with <br>
+        <span style="color: #e15759";><b>South America</b></span> having the smallest average acceptance rate at <b>20.15%</b>.
     </p>
 
     <div id="detailed-info">
@@ -355,9 +359,56 @@
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
                         (window.innerHeight / 2 - 150) + ")")
                     .style("text-anchor", "middle")
-                    .style("font-size", 36)
+                    .style("font-size", 20)
                     .attr("dy", "20")
-                    .text("Now what")
+                    .attr("dy", "0em")
+                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.") 
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "1.5em")
+                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,") 
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "3em")
+                    .text("citing various reasons such as defamation, national security, and fraud.")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "4.5em")
+                    .text("Where in the world are the most removal requests coming from?") 
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "6em")
+                    .text("Does Google grant requests from different regions equally, or is there a difference depending on the region?")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "7.5em")
+                    .text("Let's explore...")
+
 
                 loading.append("text")
                     .attr("class", "loading-words")
@@ -427,9 +478,56 @@
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
                         (window.innerHeight / 2 - 150) + ")")
                     .style("text-anchor", "middle")
-                    .style("font-size", 36)
+                    .style("font-size", 20)
                     .attr("dy", "20")
-                    .text("Now what")
+                    .attr("dy", "0em")
+                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.") 
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "1.5em")
+                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,") 
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "3em")
+                    .text("citing various reasons such as defamation, national security, and fraud.")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "4.5em")
+                    .text("Where in the world are the most removal requests coming from?") 
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "6em")
+                    .text("Does Google grant requests from different regions equally, or is there a difference depending on the region?")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "7.5em")
+                    .text("Let's explore...")
+
 
                 loading.append("text")
                     .attr("class", "loading-words")
