@@ -26,9 +26,32 @@
 }
 
 .horizontal-gradient {
-    width: 100px;
-    height: 50px;
-    background: linear-gradient(to right, black, white);
+    width: 200px;
+    height: 20px;
+    background: linear-gradient(to right, white, black);
+    /* background: blue; */
+    outline-style: solid;
+    outline-color: black;
+    margin-left: 8px;
+    /* outline-color: black; */
+    /* stroke: black */
+}
+
+.solid {
+    outline-color: black;
+}
+
+.legend {
+    outline-style: solid;
+    outline-color: #000;
+    width: 220px;
+}
+
+p {
+    margin: 0px;
+    margin-left: 4px;
+    margin-bottom: 3px;
+    
 }
 
 /* https://codepen.io/laverboy/pen/ngwMdw */
@@ -74,7 +97,13 @@ body {
 <body>
 
 <div class="infobox"> World </div>
-<div class="horizontal-gradient"></div>
+
+<div class="legend">
+<p>Percentage of requests approved:</p>
+<p> &nbsp; 0% &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;100%</p>
+<div class="horizontal-gradient solid"></div>
+</div>
+
 
 <svg width="660" height="660"></svg>
 <script src="https://d3js.org/d3.v7.min.js"></script>
