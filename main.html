@@ -73,6 +73,12 @@
         .attr("height", height)
         .on("click", function(){tutorialCtr += 1;
             console.log(tutorialCtr);
+            tutorialCreatedStep = false;
+            if(tutorialCtr == 3) {
+                countries_pre_tutorial[9][2] = countries_sorted[9][2]
+                console.log(countries_pre_tutorial)
+                drawBubble()
+            } 
             if(tutorialCtr >= tutorialSteps) {
                 drawBubble()
             }
@@ -146,9 +152,11 @@
                 }).iterations(1))
 
     //tutorial
-    let tutorialSteps = 2;
+    let tutorialSteps = 5;
     let tutorialCtr = 0
-    let tutorial_intro = false;
+    let tutorial_started = false;
+    let tutorial_finished = false;
+    let tutorialCreatedStep = false;
 
     //Misc Variables
     let country_to_continent = new Map()
@@ -241,7 +249,7 @@
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
                         (window.innerHeight*2/3 - 100) + ")")
                     .style("text-anchor", "middle")
-                    .style("font-size", 16)
+                    .style("font-size", 24)
                     .attr("dy", "20")
                     .text("Click to continue...")
                     .attr("stroke", "black")
@@ -275,7 +283,7 @@
             
             if(removeLoading)
             {
-                document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
+                //document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
                 let divs = document.getElementsByTagName("div") //rerender all elements
                 for (let i = 0; i < divs.length; i++) {
                     divs[i].style = 'visibility : visible'
@@ -283,9 +291,17 @@
                 loading_background  //hide loading screen
                     .style("visibility", "hidden")
                 finishedLoading = true
-                set_up_axis_and_labels()
-                console.log("Timer stopped")
-                timer.stop()
+                if(!tutorial_started){
+                    set_up_axis_and_labels()
+                    tutorial_started = true;
+                }
+                if(!tutorial_finished) {
+                    var tutorial_finished = tutorial(elapsed)
+                }else {
+                    console.log("Timer stopped")
+                    timer.stop()
+                }  
+                
             }            
         } else { //during loading
 
@@ -509,15 +525,15 @@
             countries_preprocessed[i] = countries_preprocessed[i].concat(true)
             countries_pre_tutorial[i] = [...countries_preprocessed[i]]
             var random = d3.randomUniform(-100000, -1000)()
-            if(i != 0)
+            if(i != 4)
                 countries_pre_tutorial[i][2] = random//random
         })
         for (let i in countries_preprocessed) {
-            console.log(i)
             countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
                 countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
         }
-        countries_pre_tutorial[0][2] = countries_preprocessed[0][2]
+        countries_pre_tutorial[4][2] = countries_preprocessed[4][2]
+
         countries_sorted = countries_preprocessed
         console.log("finished processing")
     }
@@ -632,10 +648,14 @@
                             }
                             return 0.1
                         })
+                        .transition().ease(d3.easeExpOut).duration(1000)
+                            .attr("cy", d => d[2])
+                        
                     ,
 
                     exit => exit.remove()
                 )
+
         } else {
             //draw circles
             var node = svg_bubble.selectAll("circle.country")
@@ -739,7 +759,7 @@
                 .on("tick", function () {
                     if(tutorialCtr == tutorialSteps){
                         svg_bubble.selectAll("circle.country").each(function (d,i) {
-                            if(i != 0)
+                            if(i != 4 && i != 9)
                                 fixPosition(d)
                         })
                     } else if(tutorialCtr == tutorialSteps+1) {
@@ -947,53 +967,77 @@
             })
     }
 
-    const startTutorial = async () => {
-        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([8, 12,16])
+    const tutorial = async (elapsed) => {
+        
+        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 12,16])
 
         var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of our key features"],
-                          ["Here is a country (Russia).", " It's size represents how many removal requsts they've submitted.", "The larger the more requests!"],
-                          ["The further to the right the country is,", "the more frequently their requests have been accepted by Google"],
-                          ["Oh yeah, the y-axis doesn't mean anything.", "That means there can be multiple countries that share the same acceptance rate!"],
+                          ["Here is the United States.", " It's size is proportional to # of removal requsts they've submitted.", "The larger the circle, the more requests!"],
+                          ["The further to the right the country is, the more", "frequently their requests have been accepted by Google"],
+                          ["A country's placement on y-axis doesn't mean anything.", "Multiple countries can share the same acceptance rate!"],
                           ["You can filter by continent up here!"],
                           ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
         
-        var placements = [[bubble_width / 3, (bubble_height/4), bubble_height/6, bubble_width/2]]
+        if (tutorialCtr > textBlurbs.length-1)
+        {
+            svg_bubble.selectAll("g.textbox").remove()
+            return true
+        }
+        var placements = [[bubble_width / 2.695, bubble_height/4, bubble_height/9, bubble_width/3],
+                          [bubble_width / 2.2, bubble_height/3.5, bubble_height/9, bubble_width/2.75],
+                          [bubble_width / 1.45, bubble_height/2.5, bubble_height/9, bubble_width/3],
+                          [bubble_width / 2.2, bubble_height/3.5, bubble_height/9, bubble_width/2.75],
+                          [bubble_width / 100, bubble_height/100, bubble_height/9, bubble_width/5],
+                          [bubble_width / 2.695, bubble_height/4, bubble_height/9, bubble_width/3]]
         
         var currentBlurb = textBlurbs[tutorialCtr]
-        svg_bubble.selectAll("g.textbox").remove()
-        var block = svg_bubble.append("g")
-            .attr("class", "textbox")
+        if(!tutorialCreatedStep) {
+            svg_bubble.selectAll("g.textbox").remove()
+            var block = svg_bubble.append("g")
+                .attr("class", "textbox")
 
-        var translateTextBoxX = placements[tutorialCtr][0]
-        var translateTextBoxY = placements[tutorialCtr][1]
-        var textBoxHeight = placements[tutorialCtr][2]
-        var textBoxWidth = placements[tutorialCtr][3]
+            var translateTextBoxX = placements[tutorialCtr][0]
+            var translateTextBoxY = placements[tutorialCtr][1]
+            var textBoxHeight = placements[tutorialCtr][2]
+            var textBoxWidth = placements[tutorialCtr][3]
 
-        block.append("rect") //textbox
-            .attr("transform", "translate(" + translateTextBoxX + " ," + translateTextBoxY + ")")
-            .attr("height",textBoxHeight)
-            .attr("width", textBoxWidth)
-            .style("fill", "grey")
-            .attr("stroke", "black")
-            .attr("stroke-width", 5)
-            .style("opacity", 0.2)
-            
-        block.append("rect")
-            .attr("class", "loading-square-thingy")
-            .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," + (translateTextBoxY+textBoxHeight-40) + ")rotate(45)")
-            .attr("height", 20)
-            .attr("width", 20)
-            .style("fill", "black")
-            .attr("stroke", "black")
+            block.append("rect") //textbox
+                .attr("transform", "translate(" + translateTextBoxX + " ," + translateTextBoxY + ")")
+                .attr("height",textBoxHeight)
+                .attr("width", textBoxWidth)
+                .style("fill", "grey")
+                .attr("stroke", "black")
+                .attr("stroke-width", 5)
+                .style("opacity", 0.2)
+                
+            block.append("rect")
+                .attr("class", "loading-square-thingy")
+                .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," + (translateTextBoxY+textBoxHeight-20) + ")rotate(45)")
+                .attr("height", 10)
+                .attr("width", 10)
+                .style("fill", "black")
+                .attr("stroke", "black")
 
-        console.log(scaleText(bubble_width))
-        for(i = 0; i < currentBlurb.length; i++) {
-            block.append("text")
-                .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," +(translateTextBoxY+(textBoxHeight*(i+1))/(currentBlurb.length+1)) + ")")
-                .style("text-anchor", "middle")
-                .style("font-size", function(d) {console.log(scaleText(bubble_width)); return scaleText(bubble_width)})
-                .text(currentBlurb[i])
-        }        
+            for(i = 0; i < currentBlurb.length; i++) {
+                block.append("text")
+                    .attr("transform", "translate(" + (translateTextBoxX+textBoxWidth/2) + " ," +(translateTextBoxY+(textBoxHeight*(i+1))/(currentBlurb.length+1)) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", function(d) {return scaleText(bubble_width)})
+                    .text(currentBlurb[i])
+            }
+            tutorialCreatedStep = true;
+        } else {
+            svg_bubble.selectAll("g.textbox").selectAll("rect.loading-square-thingy")
+                .transition()
+                        .ease(d3.easeLinear)
+                .style("fill", function(d) {
+                                if(elapsed%2000 > 1000)
+                                    return "white";
+                                return "black"
+                            })
+        }
+        
+        return false
     }
 
     const ready = async () => {
@@ -1012,9 +1056,7 @@
         await preprocess_countries()
         await createIcons()
         
-        drawBubble()
-        startTutorial()
-        
+        drawBubble()        
     }
 
 
