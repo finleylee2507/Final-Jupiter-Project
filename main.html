@@ -24,6 +24,7 @@
     .button {
         margin-left: 30px;
     }
+
     .plot-section {
         width: 70%;
         /* border: 1px solid purple; */
@@ -70,8 +71,8 @@
     .text-container p {
         margin: 0;
         font-size: 15px;
-        /*letter-spacing: 1px;*/
-        /*padding: 20px;*/
+        letter-spacing: 1px;
+        padding: 20px;
     }
 
     .bar-chart-title {
@@ -125,13 +126,19 @@
 
 <div class="text-container">
     <!--    text on first plot-->
-    <p>The plot on the left displays the countries and their respective number of requests alongside the percentages
+    <p class="text-container-p1">The plot on the left displays the countries and their respective number of requests
+        alongside the percentages
         of their requests that were actually accepted by Google.
-        <br> <br>
-        By continent, <span style="color: #76b7b2;"><b>Oceania</b></span> has the highest average accepted request rate, at <b>52.98%</b>, followed by <span style="color: #f28e2c";><b>Europe</b></span> at <b>51.15%</b>. <br>
-        <span style="color: #4e79a7";><b>Asia</b></span> (<b>31.69%</b>), <span style="color: #edc949";><b>Africa</b></span> (<b>28.25%</b>), and <span style="color: #59a14f";><b>North America</b></span> (<b>21.5%</b>) have significantly lower average rates, with <br>
-        <span style="color: #e15759";><b>South America</b></span> having the smallest average acceptance rate at <b>20.15%</b>.
     </p>
+    <p class="text-container-p2">
+        By continent, <span style="color: #76b7b2;"><b>Oceania</b></span> has the highest average accepted request rate,
+        at <b>52.98%</b>, followed by <span style="color: #f28e2c" ;><b>Europe</b></span> at <b>51.15%</b>. <br>
+        <span style="color: #4e79a7" ;><b>Asia</b></span> (<b>31.69%</b>), <span style="color: #edc949" ;><b>Africa</b></span>
+        (<b>28.25%</b>), and <span style="color: #59a14f" ;><b>North America</b></span> (<b>21.5%</b>) have
+        significantly lower average rates, with <br>
+        <span style="color: #e15759" ;><b>South America</b></span> having the smallest average acceptance rate at <b>20.15%</b>.
+    </p>
+
 
     <div id="detailed-info">
         <!--where the tooltip goes-->
@@ -181,11 +188,10 @@
                 drawBubble()
                 completed = true
                 document.getElementById("vis2").removeAttribute('disabled')
-                if(tutorialCtr == tutorialSteps + 1)
-                {
+                if (tutorialCtr == tutorialSteps + 1) {
                     simulation.stop()
                 }
-                    
+
             }
         })
 
@@ -202,8 +208,8 @@
     let country_counts
     let country_reasons
     let country_platforms
-    let country_location_temp;
-    let country_location;
+    let country_location_temp
+    let country_location
 
     //mapping from country name to country code supported by the api
     let country_code_mapping
@@ -240,14 +246,16 @@
     //Variable that controls the dropdown
     let current_continent = "All"
     let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
-    var visChanged = false;
-    var visPhysicsDealt = true;
-    
+    var visChanged = false
+    var visPhysicsDealt = true
+
+
     d3.select(".button").on("change", function () {
-        visChanged = !visChanged;
+        visChanged = !visChanged
         simulationCreated = false
+        displayParagraphs()
         drawBubble()
-    } )
+    })
 
     //
     let simulation = d3.forceSimulation()
@@ -362,7 +370,7 @@
                     .style("font-size", 20)
                     .attr("dy", "20")
                     .attr("dy", "0em")
-                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.") 
+                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.")
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -371,7 +379,7 @@
                     .style("font-size", 20)
                     .attr("dy", "20")
                     .attr("dy", "1.5em")
-                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,") 
+                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,")
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -389,7 +397,7 @@
                     .style("font-size", 20)
                     .attr("dy", "20")
                     .attr("dy", "4.5em")
-                    .text("Where in the world are the most removal requests coming from?") 
+                    .text("Where in the world are the most removal requests coming from?")
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -481,7 +489,7 @@
                     .style("font-size", 20)
                     .attr("dy", "20")
                     .attr("dy", "0em")
-                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.") 
+                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.")
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -490,7 +498,7 @@
                     .style("font-size", 20)
                     .attr("dy", "20")
                     .attr("dy", "1.5em")
-                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,") 
+                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,")
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -508,7 +516,7 @@
                     .style("font-size", 20)
                     .attr("dy", "20")
                     .attr("dy", "4.5em")
-                    .text("Where in the world are the most removal requests coming from?") 
+                    .text("Where in the world are the most removal requests coming from?")
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -697,7 +705,7 @@
             d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
         var latScale = d3.scaleLinear().domain([90, -60]).range([0, bubble_height])
         var longScale = d3.scaleLinear().domain([-140, 180]).range([0, bubble_width])
-        
+
         var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
         countries_pre_tutorial = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
 
@@ -1035,7 +1043,7 @@
                             return 0.1
                         })
                         .transition().ease(d3.easeExpOut).duration(1000)
-                            .attr("cy", d => d[2])
+                        .attr("cy", d => d[2])
                     ,
 
                     exit => exit.remove()
@@ -1066,8 +1074,8 @@
                             return 0.1
                         })
                         .transition().ease(d3.easeLinear).duration(10000)
-                        .attr("fill", function (d){
-                            if(visChanged)
+                        .attr("fill", function (d) {
+                            if (visChanged)
                                 return fillScale(percents_removed_percent.get(d[0]))
                             return `url(#${getId(d[0])})`
                         })
@@ -1199,90 +1207,102 @@
 
             if (!simulationCreated) {
                 console.log(visChanged)
-                if(simulationExtra) {
+                if (simulationExtra) {
                     console.log("in extra")
-                    if(visChanged) {
-                        simulation.force("y", d3.forceY().strength(1).y(function (d) {return latScale(country_location.get(country_code_mapping[d[0]])[1])}))
-                    .force("x", d3.forceX().strength(1).x(function (d) {return longScale(country_location.get(country_code_mapping[d[0]])[0])}))
-                    //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                    //.force("charge", d3.forceManyBody().strength(-1))
-                    .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
-                        if (d[3]) {
-                            return sizeScale(d[1])
-                        } else {
-                            return -1
-                            console.log(d)
-                        }
-                    }).iterations(1)).alpha(0.05)
+                    if (visChanged) {
+                        simulation.force("y", d3.forceY().strength(1).y(function (d) {
+                            return latScale(country_location.get(country_code_mapping[d[0]])[1])
+                        }))
+                            .force("x", d3.forceX().strength(1).x(function (d) {
+                                return longScale(country_location.get(country_code_mapping[d[0]])[0])
+                            }))
+                            //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                            //.force("charge", d3.forceManyBody().strength(-1))
+                            .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                                if (d[3]) {
+                                    return sizeScale(d[1])
+                                } else {
+                                    return -1
+                                    console.log(d)
+                                }
+                            }).iterations(1)).alpha(0.05)
                     } else {
-                        simulation.force("y", d3.forceY().strength(1).y(function (d) {return d[2]}))
-                    .force("x", d3.forceX().strength(1).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
-                    //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                    //.force("charge", d3.forceManyBody().strength(-1))
-                    .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
-                        if (d[3]) {
-                            return sizeScale(d[1])
-                        } else {
-                            return -1
-                            console.log(d)
-                        }
-                    }).iterations(1)).alpha(0.05)
+                        simulation.force("y", d3.forceY().strength(1).y(function (d) {
+                            return d[2]
+                        }))
+                            .force("x", d3.forceX().strength(1).x(function (d) {
+                                return xScale(percents_removed_percent.get(d[0]))
+                            }))
+                            //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                            //.force("charge", d3.forceManyBody().strength(-1))
+                            .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                                if (d[3]) {
+                                    return sizeScale(d[1])
+                                } else {
+                                    return -1
+                                    console.log(d)
+                                }
+                            }).iterations(1)).alpha(0.05)
                     }
                 } else {
                     console.log("in")
                     simulation = d3.forceSimulation()
-                    .force("y", d3.forceY().strength(.5).y(function (d) {return d[2]}))
-                    .force("x", d3.forceX().strength(.5).x(function (d) {return xScale(percents_removed_percent.get(d[0]))}))
-                    //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                    //.force("charge", d3.forceManyBody().strength(-1))
-                    .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
-                        if (d[3]) {
-                            return sizeScale(d[1])
-                        } else {
-                            return -1
-                            console.log(d)
-                        }
-                    }).iterations(1))
+                        .force("y", d3.forceY().strength(.5).y(function (d) {
+                            return d[2]
+                        }))
+                        .force("x", d3.forceX().strength(.5).x(function (d) {
+                            return xScale(percents_removed_percent.get(d[0]))
+                        }))
+                        //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
+                        //.force("charge", d3.forceManyBody().strength(-1))
+                        .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                            if (d[3]) {
+                                return sizeScale(d[1])
+                            } else {
+                                return -1
+                                console.log(d)
+                            }
+                        }).iterations(1))
 
                     simulation
-                    .nodes(countries_sorted)
-                    .on("tick", function () {
-                        //console.log(simulation.alpha());
-                        if (tutorialCtr == tutorialSteps) {
-                            svg_bubble.selectAll("circle.country").each(function (d, i) {
-                                if (i != 4 && i != 9)
-                                    fixPosition(d)
-                            })
-                            simulation.alpha(0.05).restart()
-                        } else if (tutorialCtr == tutorialSteps + 1) {
-                            node
-                                .attr("cx", function (d) {
-                                    return d.x
+                        .nodes(countries_sorted)
+                        .on("tick", function () {
+                            //console.log(simulation.alpha());
+                            if (tutorialCtr == tutorialSteps) {
+                                svg_bubble.selectAll("circle.country").each(function (d, i) {
+                                    if (i != 4 && i != 9)
+                                        fixPosition(d)
                                 })
-                                .attr("cy", function (d) {
-                                    return d.y
+                                simulation.alpha(0.05).restart()
+                            } else if (tutorialCtr == tutorialSteps + 1) {
+                                node
+                                    .attr("cx", function (d) {
+                                        return d.x
+                                    })
+                                    .attr("cy", function (d) {
+                                        return d.y
+                                    })
+                                svg_bubble.selectAll("circle.country").each(function (d) {
+                                    movePosition(d)
                                 })
-                            svg_bubble.selectAll("circle.country").each(function (d) {
-                                movePosition(d)
-                            })
-                            simulation.alpha(0.05)
-                            tutorialCtr += 1
-                        } else {
-                            node
-                                .attr("cx", function (d) {
-                                    //if(visChanged) 
-                                      //  return longScale(country_location.get(country_code_mapping[d[0]])[0])
-                                    //if(d[0] == 'Russia')
-                                     //   console.log(d)
-                                    return d.x
-                                })
-                                .attr("cy", function (d) {
-                                    //if(visChanged) 
-                                      //  return latScale(country_location.get(country_code_mapping[d[0]])[1])
-                                    return d.y
-                                })
-                        }
-                    })
+                                simulation.alpha(0.05)
+                                tutorialCtr += 1
+                            } else {
+                                node
+                                    .attr("cx", function (d) {
+                                        //if(visChanged)
+                                        //  return longScale(country_location.get(country_code_mapping[d[0]])[0])
+                                        //if(d[0] == 'Russia')
+                                        //   console.log(d)
+                                        return d.x
+                                    })
+                                    .attr("cy", function (d) {
+                                        //if(visChanged)
+                                        //  return latScale(country_location.get(country_code_mapping[d[0]])[1])
+                                        return d.y
+                                    })
+                            }
+                        })
                     simulationExtra = true
                 }
                 simulationCreated = true
@@ -1337,7 +1357,7 @@
         country_location_temp.forEach(e => {
             let country_code = e.country_code.toLowerCase()
             percents_data.forEach(g => {
-                if(country_code_mapping[g.country] == country_code) {
+                if (country_code_mapping[g.country] == country_code) {
                     country_location.set(country_code, [e.longitude, e.latitude])
                 }
             })
@@ -1347,7 +1367,7 @@
             let found = false
             country_location_temp.forEach(e => {
                 let country_code = e.country_code.toLowerCase()
-                if(country_code_mapping[g.country] == country_code) {
+                if (country_code_mapping[g.country] == country_code) {
                     found = true
                 }
             })
@@ -1486,6 +1506,16 @@
             })
     }
 
+    function displayParagraphs() {
+        if (visChanged) {
+            d3.select(".text-container-p1").style("display", "none")
+            d3.select(".text-container-p2").style("display", "block")
+        } else {
+            d3.select(".text-container-p1").style("display", "block")
+            d3.select(".text-container-p2").style("display", "none")
+        }
+    }
+
     const tutorial = async (elapsed) => {
 
         var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 12, 16])
@@ -1499,7 +1529,7 @@
 
         if (tutorialCtr > textBlurbs.length - 1) {
             svg_bubble.selectAll("g.textbox").remove()
-            tutorial_finished=true
+            tutorial_finished = true
 
             //reset opacity
             svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 1)
@@ -1515,8 +1545,8 @@
 
         let highlights = ["", ["#united-states"], ["#united-states", ".x-axis", ".quadrant-line", ".quadrant-line-label"],
             ["#united-states", ".quadrant-line", ".quadrant-line-label", ".x-axis", "#brazil"],
-            ["#united-states", "#brazil", ".quadrant-line",".quadrant-line-label", ".dropdown-wrapper", ".button"],
-            ["#united-states", "#brazil", ".quadrant-line",".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"]]
+            ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".x-axis"],
+            ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"]]
 
 
         //hide non-highlighted elements
@@ -1602,6 +1632,7 @@
         await createIcons()
 
         drawBubble()
+        displayParagraphs()
     }
 
 
