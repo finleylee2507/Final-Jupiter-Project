@@ -3,322 +3,1694 @@
 <meta charset="utf-8">
 
 <style>
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 200px;
-  height: 50px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: lightsteelblue;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
 
-h1 {
-    text-align: center;
-    font: sans-serif;
-}
+    body {
+        font-family: 'Poppins', sans-serif;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        min-width: 100%;
+        margin: 0;
+
+    }
+
+    div {
+        visibility: hidden;
+    }
+
+    .dropdown-wrapper {
+        margin-left: 30px;
+    }
+
+    .button {
+        margin-left: 30px;
+    }
+
+    .plot-section {
+        width: 70%;
+        /* border: 1px solid purple; */
+    }
+
+
+    div.loading {
+        position: absolute;
+        /*takes up the entire screen*/
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        top: 0px;
+        left: 0px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .tool-tip-flag-icon {
+        position: relative;
+        top: 2px;
+    }
+
+    .text-container {
+        /*border: 1px solid black;*/
+        min-width: 30%;
+        left: 70%;
+        position: absolute;
+        margin: 0;
+        top: 70px;
+        padding: 0;
+        height: 100%;
+
+    }
+
+    .text-container div {
+        /*height: 100%;*/
+        display: block;
+    }
+
+
+    .text-container p {
+        margin: 0;
+        font-size: 15px;
+        letter-spacing: 1px;
+        padding: 20px;
+        display: none;
+    }
+
+    .bar-chart-title {
+        font-weight: 500;
+        display: block;
+        margin-top: 10px;
+    }
+
+    .bar-chart-container {
+        /* border: 1px solid red; */
+        height: 16rem;
+
+
+    }
+
+    #detailed-info {
+        text-align: center;
+        height: 70%;
+        padding: 2px;
+        background: lightsteelblue;
+        border-radius: 8px;
+        pointer-events: none;
+        display: none;
+
+    }
+
+
+    .top-section {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /*.top-section-left {*/
+    /*    border: 1px solid green;*/
+    /*}*/
+
+    /*.top-section-right {*/
+    /*    border: 1px solid blue;*/
+    /*}*/
+
+    .horizontal-gradient {
+        width: 200px;
+        height: 20px;
+        background: linear-gradient(to right, white, black);
+        outline-style: solid;
+        outline-color: black;
+        margin-left: 8px;
+    }
+
+    .vis2-legend {
+        position: relative;
+        top: 80%;
+        display: none;
+        left: -30px;
+        /*border: 1px solid red;*/
+    }
+
+    #vis2-legend-p1 {
+        font-weight: 500;
+    }
+
+    #vis2-legend-p1, #vis2-legend-p2 {
+        margin: 0;
+    }
+
+
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet">
 
 <body>
-    <div><h1>Country vs Removal Requests</h1> </div>
-    <script>
-        // Line Bubble Plot
+<div><h1>Country vs Removal Requests</h1></div>
+<div class="plot-section">
+    <div class="loading">
+        <div class="scroll-down-indicator"></div>
+    </div>
 
-        //Plot vars
-        let width =  document.documentElement.clientWidth -100 , height =  document.body.clientHeight;
-        let margin = { top: 50, right: 100, bottom: 50, left: 100 };
-        let svg_bubble = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height)
+    <div class="top-section">
+        <div class="top-section-left">
+            <div class="dropdown-wrapper">
+                Continent Displayed: <select class="dropdown" id="continent-selection"></select>
+            </div>
+            <div class="button">
+                <input checked id="vis1" name="button" type="radio" value="vis1"> Organize Country<br>
+                <input disabled id="vis2" name="button" type="radio" value="vis2"> Organize Contient<br>
+            </div>
+        </div>
+        <div class="top-section-right">
+            <div class="vis2-legend">
+                <p id="vis2-legend-p1">% of requests approved:</p>
+                <p id="vis2-legend-p2"> &nbsp; 0% &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;100%</p>
+                <div class="horizontal-gradient solid"></div>
+            </div>
+        </div>
+    </div>
 
-        let tooltip = d3.select("body")
-            .append("div")
-            .style("opacity", 0)
-            .attr("class", "tooltip")
-            .style("background-color", "white")
-            .style("border", "solid")
-            .style("border-width", "2px")
-            .style("border-radius", "5px")
-            .style("padding", "5px")
-        let bubble_width = width - margin.left - margin.right;
-        let bubble_height = height - margin.top - margin.bottom;
 
-        //Variables using the products data
-        let products_data; 
-        let country_counts;
+</div>
 
-        //Variables using the percent data
-        let percents_data;
-        let percents_items_normalized, percents_items, percents_removed_percent;
 
-        //Misc Variables
-        let continents_country = new d3.InternMap([]);
-        let country_continent = new d3.InternMap([]);
+<div class="text-container">
+    <!--    text on first plot-->
+    <p class="text-container-p1">The plot on the left displays the countries and their respective number of requests
+        alongside the percentages
+        of their requests that were actually accepted by Google.
+    </p>
+    <p class="text-container-p2">
+        By continent, <span style="color: #76b7b2;"><b>Oceania</b></span> has the highest average accepted request rate,
+        at <b>52.98%</b>, followed by <span ; style="color: #f28e2c"><b>Europe</b></span> at <b>51.15%</b>. <br>
+        <span ; style="color: #4e79a7"><b>Asia</b></span> (<b>31.69%</b>), <span ; style="color: #edc949"><b>Africa</b></span>
+        (<b>28.25%</b>), and <span ; style="color: #59a14f"><b>North America</b></span> (<b>21.5%</b>) have
+        significantly lower average rates, with <br>
+        <span ; style="color: #e15759"><b>South America</b></span> having the smallest average acceptance rate at <b>20.15%</b>.
+    </p>
 
-        
 
-        function aggregate_countries() {
-            country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+    <div id="detailed-info">
+        <!--where the tooltip goes-->
 
-            //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
-            //can be changed
-            percents_items_normalized = d3.rollup(percents_data, v => d3.sum(v, d => (+d.items)*((+d.removed_legal+(+d.removed_policy))/100.0)), d => d.country)
-            percents_items = d3.rollup(percents_data, v => d3.sum(v, d => +d.items), d => d.country)
-            percents_removed_percent = new d3.InternMap()
-            Array.from(percents_items.keys()).forEach(e => {
-                percents_removed_percent.set(e, percents_items_normalized.get(e)/percents_items.get(e))
-            });
+        <u> </u> <img class="tool-tip-flag-icon" src=""/>
+        <br>Removal Requests: <span id="removal-request-num"></span>
+        <br>%Removed: <span id="percent-removed"></span> <br>
 
-            //remove countries from country counts that arent in the percentages table
-            Array.from(country_counts.keys()).forEach(e => {
-                if(!percents_removed_percent.has(e)) {
-                    country_counts.delete(e);
-                }
-            });
+        <span class="bar-chart-title">
+          Top platforms for removal:
+        </span>
 
-            //Mapping for country to country abbreviation and vice versa
-            percents_data.forEach(e => {
-                var continent = e.continent;
-                var country = e.country;
-                if(!continents_country.has(continent)) {
-                    continents_country.set([country])
-                } else {
-                    continents_country.set(continents_country.get(continent).append(country))
-                }
-                if(!country_continent.has(country)) {
-                    country_continent.set(continent)
-                }
-            });
-        }
+        <div class="bar-chart-container" id="first-bar-chart-container"></div>
 
-        //Check to see if two circles intersect each other
-        //c1 - [x1, y1] circle 1 center
-        //r1 - radius of circle 1
-        //c2 - [x2, y2] circle 2 center
-        //r2 - radius of circle 2
-        function check_intersection(c1, r1, c2, r2) {
-            d = Math.sqrt((c1[0] - c2[0]) * (c1[0] - c2[0]) + (c1[1] - c2[1]) * (c1[1] - c2[1]))
-            if((d <= r1 - r2) || (d <= r2 - r1) || (d < r1 + r2) || (d == r1 + r2))
-                return true
-            return false
-        }
+        <span class="bar-chart-title">
+          Top reasons for removal:
+       </span>
+        <div class="bar-chart-container" id="second-bar-chart-container"></div>
+    </div>
 
-        //A circle takes up a x-span of space. i.e. [c-r, c+r]
-        //You can check to see if any circles cross that plane; they have to in order to intersect the circle
-        function check_breaks_plane(c1, r1, c2, r2) {
-            var left = c1[0] - r1;
-            var right = c1[0] + r1;
-            if(((c2[0]+r2 > left) && c2[0] <= c1[0]) || ((c2[0]-r2 < right) && c2[0] >= c1[0])){
-                return true
+
+</div>
+
+<script>
+
+    // Line Bubble Plot
+
+    //Plot vars
+    let width = document.documentElement.clientWidth * 0.7, height = 950
+    let margin = {top: 50, right: 50, bottom: 50, left: 30}
+    let quadrants = [0.25, 0.50, 0.75]
+    let completed = false
+
+    let svg_bubble = d3.select(".plot-section").append("svg")
+        .attr("class", "svg_bubble")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", () => {
+            tutorialCtr += 1
+            // console.log(tutorialCtr)
+            tutorialCreatedStep = false
+            if (tutorialCtr == 3) {
+                countries_pre_tutorial[9][2] = countries_sorted[9][2]
+                drawBubble()
             }
-            return false
-        }
-
-        //Get all possible y-values of the circle to be placed
-        function get_possible(c1, r1, c2, r2) {
-            var min=margin.top, max=bubble_height, step=0.01, diff=0.01;
-            var works = []
-            var current = min;
-            do {
-                if(!check_intersection([c1[0], current], r1, c2, r2)){
-                    works.push(current)
+            if (tutorialCtr >= tutorialSteps && !completed) {
+                drawBubble()
+                completed = true
+                document.getElementById("vis2").removeAttribute('disabled')
+                if (tutorialCtr == tutorialSteps + 1) {
+                    simulation.stop()
                 }
-                current += step;
-            } while(current<= max)
 
-            //Only need the point closest to the axis
-            //Find the largest y-value thats above the center that's valid
-            var left = works.filter(function (d) { return d < c2[1]})
-            if(left.length == 0){
-                left = 0
+            }
+        })
+
+    let defs = svg_bubble.append("defs")
+
+    let tooltip = d3.select("#detailed-info")
+        .style("opacity", 0)
+
+    let bubble_width = width - margin.left - margin.right
+    let bubble_height = height - margin.top - margin.bottom
+
+    //Variables using the products data
+    let products_data
+    let country_counts
+    let country_reasons
+    let country_platforms
+    let country_location_temp
+    let country_location
+
+    //mapping from country name to country code supported by the api
+    let country_code_mapping
+
+
+    //Variables using the percent data
+    let percents_data
+    let percents_items_normalized, percents_items, percents_removed_percent
+
+    //maps each continent to its abbreviation
+    const continent_mapping_a = {
+        "North America": "NA",
+        "South America": "SA",
+        "Asia": "AS",
+        "Oceania": "OC",
+        "Europe": "EU",
+        "Africa": "AF"
+    }
+    //maps each continent abbreviation to its full name
+    const continent_mapping_b = {
+        "NA": "North America",
+        "SA": "South America",
+        "AS": "Asia",
+        "OC": "Oceania",
+        "EU": "Europe",
+        "AF": "Africa"
+    }
+
+    let countries_sorted
+    let countries_sorted_location
+    let countries_sorted_acceptance
+    let countries_pre_tutorial
+
+    //Variable that controls the dropdown
+    let current_continent = "All"
+    let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
+    var visChanged = false
+    var visPhysicsDealt = true
+
+
+    d3.select(".button").on("change", function () {
+        visChanged = !visChanged
+        simulationCreated = false
+        displayParagraphs()
+        drawBubble()
+    })
+
+    //
+    let simulation = d3.forceSimulation()
+        .force("y", d3.forceY().strength(2).y(function (d) {
+            return d[2]
+        }))
+        .force("x", d3.forceX().strength(2).x(function (d) {
+            return xScale(percents_removed_percent.get(d[0]))
+        }))
+        .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+            if (d[3]) {
+                return sizeScale(d[1])
             } else {
-                left = d3.max(left)
+                return -1
             }
-            
-            //Find the smallest y-value below the center that's valid
-            var right = works.filter(function (d) { return d > c2[1]})
-            if(right.length == 0){
-                left = height
-            } else {
-                right = d3.min(right)
-            }
-            
-            return [left, right]
-        }
+        }).iterations(1))
 
-        //Let code merge ranges (because the ends are the "best" placements for the circles)
-        function merge_ranges(intervals, r) {
-            var result = [];
-            var previous = intervals[0];
-            
-            for (let i = 1; i < intervals.length; i += 1) {
-                if (previous[1] >= intervals[i][0]) {
-                    previous = [previous[0], Math.max(previous[1], intervals[i][1])];
-                } else {
-                    result.push(previous);
-                    previous = intervals[i];
-                }
+    //tutorial
+    let tutorialSteps = 5
+    let tutorialCtr = 0
+    let tutorial_started = false
+    let tutorial_finished = false
+    let tutorialCreatedStep = false
+
+    //Misc Variables
+    let country_to_continent = new Map()
+    let continent_to_country = new Map()
+    let timer, floattimer, timer_ctr = 0
+    var removeLoading = false
+    var finishedLoading = false
+    var removeLoadingCreated = false
+    var simulationCreated = false
+    let simulationExtra = false
+
+    const make_loading_screen = (elapsed) => {
+        var loading_background = d3.select(".loading")
+        var numcircles = 6
+        var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
+        var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, window.innerWidth * 3 / 4.0])
+        var radius = 10
+        var timeinterval = 8000
+
+        if (timer_ctr == 0) { //prior to loading, set up the loading dots
+            let divs = document.getElementsByTagName("div")
+
+
+            //disable scrolling
+            let body = document.getElementsByTagName("body")[0]
+            body.style.cssText = "margin: 0; height: 200%; overflow: hidden"
+
+            loading_background
+                .style("background-color", "white")
+                .style("visibility", "visible")
+
+            let loading = loading_background.append("svg")
+                .attr("class", "loading_svg")
+                .attr("height", window.innerHeight)
+                .attr("width", window.innerWidth)
+
+            loading.append("text")
+                .attr("class", "loading-text")
+                .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                    (window.innerHeight / 2 - 150) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", 36)
+                .attr("dy", "20")
+                .text("Visualizing Removal Requests")
+
+            loading.append("text")
+                .attr("class", "loading-text")
+                .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                    (window.innerHeight / 2 - 125) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", 12)
+                .attr("dy", "20")
+                .text("Made by Judy Ahn, Olivia Escousse, Finley Li, Noah Shen, Ploen Voraprukpisut")
+
+
+            loading.append("text")
+                .attr("class", "loading-words")
+                .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                    (window.innerHeight * 2 / 3 - 100) + ")")
+                .style("text-anchor", "middle")
+                .style("font-size", 16)
+                .attr("dy", "20")
+                .text("Loading...")
+
+            //set up loading dots (empty initially)
+            for (let i = 0; i < numcircles; i++) {
+                loading.append("circle")
+                    .attr("cx", placement(i))
+                    .attr("cy", window.innerHeight * 2 / 3)
+                    .attr("r", radius)
+                    .style("fill", "white")
+                    .attr("stroke", "black")
             }
-            result.push(previous);
-            
-            intervals = result
-            console.log(intervals)
-            var previous = intervals[0];
-            
-            //Find the value that closest to the axis
-            var best = previous[0];
-            for (let i = 1; i < intervals.length; i += 1) {
-                if (intervals[i][0] - previous[1] >= r*2) { //Make sure that the space is large enough for the diameter
-                    if(Math.abs(((bubble_height + margin.top)/2.0)-previous[1]) < Math.abs(((bubble_height + margin.top)/2.0)-best)){
-                        best = previous[1]
-                    }
-                    if(Math.abs(((bubble_height + margin.top)/2.0)-intervals[i][0]) < Math.abs(((bubble_height + margin.top)/2.0)-best)){
-                        best = intervals[i][0]
-                    }
+
+        } else if (elapsed > timeinterval) { //finished loading
+            var loading = loading_background.select("svg")
+                .on("click", function () {
+                    removeLoading = true
+                })
+            if (!removeLoadingCreated) {
+                loading.selectAll("text").remove()
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "0em")
+                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "1.5em")
+                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "3em")
+                    .text("citing various reasons such as defamation, national security, and fraud.")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "4.5em")
+                    .text("Where in the world are the most removal requests coming from?")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "6em")
+                    .text("Does Google grant requests from different regions equally, or is there a difference depending on the region?")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "7.5em")
+                    .text("Let's explore...")
+
+
+                loading.append("text")
+                    .attr("class", "loading-words")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight * 2 / 3 - 100) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 24)
+                    .attr("dy", "20")
+                    .text("Click to continue...")
+                    .attr("cursor", "pointer")
+                    .attr("stroke", "black")
+
+                loading.selectAll("g").remove()
+                var block = loading.append("g")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight * 2 / 3 - 50) + ")")
+
+                block.append("rect")
+                    .attr("transform", "rotate(45)")
+                    .attr("height", 20)
+                    .attr("width", 20)
+                    .style("fill", "black")
+                    .attr("stroke", "black")
+
+                removeLoadingCreated = true
+            } else {
+                loading.selectAll("rect")
+                    .transition()
+                    .ease(d3.easeLinear)
+                    .style("fill", function (d) {
+                        if (elapsed % 2000 > 1000)
+                            return "white"
+                        return "black"
+                    })
+            }
+
+
+            if (removeLoading) { //hide loading screen
+                // document.getElementsByTagName("body")[0].style = '' //re-enable scrolling
+                let divs = document.getElementsByTagName("div") //rerender all elements
+                for (let i = 0; i < divs.length; i++) {
+                    divs[i].style = 'visibility : visible'
                 }
+                loading_background  //hide loading screen
+                    .style("visibility", "hidden")
+                finishedLoading = true
+                if (!tutorial_started) {
+                    set_up_axis_and_labels()
+                    tutorial_started = true
+                }
+                if (!tutorial_finished) {
+                    tutorial(elapsed)
+                } else {
+                    // console.log("Timer stopped")
+                    timer.stop()
+                }
+
+            }
+        } else { //during loading
+
+            var loading = loading_background.select("svg")
+            if (elapsed >= timeinterval / 2) { //display second paragraph
+                loading.selectAll("text").remove()
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "0em")
+                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "1.5em")
+                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "3em")
+                    .text("citing various reasons such as defamation, national security, and fraud.")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "4.5em")
+                    .text("Where in the world are the most removal requests coming from?")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "6em")
+                    .text("Does Google grant requests from different regions equally, or is there a difference depending on the region?")
+                loading.append("text")
+                    .attr("class", "loading-text")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight / 2 - 150) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 20)
+                    .attr("dy", "20")
+                    .attr("dy", "7.5em")
+                    .text("Let's explore...")
+
+
+                loading.append("text")
+                    .attr("class", "loading-words")
+                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
+                        (window.innerHeight * 2 / 3 - 100) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", 16)
+                    .attr("dy", "20")
+                    .text("Loading...")
+            }
+            loading.selectAll("circle")
+                .transition()
+                .ease(d3.easeLinear)
+                .style("fill", function (d, i) { //filling magic
+                    if (((timeinterval / 5) / (numcircles + 1)) * i < elapsed % (timeinterval / 5)) {
+                        return circles_colors(i)
+                    } else {
+                        return "white"
+                    }
+                })
+
+        }
+        timer_ctr += 1
+    }
+
+    const get_countrget_country_flag_big_icon_url_icon_url = (country_name) => {
+        //console.log(country_name)
+        let country_code = country_code_mapping[country_name]
+        //console.log(country_code)
+        let url = `https://flagcdn.com/h240/${country_code}.png`
+        return url
+    }
+
+    const get_country_flag_small_icon_url = (country_name) => {
+        let country_code = country_code_mapping[country_name]
+        let url = `https://flagcdn.com/16x12/${country_code}.png`
+        return url
+    }
+
+    //Check to see if two circles intersect each other
+    //c1 - [x1, y1] circle 1 center
+    //r1 - radius of circle 1
+    //c2 - [x2, y2] circle 2 center
+    //r2 - radius of circle 2
+    const check_intersection = (c1, r1, c2, r2) => {
+        d = Math.sqrt((c1[0] - c2[0]) * (c1[0] - c2[0]) + (c1[1] - c2[1]) * (c1[1] - c2[1]))
+        if ((d <= r1 - r2) || (d <= r2 - r1) || (d < r1 + r2) || (d == r1 + r2))
+            return true
+        return false
+    }
+
+    //A circle takes up a x-span of space. i.e. [c-r, c+r]
+    //You can check to see if any circles cross that plane; they have to in order to intersect the circle
+    const check_breaks_plane = (c1, r1, c2, r2) => {
+        let left = c1[0] - r1
+        let right = c1[0] + r1
+        if (((c2[0] + r2 > left) && c2[0] <= c1[0]) || ((c2[0] - r2 < right) && c2[0] >= c1[0])) {
+            return true
+        }
+        return false
+    }
+
+    const get_possible = (c1, r1, c2, r2) => {
+        var xlen = Math.abs(c1[0] - c2[0])
+        var hypot = Math.abs(r1 + r2)
+        if (xlen == 0) {
+            return [c2[1] - r2 - r1, c2[1] + r2 + r1]
+        }
+        var delta = Math.sqrt(Math.pow(hypot, 2) - Math.pow(xlen, 2))
+        return [c2[1] - delta, c2[1] + delta]
+    }
+
+    //Let code merge ranges (because the ends are the "best" placements for the circles)
+    const merge_ranges = (intervals, r) => {
+        var result = []
+        var previous = intervals[0]
+
+        for (let i = 1; i < intervals.length; i += 1) {
+            if (previous[1] >= intervals[i][0]) {
+                previous = [previous[0], Math.max(previous[1], intervals[i][1])]
+            } else {
+                result.push(previous)
                 previous = intervals[i]
             }
-            if(Math.abs(((bubble_height + margin.top)/2.0)-previous[1]) < Math.abs(((bubble_height + margin.top)/2.0)-best)){
-                best = previous[1]
-            }
-
-            return best;
         }
+        result.push(previous)
 
+        intervals = result
+        // console.log(intervals)
+        var previous = intervals[0]
 
-        //Find the best y-values for the points
-        function open_y(placed_circles, result_y, this_point, xScale, sizeScale) {
-            if(placed_circles.length == 0) {
-                return new Promise(resolve =>setTimeout(() => resolve(result_y), 1));
-            }
-
-            //Find the circles that broke the plane
-            temp_placed_circles = []
-            this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
-            this_radius = sizeScale(this_point[1])
-            placed_circles.forEach(function(d) {
-                other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
-                other_radius = sizeScale(d[1])
-                if(check_breaks_plane(this_center, this_radius, other_center, other_radius)){
-                    temp_placed_circles.push(d)
+        //Find the value that closest to the axis
+        var best = previous[0]
+        for (let i = 1; i < intervals.length; i += 1) {
+            if (intervals[i][0] - previous[1] >= r * 2) { //Make sure that the space is large enough for the diameter
+                if (Math.abs(((bubble_height + margin.top) / 2.0) - previous[1]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
+                    best = previous[1]
                 }
-            })
-            if(temp_placed_circles.length == 0)
-            {
-                return new Promise(resolve =>setTimeout(() => resolve(result_y), 1));
+                if (Math.abs(((bubble_height + margin.top) / 2.0) - intervals[i][0]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
+                    best = intervals[i][0]
+                }
             }
-
-            //For each circle that broke the plane, see the two ends of valid values
-            var valid_heights = []
-            temp_placed_circles.forEach(function(d) {
-                other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
-                other_radius = sizeScale(d[1])
-                valid_heights.push(get_possible(this_center, this_radius, other_center, other_radius))
-            })
-            
-            //Combine the ranges and pick a single best point
-            best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
-            return new Promise(resolve =>setTimeout(() => resolve(best_place), 1));
+            previous = intervals[i]
+        }
+        if (Math.abs(((bubble_height + margin.top) / 2.0) - previous[1]) < Math.abs(((bubble_height + margin.top) / 2.0) - best)) {
+            best = previous[1]
         }
 
-        async function drawBubble() {
+        return best
+    }
 
-            const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width+margin.left])
-            const sizeScale = d3.scaleLog().domain([d3.least(country_counts, ([, v]) => v)[1], d3.greatest(country_counts, ([, v]) => v)[1]]).range([5,50])
-            const countryColorScale = d3.scaleOrdinal().domain(continents_country.keys()).range(d3.schemeTableau10)
 
+    //Find the best y-values for the points
+    const open_y = (placed_circles, result_y, this_point, xScale, sizeScale) => {
+        if (placed_circles.length == 0) {
+            return new Promise(resolve => setTimeout(() => resolve(result_y), 1))
+        }
+        const get_halo_stroke_width = (radius) => {
+            if (radius >= 5 && radius <= 10) {
+                return 2
+            } else if (radius > 10 && radius <= 20) {
+                return 3
+            } else if (radius > 20 && radius <= 40) {
+                return 4
+            } else if (radius > 40) {
+                return 5
+            } else {
+                return 1
+            }
+        }
+
+        //Find the circles that broke the plane
+        temp_placed_circles = []
+        this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
+        this_radius = sizeScale(this_point[1]) //+ get_halo_stroke_width(sizeScale(this_point[1]))
+        placed_circles.forEach(d => {
+            other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
+            other_radius = sizeScale(d[1]) + get_halo_stroke_width(sizeScale(d[1]))
+            if (check_breaks_plane(this_center, this_radius, other_center, other_radius)) {
+                temp_placed_circles.push(d)
+            }
+        })
+        if (temp_placed_circles.length == 0) {
+            return new Promise(resolve => setTimeout(() => resolve(result_y), 1))
+        }
+
+        //For each circle that broke the plane, see the two ends of valid values
+        var valid_heights = []
+        temp_placed_circles.forEach(d => {
+            other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
+            other_radius = sizeScale(d[1]) + get_halo_stroke_width(sizeScale(d[1]))
+            valid_heights.push(get_possible(this_center, this_radius, other_center, other_radius))
+        })
+
+        //Combine the ranges and pick a single best point
+        best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
+        return new Promise(resolve => setTimeout(() => resolve(best_place), 1))
+    }
+
+    const xScale = d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width])
+
+    const continentColorScale = d3.scaleOrdinal().domain(continent_to_country.keys()).range(d3.schemeTableau10)
+
+    const preprocess_countries = async () => {
+        const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
+            (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
+            d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
+        var latScale = d3.scaleLinear().domain([90, -60]).range([0, bubble_height])
+        var longScale = d3.scaleLinear().domain([-140, 180]).range([0, bubble_width])
+
+        var countries_preprocessed = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
+        countries_pre_tutorial = Array.from(percents_items).sort((a, b) => d3.descending(a[1], b[1]))
+
+        //append initial y-value and opacity is full
+        countries_preprocessed.forEach((d, i) => {
+            countries_preprocessed[i] = countries_preprocessed[i].concat((bubble_height + margin.top) / 2.0)
+            countries_preprocessed[i] = countries_preprocessed[i].concat(true)
+            countries_pre_tutorial[i] = [...countries_preprocessed[i]]
+            var random = d3.randomUniform(-100000, -1000)()
+            if (i != 4)
+                countries_pre_tutorial[i][2] = random//random location off the screen
+
+        })
+        for (let i in countries_preprocessed) {
+            countries_preprocessed[i][2] = await open_y(countries_preprocessed.filter((e, j) => j < i),
+                countries_preprocessed[i][2], countries_preprocessed[i], xScale, sizeScale)
+        }
+        countries_pre_tutorial[4][2] = countries_preprocessed[4][2]
+
+        countries_sorted = countries_preprocessed
+        // console.log("finished processing")
+    }
+
+    const createIcons = async () => {
+
+        const getId = d => d.toLowerCase().replace(/ /g, "-")
+
+        //create country flags
+        //console.log(countries_sorted)
+        defs.selectAll(".country-pattern")
+            .data(countries_sorted)
+            .join(
+                enter => enter.append("pattern")
+                    .attr("class", "country-pattern")
+                    .attr("id", d => getId(d[0]))
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("patternContentUnits", "objectBoundingBox")
+                    .append("image")
+                    .attr("height", 1)
+                    .attr("width", 1)
+                    .attr("preserveAspectRatio", "xMidYMin slice")
+                    .attr("xlink:href", d => get_countrget_country_flag_big_icon_url_icon_url(d[0])
+                    ),
+                exit => exit
+                    .remove()
+            )
+    }
+
+    const drawBubble = async () => {
+        var latScale = d3.scaleLinear().domain([90, -60]).range([0, bubble_height])
+        var longScale = d3.scaleLinear().domain([-140, 180]).range([0, bubble_width])
+        const getId = d => d.toLowerCase().replace(/ /g, "-")
+
+        const sizeScale = d3.scaleLog().domain([d3.least(percents_items, ([, v]) => v)[1],
+            (d3.least(percents_items, ([, v]) => v)[1] + d3.greatest(percents_items, ([, v]) => v)[1]) / 2.0,
+            d3.greatest(percents_items, ([, v]) => v)[1]]).range([(width / 1920) * 5, (width / 1920) * 35, (width / 1920) * 70])
+
+        const fillScale = d3.scaleLinear().domain([0.0, 1.0]).range(["white", "black"])
+
+        const get_halo_stroke_width = (radius) => {
+            if (radius >= 5 && radius <= 10) {
+                return 2
+            } else if (radius > 10 && radius <= 20) {
+                return 3
+            } else if (radius > 20 && radius <= 40) {
+                return 4
+            } else if (radius > 40) {
+                return 5
+            } else {
+                return 1
+            }
+        }
+
+        const subset_countries = () => {
             //Sort most requests to least
-            var countries_sorted =  Array.from(country_counts).sort((a, b) => d3.descending(a[1], b[1]))//.filter(function (d) { return d[1] > 500})
+            var subset_countries = countries_sorted
+            // console.log("countries sorted: ", countries_preprocessed)
+            //filter based on dropdown
+            switch (continent_mapping_a[current_continent]) {
+                case "NA":
+                    subset_countries = countries_sorted.filter(d => continent_to_country.get("NA").has(d[0]))
+                    break
+                case "SA":
+                    subset_countries = countries_sorted.filter(d => continent_to_country.get("SA").has(d[0]))
+                    break
+                case "AS":
+                    subset_countries = countries_sorted.filter(d => continent_to_country.get("AS").has(d[0]))
+                    break
+                case "OC":
+                    subset_countries = countries_sorted.filter(d => continent_to_country.get("OC").has(d[0]))
+                    break
+                case "AF":
+                    subset_countries = countries_sorted.filter(d => continent_to_country.get("AF").has(d[0]))
+                    break
+                case "EU":
+                    subset_countries = countries_sorted.filter(d => continent_to_country.get("EU").has(d[0]))
+                    break
 
-            countries_sorted.forEach(function (d, i){
-                countries_sorted[i] = countries_sorted[i].concat((bubble_height + margin.top)/2.0)
-            })
+            }
+            return subset_countries
+        }
 
-            //Create the circles after finding their best y-value
-            var temp_countries_sorted;
-            for(i in countries_sorted) {
-                countries_sorted[i][2] = await open_y(countries_sorted.filter(function (e,j) {return j<i}), countries_sorted[i][2], countries_sorted[i], xScale, sizeScale)
-                temp_countries_sorted = countries_sorted.filter(function (e,j) {return j<=i});
+        //hide/show axis based on radio button value
 
-                svg_bubble.selectAll("circle")
-                .data(temp_countries_sorted)
-                .join(
-                enter => enter.append("circle")
-                .attr("country", d=>d[0])
-                .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
-                .attr("cy", d => d[2])
-                .transition().duration(1000)
-                .attr("r", d => sizeScale(d[1]))
-                .attr("fill", d => countryColorScale(d[0]))
-                )
-                .on("mouseover", function(event, d) {
-                    tooltip
-                    .style("opacity", 1)
-                })
-                .on("mousemove", function(event, d) {
-                    tooltip
-                    .html('<u>' + d[0] + '</u>' + "<br>Removal Requests: " + d[1] + "<br>%Removed: " + percents_removed_percent.get(d[0]))
-                    .style("left", (event.pageX+20) + "px")
-                    .style("top", (event.pageY-30) + "px")
-                })
-                .on("mouseleave", function(event, d) {
-                    tooltip
-                    .style("opacity", 0)
-                })
+        if (visChanged) {
+            svg_bubble.selectAll(".x-axis").style("opacity", "0")
+            svg_bubble.selectAll(".x-axis-label").style("opacity", "0")
+            svg_bubble.selectAll(".quadrant-line").style("opacity", "0")
+            svg_bubble.selectAll(".quadrant-line-label").style("opacity", "0")
+        } else {
+            svg_bubble.selectAll(".x-axis").style("opacity", "1")
+            svg_bubble.selectAll(".x-axis-label").style("opacity", "1")
+            svg_bubble.selectAll(".quadrant-line").style("opacity", "1")
+            svg_bubble.selectAll(".quadrant-line-label").style("opacity", "1")
+        }
+
+        //show/hide legend
+        if (visChanged) {
+            d3.select(".vis2-legend").style("display", "block")
+        } else {
+            d3.select(".vis2-legend").style("display", "none")
+        }
+        //set active countries based on current select continent
+        let country_selection = subset_countries()
+        countries_sorted.forEach(function (d, i) {
+            if (country_selection.includes(d)) {
+                countries_sorted[i][3] = true
+            } else {
+                countries_sorted[i][3] = false
             }
 
+        })
+
+        function draw_bar_chart(d, split_text) {
+            tooltip
+                .style("display", "block")
+                .style("opacity", 1)
+
+                .style("border", `2px solid ${continentColorScale(country_to_continent.get(d[0]))}`)
+
+            tooltip.select("u").html(d[0])
+            tooltip.select("img").attr("src", get_country_flag_small_icon_url(d[0]))
+            tooltip.select("#removal-request-num").html(d[1])
+            tooltip.select("#percent-removed").html(Math.round(percents_removed_percent.get(d[0]) * 10000) / 100)
+
+
+            //display bar chart (only showing top 5)
+            let barChartWidth = (document.documentElement.clientWidth * 0.3 - 120)
+            let barchartHeight = 200
+            let innerMapPlatforms = Array.from(country_platforms.get(d[0]))
+            let innerMapReasons = Array.from(country_reasons.get(d[0]))
+
+            //calculate percentage for both maps
+            let platformsTotal = innerMapPlatforms.reduce((a, b) => a + b[1], 0)
+            let reasonsTotal = innerMapReasons.reduce((a, b) => a + b[1], 0)
+
+            innerMapPlatforms = innerMapPlatforms.map(d => [d[0], d[1] / platformsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapPlatforms.length, 5)).reverse()
+            innerMapReasons = innerMapReasons.map(d => [d[0], d[1] / reasonsTotal * 100]).sort((a, b) => d3.descending(a[1], b[1])).slice(0, Math.min(innerMapReasons.length, 5)).reverse()
+
+            let xScaleBarChart = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, barChartWidth - 5])
+
+            let yScaleBarChartPlatforms = d3.scaleBand()
+                .domain(innerMapPlatforms.map(d => d[0]))
+                .range([barchartHeight, 0]).paddingInner(0.1)
+
+
+            let yScaleBarChartReasons = d3.scaleBand()
+                .domain(innerMapReasons.map(d => d[0]))
+                .range([barchartHeight, 0]).paddingInner(0.1)
+
+            let barChartColorScalePlatforms = d3.scaleOrdinal().domain(innerMapPlatforms.map(d => d[0])).range(d3.schemeTableau10)
+            let barChartColorScaleReasons = d3.scaleOrdinal().domain(innerMapReasons.map(d => d[0])).range(d3.schemeTableau10)
+
+            let barChartXAxis = d3.axisBottom(xScaleBarChart)
+            let firstBarChartYAxis = d3.axisLeft(yScaleBarChartPlatforms)
+            let secondBarChartYAxis = d3.axisLeft(yScaleBarChartReasons)
+
+            //clear previous charts
+            tooltip.selectAll(".bar-chart-container svg").remove()
+
+            //first bar chart
+            let firstBarChart = tooltip.select("#first-bar-chart-container").append("svg")
+                .style("width", "100%")
+                .style("height", "100%")
+                .attr("class", "bar-chart")
+                .attr("id", "first-bar-chart")
+
+
+            firstBarChart.append("g")
+                .attr("class", "first-bar-chart-x-axis")
+                .attr("transform", "translate(110," + barchartHeight + ")")
+                .call(barChartXAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .style("font-size", "13")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)")
+
+            firstBarChart.append("g")
+                .attr("class", "first-bar-chart-y-axis")
+                .attr("transform", "translate(110,0)")
+                .call(firstBarChartYAxis)
+                .selectAll("text")
+                .style("font-size", "13")
+                .call(split_text())
+            // .attr("transform","rotate(-15)")
+
+            firstBarChart.append("text")
+                .text("Percentage(of all platforms)")
+                .style("font-size", "15px")
+                .style("text-anchor", "right")
+                .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
+            firstBarChart.selectAll("rect.bar")
+                .data(innerMapPlatforms)
+                .join(
+                    enter => enter
+                        .append("rect")
+                        .attr("class", "bar")
+                        .attr("x", d => xScaleBarChart(0) + 110)
+                        .attr("height", yScaleBarChartPlatforms.bandwidth())
+                        .attr("y", d => yScaleBarChartPlatforms(d[0]))
+                        .attr("fill", continentColorScale(country_to_continent.get(d[0])))
+                        .attr("width", 0)
+                        .transition().duration(500)
+                        .attr("width", d => xScaleBarChart(d[1]))
+                )
+
+            firstBarChart.selectAll("text.bar")
+                .data(innerMapPlatforms)
+                .enter()
+                .append("text")
+                .attr("class", "bar")
+                .attr("text-anchor", "start")
+                .attr("x", d => {
+                    let temp = xScaleBarChart(d[1])
+                    if (temp >= xScaleBarChart.range()[1] - 30) { //if the text is too close to the end of the bar, display inside the bar
+                        return temp + 70
+                    } else {
+                        return temp + 115
+                    }
+
+                })
+                .attr("y", d => yScaleBarChartPlatforms(d[0]) + yScaleBarChartPlatforms.bandwidth() / 2 + 5)
+                .style("font-size", "13px")
+                .text(d => Math.round(d[1] * 100) / 100)
+
+            //second bar chart
+            let secondBarChart = tooltip.select("#second-bar-chart-container").append("svg")
+                .style("width", "100%")
+                .style("height", "100%")
+                .attr("class", "bar-chart")
+                .attr("id", "second-bar-chart")
+
+
+            secondBarChart.append("g")
+                .attr("class", "second-bar-chart-x-axis")
+                .attr("transform", "translate(110," + barchartHeight + ")")
+                .call(barChartXAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .style("font-size", "13")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)")
+
+            secondBarChart.append("g")
+                .attr("class", "second-bar-chart-y-axis")
+                .attr("transform", "translate(110,0)")
+                .call(secondBarChartYAxis)
+                .selectAll("text")
+                .style("font-size", "13")
+                .call(split_text())
+            // .attr("transform","rotate(-15)")
+
+            secondBarChart.append("text")
+                .text("Percentage(of all products)")
+                .style("font-size", "15px")
+                .style("text-anchor", "right")
+                .attr("transform", `translate(${barChartWidth / 2},${barchartHeight + 50})`)
+
+
+            secondBarChart.selectAll("rect.bar")
+                .data(innerMapReasons)
+                .join(
+                    enter => enter
+                        .append("rect")
+                        .attr("class", "bar")
+                        .attr("x", d => xScaleBarChart(0) + 110)
+                        .attr("height", yScaleBarChartReasons.bandwidth())
+                        .attr("y", d => yScaleBarChartReasons(d[0]))
+                        .attr("fill", continentColorScale(country_to_continent.get(d[0])))
+                        .attr("width", 0)
+                        .transition().duration(500)
+                        .attr("width", d => xScaleBarChart(d[1]))
+                )
+
+            secondBarChart.selectAll("text.bar")
+                .data(innerMapReasons)
+                .enter()
+                .append("text")
+                .attr("class", "bar")
+                .attr("text-anchor", "start")
+                .attr("x", d => {
+                    let temp = xScaleBarChart(d[1])
+                    if (temp >= xScaleBarChart.range()[1] - 15) { //if the text is too close to the end of the bar, display inside the bar
+                        return temp + 70
+                    } else {
+                        return temp + 115
+                    }
+
+                })
+                .attr("y", d => yScaleBarChartReasons(d[0]) + yScaleBarChartReasons.bandwidth() / 2 + 5)
+                .style("font-size", "13px")
+                .text(d => Math.round(d[1] * 100) / 100)
         }
 
-        async function ready() {
-            products_data = await d3.csv("removal-requests-products.csv");
-            percents_data = await d3.csv("removal-requests-percents.csv");
+        if (tutorialCtr < tutorialSteps) {
+            var node = svg_bubble.selectAll("circle.country")
+                .data(countries_pre_tutorial)
+                .join(
+                    enter => enter.append("circle")
+                        .attr("class", "country")
+                        .attr("id", d => d[0].replace(/\s+/g, '-').toLowerCase())
+                        .attr("country", d => d[0])
+                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                        .attr("cy", d => d[2])
+                        .transition().duration(1000)
+                        .attr("r", (d, i) => sizeScale(d[1]))
+                        .attr("fill", d => `url(#${getId(d[0])})`)
+                        .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
+                        .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
+                    ,
+                    update => update
+                        .style("opacity", function (d) {
+                            if (d[3]) {
+                                return 1
+                            }
+                            return 0.1
+                        })
+                        .transition().ease(d3.easeExpOut).duration(1000)
+                        .attr("cy", d => d[2])
+                    ,
 
-            //aggregate_countries()
+                    exit => exit.remove()
+                )
 
-            country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+        } else {
+            //draw circles
+            var node = svg_bubble.selectAll("circle.country")
+                .data(countries_sorted)
+                .join(
+                    enter => enter.append("circle")
+                        .attr("class", "country")
+                        .attr("id", d => d[0].replace(/\s+/g, '-').toLowerCase())
+                        .attr("country", d => d[0])
+                        .attr("cx", d => xScale(percents_removed_percent.get(d[0])))
+                        .attr("cy", d => d[2])
+                        .attr("r", d => sizeScale(d[1]))
+                        // .attr("fill", d => countryColorScale(d[0]))
+                        .attr("fill", d => `url(#${getId(d[0])})`)
+                        .attr("stroke", d => continentColorScale(country_to_continent.get(d[0])))
+                        .attr("stroke-width", d => get_halo_stroke_width(sizeScale(d[1])))
+                    ,
+                    update => update
+                        .style("opacity", function (d) {
+                            if (d[3]) {
+                                return 1
+                            }
+                            return 0.1
+                        })
+                        .transition().ease(d3.easeLinear).duration(10000)
+                        .attr("fill", function (d) {
+                            if (visChanged)
+                                return fillScale(percents_removed_percent.get(d[0]))
+                            return `url(#${getId(d[0])})`
+                        })
+                    ,
 
-            //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
-            //can be changed
-            percents_items_normalized = d3.rollup(percents_data, v => d3.sum(v, d => (+d.items)*((+d.removed_legal+(+d.removed_policy))/100.0)), d => d.country)
-            percents_items = d3.rollup(percents_data, v => d3.sum(v, d => +d.items), d => d.country)
-            percents_removed_percent = new d3.InternMap()
-            Array.from(percents_items.keys()).forEach(e => {
-                percents_removed_percent.set(e, percents_items_normalized.get(e)/percents_items.get(e))
-            });
+                    exit => exit.remove()
+                )
+                .on("mouseover", (event, d) => {
 
-            //remove countries from country counts that arent in the percentages table
-            Array.from(country_counts.keys()).forEach(e => {
-                if(!percents_removed_percent.has(e)) {
-                    country_counts.delete(e);
-                }
-            });
+                    if (d[3]) { //only if node is active
+                        draw_bar_chart(d, split_text)
 
-            //country_continents = d3.group(percents_data, d => d.continent, d=> d.country)
-            percents_data.forEach(e => {
-                var continent = e.continent;
-                var country = e.country;
-                if(!continents_country.has(continent)) {
-                    continents_country.set([country])
+                    }
+
+                    function split_text() { //split a long y axis label into multiple lines
+                        return function (t) {
+                            t.each(function (d) {
+                                let self = d3.select(this)
+                                let s = self.text().split('/').join(' ').split(' ')
+                                if (s.length == 2 && self.text().length > 15) {
+                                    self.text(null)
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .text(s[0])
+
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 15)
+                                        .text(s[1])
+                                }
+                                if (s.length >= 5 && self.text().length > 30) {
+                                    //split into 3 lines
+                                    self.text(null)
+
+                                    //line 1
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .text(s[0] + " " + s[1])
+
+                                    //line 2
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 10)
+                                        .text(s[2] + " " + s[3])
+
+                                    //line 3
+                                    let temp = ""
+                                    for (let i = 4; i < s.length; i++) {
+                                        if (i != s.length - 1) {
+                                            temp += s[i] + " "
+                                        } else {
+                                            temp += s[i]
+                                        }
+
+                                    }
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 10)
+                                        .text(temp)
+
+
+                                } else if (s.length > 2) {
+                                    self.text(null)
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .text(s[0] + " " + s[1])
+
+                                    let temp = ""
+                                    for (let i = 2; i < s.length; i++) {
+                                        if (i != s.length - 1) {
+                                            temp += s[i] + " "
+                                        } else {
+                                            temp += s[i]
+                                        }
+
+                                    }
+                                    self.append("tspan")
+                                        .attr("x", -10)
+                                        .attr("dy", 15)
+                                        .text(temp)
+
+                                } else {
+
+                                }
+
+                            })
+                        }
+                    }
+                })
+
+                .on("mouseleave", (event, d) => {
+                    tooltip
+                        .style("opacity", 0)
+                })
+                .call(d3.drag() // call specific function when circle is dragged
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+
+
+            function fixPosition(d) {
+                d.fx = d3.randomUniform(-1000, 1000)()
+                d.fy = d3.randomUniform(-2000, -1000)()
+            }
+
+            function movePosition(d) {
+                simulation.alphaTarget(0.03).restart()
+                d.fx = null
+                d.fy = null
+            }
+
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(.03).restart()
+                d.fx = d.x
+                d.fy = d.y
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x
+                d.fy = event.y
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(.03)
+                d.fx = null
+                d.fy = null
+            }
+
+
+            if (!simulationCreated) {
+                // console.log(visChanged)
+                if (simulationExtra) {
+                    // console.log("in extra")
+                    if (visChanged) {
+                        simulation.force("y", d3.forceY().strength(1).y(function (d) {
+                            return latScale(country_location.get(country_code_mapping[d[0]])[1])
+                        }))
+                            .force("x", d3.forceX().strength(1).x(function (d) {
+                                return longScale(country_location.get(country_code_mapping[d[0]])[0])
+                            }))
+                            .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                                if (d[3]) {
+                                    return sizeScale(d[1])
+                                } else {
+                                    return -1
+                                    // console.log(d)
+                                }
+                            }).iterations(1)).alpha(0.05)
+                    } else {
+                        simulation.force("y", d3.forceY().strength(1).y(function (d) {
+                            return d[2]
+                        }))
+                            .force("x", d3.forceX().strength(1).x(function (d) {
+                                return xScale(percents_removed_percent.get(d[0]))
+                            }))
+                            .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                                if (d[3]) {
+                                    return sizeScale(d[1])
+                                } else {
+                                    return -1
+                                    // console.log(d)
+                                }
+                            }).iterations(1)).alpha(0.05)
+                    }
                 } else {
-                    continents_country.set(continents_country.get(continent).append(country))
-                }
-                if(!country_continent.has(country)) {
-                    country_continent.set(continent)
-                }
-            });
+                    // console.log("in")
+                    simulation = d3.forceSimulation()
+                        .force("y", d3.forceY().strength(.5).y(function (d) {
+                            return d[2]
+                        }))
+                        .force("x", d3.forceX().strength(.5).x(function (d) {
+                            return xScale(percents_removed_percent.get(d[0]))
+                        }))
+                        .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
+                            if (d[3]) {
+                                return sizeScale(d[1])
+                            } else {
+                                return -1
+                                // console.log(d)
+                            }
+                        }).iterations(1))
 
-            drawBubble()
+                    simulation
+                        .nodes(countries_sorted)
+                        .on("tick", function () {
+                            //console.log(simulation.alpha());
+                            if (tutorialCtr == tutorialSteps) {
+                                svg_bubble.selectAll("circle.country").each(function (d, i) {
+                                    if (i != 4 && i != 9)
+                                        fixPosition(d)
+                                })
+                                simulation.alpha(0.05).restart()
+                            } else if (tutorialCtr == tutorialSteps + 1) {
+                                node
+                                    .attr("cx", function (d) {
+                                        return d.x
+                                    })
+                                    .attr("cy", function (d) {
+                                        return d.y
+                                    })
+                                svg_bubble.selectAll("circle.country").each(function (d) {
+                                    movePosition(d)
+                                })
+                                simulation.alpha(0.05)
+                                tutorialCtr += 1
+                            } else {
+                                node
+                                    .attr("cx", function (d) {
+                                        //if(visChanged)
+                                        //  return longScale(country_location.get(country_code_mapping[d[0]])[0])
+                                        //if(d[0] == 'Russia')
+                                        //   console.log(d)
+                                        return d.x
+                                    })
+                                    .attr("cy", function (d) {
+                                        //if(visChanged)
+                                        //  return latScale(country_location.get(country_code_mapping[d[0]])[1])
+                                        return d.y
+                                    })
+                            }
+                        })
+                    simulationExtra = true
+                }
+                simulationCreated = true
+            }
         }
-        
+    }
 
-        ready(); 
-    </script>
+
+    //parse the csv files and perform calculations
+    const prep_data = () => {
+
+        country_counts = d3.rollup(products_data, v => d3.sum(v, d => +d.total), d => d.country)
+        country_platforms = d3.rollup(products_data, v => d3.sum(v, d => d.total), d => d.country, d => d.product)
+        country_reasons = d3.rollup(products_data, v => d3.sum(v, d => d.total), d => d.country, d => d.reason)
+
+        //go through every row and multiply the number of items requested to be removed by the percent of the 2 removed categories
+        //can be changed
+        percents_items_normalized = d3.rollup(percents_data, v => d3.sum(v, d => (+d.items) * ((+d.removed_legal + (+d.removed_policy)) / 100.0)), d => d.country)
+        percents_items = d3.rollup(percents_data, v => d3.sum(v, d => +d.items), d => d.country)
+        percents_removed_percent = new d3.InternMap()
+        Array.from(percents_items.keys()).forEach(e => {
+            percents_removed_percent.set(e, percents_items_normalized.get(e) / percents_items.get(e))
+        })
+
+        //remove countries from country counts that aren't in the percentages table
+        Array.from(country_counts.keys()).forEach(e => {
+            if (!percents_removed_percent.has(e)) {
+                country_counts.delete(e)
+            }
+        })
+
+        //country_continents = d3.group(percents_data, d => d.continent, d=> d.country)
+
+        //create mappings: continents ->countries, country->continent
+        percents_data.forEach(e => {
+            let continent = e.continent
+            let country = e.country
+
+            //continents -> countries
+            if (!continent_to_country.has(continent)) {
+                continent_to_country.set(continent, new Set([country]))
+            } else {
+                continent_to_country.get(continent).add(country)
+            }
+
+            //countries -> continents
+            country_to_continent.set(country, continent)
+
+        })
+
+        country_location = new d3.InternMap()
+        country_location_temp.forEach(e => {
+            let country_code = e.country_code.toLowerCase()
+            percents_data.forEach(g => {
+                if (country_code_mapping[g.country] == country_code) {
+                    country_location.set(country_code, [e.longitude, e.latitude])
+                }
+            })
+        })
+
+        percents_data.forEach(g => {
+            let found = false
+            country_location_temp.forEach(e => {
+                let country_code = e.country_code.toLowerCase()
+                if (country_code_mapping[g.country] == country_code) {
+                    found = true
+                }
+            })
+        })
+        // console.log(continent_to_country)
+
+    }
+
+    const set_up_axis_and_labels = () => {
+        if (finishedLoading) { //move "loading dots" to legend location
+            svg_bubble.selectAll(".mydots")
+                .transition()
+                .ease(d3.easeLinear)
+                .duration(1250)
+                .attr("cx", width - margin.right - 150)
+                .attr("cy", function (d, i) {
+                    return 100 + i * 25
+                }) // 100 is where the first dot appears. 25 is the distance between dots
+                .attr("r", 7)
+
+        } else {
+            //add axis and text
+
+            //x-axis
+            let xAxis = svg_bubble.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(" + 0 + "," + (bubble_height + margin.top) / 2.0 + ")")
+                .call(d3.axisBottom(d3.scaleLinear().domain([0, 1]).range([margin.left, bubble_width + 50])).tickValues([]).tickSize(0))
+
+            xAxis
+                .attr("stroke-width", "5")
+
+            //x-axis label
+            svg_bubble.append("text")
+                .attr("class", "x-axis-label")
+                .attr("transform", "translate(" + (width - margin.right - 50) + " ," +
+                    (height / 2 + 75) + ")")
+                .style("text-anchor", "middle")
+                .attr("dy", "12")
+                .text("% of Acceptance")
+
+
+            //draw lines that mark the quadrants
+            let quadrant_lines = svg_bubble.selectAll("lines.quadrant-line")
+                .data(quadrants)
+                .enter()
+                .append("line")
+            quadrant_lines.attr("class", "quadrant-line")
+                .attr("x1", d => xScale(d))
+                .attr("y1", margin.top + 20)
+                .attr("x2", d => xScale(d))
+                .attr("y2", height - 150)
+                .attr("stroke", "#f8e1ed")
+                .attr("stroke-width", 5)
+
+            //quadrant labels above line
+            let quadrant_lines_label = svg_bubble.selectAll("text.quadrant-line-label")
+                .data(quadrants)
+                .enter()
+                .append("text")
+
+            quadrant_lines_label
+                .attr("class", "quadrant-line-label")
+                .attr("transform", d => "translate(" + (xScale(d)) + " ," +
+                    (margin.top - 10) + ")")
+                .style("text-anchor", "middle")
+                .attr("dy", "12")
+                .text(d => `${d * 100}%`)
+
+            //add arrow at the end of x axis
+
+            defs.append("marker")
+                .attr("id", "arrowhead")
+                .attr("refX", 2)
+                .attr("refY", 7)
+                .attr("markerWidth", 8)
+                .attr("markerHeight", 13)
+                .attr("orient", "right")
+                .append("path")
+                .attr("d", "M2,2 L2,13 L8,7 L2,2")
+
+            xAxis.select("path").attr("marker-end", "url(#arrowhead)")
+
+            //add legend
+
+            var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, (window.innerWidth * 3) / 4])
+            var radius = 50
+            var element = document.getElementsByClassName("dropdown-wrapper")[0]
+            var dropdown_bounds = element.getBoundingClientRect()
+            var circles_colors = d3.scaleOrdinal().domain(d3.range(6)).range(d3.schemeTableau10)
+
+            for (i = 0; i < 6; i++) {
+                svg_bubble
+                    .append("circle")
+                    .attr("class", "mydots")
+                    .attr("cx", placement(i) - dropdown_bounds.left)
+                    .attr("cy", function () {
+                        return (window.innerHeight * 2 / 3) - dropdown_bounds.bottom
+                    })
+                    .attr("r", radius)
+                    .style("fill", circles_colors(i))
+                    .attr("stroke", "black")
+            }
+
+
+            //legend text
+            svg_bubble.selectAll("text.legend-label")
+                .data(Array.from(continent_to_country.keys()).map(d => continent_mapping_b[d]))
+                .enter()
+                .append("text")
+                .attr("class", "legend-label")
+                .attr("x", width - margin.right - 140)
+                .attr("y", (d, i) => 100 + i * 25)
+                .style("fill", d => continentColorScale(continent_mapping_a[d]))
+                .text(d => d)
+                .attr("text-anchor", "left")
+                .style("alignment-baseline", "middle")
+
+        }
+
+    }
+
+    const set_up_dropdown = () => {
+        d3.selectAll(".dropdown").selectAll('myOptions').data(dropdown_options).enter()
+            .append('option')
+            .text(d => d) // text showed in the menu
+            .attr("value", d => d)
+
+        d3.select(".dropdown")
+            .on("change", (e, d) => {
+                current_continent = e.currentTarget.value
+                // console.log(current_continent);
+
+                //draw bubble again
+                drawBubble()
+            })
+    }
+
+    function displayParagraphs() {
+        if (visChanged) {
+            d3.select(".text-container-p1").style("display", "none")
+            d3.select(".text-container-p2").style("display", "block")
+        } else {
+            d3.select(".text-container-p1").style("display", "block")
+            d3.select(".text-container-p2").style("display", "none")
+        }
+    }
+
+    const tutorial = async (elapsed) => {
+
+        var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 9, 16])
+
+        var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of its key features"],
+            ["Here is the United States.", " It's size is proportional to # of removal requests they've submitted.", "The larger the circle, the more requests!"],
+            ["The further to the right the country is, the more", "frequently their requests have been accepted by Google"],
+            ["A country's placement on y-axis doesn't mean anything.", "Multiple countries can share the same acceptance rate!"],
+            ["You can filter/organize by continent up here!"],
+            ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
+
+        if (tutorialCtr > textBlurbs.length - 1) { //tutorial finished
+            svg_bubble.selectAll("g.textbox").remove()
+            tutorial_finished = true
+
+            //reset opacity
+            svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 1)
+
+            displayParagraphs()
+            return
+        }
+        var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 2.8],
+            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
+            [bubble_width / 1.45, bubble_height / 2.5, bubble_height / 9, bubble_width / 3],
+            [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
+            [bubble_width / 100, bubble_height / 10, bubble_height / 9, bubble_width / 3.5],
+            [bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3]]
+
+        let highlights = [["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"],
+            ["#united-states"], ["#united-states", ".x-axis", ".quadrant-line", ".quadrant-line-label"],
+            ["#united-states", ".quadrant-line", ".quadrant-line-label", ".x-axis", "#brazil"],
+            ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".x-axis"],
+            ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"]]
+
+
+        //hide non-highlighted elements
+        var currentBlurb = textBlurbs[tutorialCtr]
+        d3.select(".dropdown-wrapper").style("opacity", 0.5)
+        d3.select(".button").style("opacity", 0.5)
+        svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 0.3)
+
+
+        var currentBlurb = textBlurbs[tutorialCtr]
+        if (!tutorialCreatedStep) {
+            svg_bubble.selectAll("g.textbox").remove()
+            var block = svg_bubble.append("g")
+                .attr("class", "textbox")
+
+            var translateTextBoxX = placements[tutorialCtr][0]
+            var translateTextBoxY = placements[tutorialCtr][1]
+            var textBoxHeight = placements[tutorialCtr][2]
+            var textBoxWidth = placements[tutorialCtr][3]
+
+            block.append("rect") //textbox
+                .attr("transform", "translate(" + translateTextBoxX + " ," + translateTextBoxY + ")")
+                .attr("height", textBoxHeight)
+                .attr("width", textBoxWidth)
+                .style("fill", "grey")
+                .attr("stroke", "black")
+                .attr("stroke-width", 5)
+                .style("opacity", 0.2)
+
+            block.append("rect")
+                .attr("class", "loading-square-thingy")
+                .attr("transform", "translate(" + (translateTextBoxX + textBoxWidth / 2) + " ," + (translateTextBoxY + textBoxHeight - 20) + ")rotate(45)")
+                .attr("height", 10)
+                .attr("width", 10)
+                .style("fill", "black")
+                .attr("stroke", "black")
+
+            for (i = 0; i < currentBlurb.length; i++) {
+                block.append("text")
+                    .attr("transform", "translate(" + (translateTextBoxX + textBoxWidth / 2) + " ," + (translateTextBoxY + (textBoxHeight * (i + 1)) / (currentBlurb.length + 1)) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-size", function (d) {
+                        return scaleText(bubble_width)
+                    })
+                    .text(currentBlurb[i])
+            }
+            tutorialCreatedStep = true
+        } else {
+            svg_bubble.selectAll("g.textbox").selectAll("rect.loading-square-thingy")
+                .transition()
+                .ease(d3.easeLinear)
+                .style("fill", function (d) {
+                    if (elapsed % 2000 > 1000)
+                        return "white"
+                    return "black"
+                })
+        }
+
+        //show highlighted elements
+        let highlighted = highlights[tutorialCtr]
+        for (let i = 0; i < highlighted.length; i++) {
+            d3.selectAll(highlighted[i]).style("opacity", 1)
+        }
+
+
+    }
+
+    const ready = async () => {
+        products_data = await d3.csv("removal-requests-products.csv")
+        percents_data = await d3.csv("removal-requests-percents.csv")
+        country_code_mapping = await d3.json("country-code-mapping.json")
+        country_location_temp = await d3.csv("country_location.csv")
+
+        timer = d3.timer(make_loading_screen)
+
+        //load dropdown
+        set_up_dropdown()
+
+        prep_data()
+
+        set_up_axis_and_labels()
+        await preprocess_countries()
+        await createIcons()
+
+        drawBubble()
+    }
+
+
+    ready()
+</script>
 
 </body>
 

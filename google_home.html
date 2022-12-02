@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    body {
+        color: #121212;
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+    }
+
+    .wrapper {
+        width: 600px;
+        margin: 0 auto;
+        margin-top: 200px;
+    }
+
+    .search_logo {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .search_logo svg {
+        height: 88px;
+    }
+
+    .search_bar {
+        height: 48px;
+        border: 3px solid rgba(131, 149, 179, 0.3);
+        border-radius: 16px;
+        display: flex;
+        padding-left: 24px;
+        padding-right: 4px;
+        justify-content: space-between;
+        box-shadow: 0 12px 20px 0 rgba(131, 149, 179, 0);
+        transition: 0.2s ease box-shadow, 0.2s ease border;
+        align-items: center;
+    }
+
+    .search_bar:hover,
+    .search_bar.focus {
+        border: 3px solid rgba(131, 149, 179, 0.6);
+        box-shadow: 0 12px 20px 0 rgba(131, 149, 179, 0.28);
+    }
+
+    .search_bar.empty {
+        border-bottom: 3px solid rgba(131, 149, 179, 0.6) !important;
+        border-bottom-left-radius: 16px !important;
+        border-bottom-right-radius: 16px !important;
+    }
+
+    .search_bar.focus {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: none;
+        box-shadow: none;
+    }
+
+    .search_icon {
+        width: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    input {
+        height: 42px;
+        padding: 0;
+        padding-left: 8px;
+        border: 0;
+        width: calc(100% - 96px);
+        font-size: 16px;
+        line-height: 30px;
+        letter-spacing: 0.5px;
+        font-weight: 300;
+        background-color: #fff;
+        font-family: inherit;
+    }
+
+    input:focus {
+        outline: none;
+        outline-offset: none;
+    }
+
+    .search_input input:hover ~ .search_bar {
+        box-shadow: 1px 1px 1px #0000;
+    }
+
+    .search_voice {
+        width: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 34px;
+        border-radius: 12px;
+        background-color: #fff;
+        transition: 0.4s background-color;
+        cursor: pointer;
+    }
+
+    .search_voice:hover {
+        background-color: #e8f0fe;
+    }
+
+    .search_voice svg {
+        width: 100%;
+    }
+
+    .search_results {
+        display: none;
+        height: 0%;
+        border: 3px solid rgba(131, 149, 179, 0.6);
+        padding: 0;
+        padding-top: 16px;
+        background-color: #fff;
+        margin: 0;
+    }
+
+    .search_results li {
+        display: flex;
+        align-items: center;
+        height: 56px;
+        padding: 0 24px;
+        position: relative;
+        cursor: pointer;
+        background-color: #fff;
+        transition: 0.2s background-color;
+    }
+
+    li:hover {
+        background-color: #e8f0fe !important;
+    }
+
+    li.result::before {
+        content: "";
+        position: absolute;
+        height: 2px;
+        width: calc(100% - 48px);
+        background-color: #8395b3;
+        opacity: 0.1;
+        bottom: 0;
+    }
+
+    .search_results li p {
+        margin: 0;
+        padding: 0 16px;
+        color: #121212;
+        line-height: 18px;
+    }
+
+    .search_results li p:last-child {
+        margin: 0;
+        padding: 0 16px;
+        color: rgba(131, 149, 179, 1);
+        font-size: 14px;
+        line-height: 18px;
+        font-weight: 400;
+    }
+
+    .search_results li p:first-child {
+        font-weight: 500;
+    }
+
+    .search_results.open {
+        display: block;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+        border-top: none;
+        max-height: 354px;
+        overflow: hidden;
+    }
+
+    .search_bar.empty ~ .search_results {
+        display: none;
+    }
+
+    .result_icon {
+        width: 32px;
+        height: 32px;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .search_btn {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    button {
+        padding: 0;
+        width: 200px;
+        height: 44px;
+        background-color: #e8f0fe;
+        border: none;
+        border-radius: 16px !important;
+        transition: 0.4s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden !important;
+        margin: 0 12px !important;
+    }
+
+    button:hover {
+        background-color: #4285f4;
+    }
+
+    button span {
+        font-weight: 500;
+        font-family: "Roboto", sans-serif;
+        font-size: 16px;
+    }
+
+    button span:first-child {
+        display: inline-flex;
+        vertical-align: middle;
+        transition: 0.4s ease;
+    }
+
+    button:hover span {
+        color: #fff;
+    }
+
+    button:hover span:first-child {
+        transform: translateY(-32px);
+    }
+
+    button span:last-child {
+        position: absolute;
+        top: 48px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        margin: 0;
+        padding: 0;
+        transition: 0.4s ease;
+        width: max-content;
+    }
+
+    button:hover span:last-child {
+        top: 28%;
+    }
+
+    button:focus {
+        outline: none !important;
+    }
+
+    .help {
+        position: absolute;
+        bottom: 20px;
+        text-align: center;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4285f4;
+        padding: 8px 16px;
+        border-radius: 20px;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    @media screen and (max-width: 768px) {
+        .wrapper {
+            width: 100%;
+            padding: 0 20px;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .search_btn {
+            display: grid;
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+            grid-template-columns: 1fr;
+        }
+
+        .search_btn button {
+            width: 100%;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        .search_btn a {
+            margin-top: 24px;
+        }
+    }
+
+</style>
+
+
+<form class="search_content">
+    <div class="wrapper">
+        <div class="search_logo">
+            <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"
+                      fill="#EA4335"/>
+                <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"
+                      fill="#FBBC05"/>
+                <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"
+                      fill="#4285F4"/>
+                <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"
+                      fill="#EA4335"/>
+                <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"
+                      fill="#4285F4"/>
+            </svg>
+        </div>
+        <div class="search_bar">
+            <div class="search_icon">
+                <svg fill="#8395B3" height="24px" viewBox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 9 2 C 5.1458514 2 2 5.1458514 2 9 C 2 12.854149 5.1458514 16 9 16 C 10.747998 16 12.345009 15.348024 13.574219 14.28125 L 14 14.707031 L 14 16 L 19.585938 21.585938 C 20.137937 22.137937 21.033938 22.137938 21.585938 21.585938 C 22.137938 21.033938 22.137938 20.137938 21.585938 19.585938 L 16 14 L 14.707031 14 L 14.28125 13.574219 C 15.348024 12.345009 16 10.747998 16 9 C 16 5.1458514 12.854149 2 9 2 z M 9 4 C 11.773268 4 14 6.2267316 14 9 C 14 11.773268 11.773268 14 9 14 C 6.2267316 14 4 11.773268 4 9 C 4 6.2267316 6.2267316 4 9 4 z"/>
+                </svg>
+            </div>
+            <input id="search" type="text">
+            <div class="search_voice">
+                <svg height="20px" viewBox="0 0 296.8 426.4" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M148.4,276.1h0a63.68,63.68,0,0,1-63.7-63.7V63.7A63.68,63.68,0,0,1,148.4,0h0a63.68,63.68,0,0,1,63.7,63.7V212.4A63.68,63.68,0,0,1,148.4,276.1Z"
+                          style="fill:#4285f4"/>
+                    <rect height="77.9" style="fill:#34a853" width="42.5" x="127.2" y="348.5"/>
+                    <path d="M254.8,213.2c-.1,58.6-47.8,106.3-106.4,106.3A106.1,106.1,0,0,1,73,288.1L43.3,317.8a148.12,148.12,0,0,0,105.1,43.6h0A148.45,148.45,0,0,0,296.8,213.1h-42Z"
+                          style="fill:#ea4335"/>
+                    <path d="M73,288.1a106,106,0,0,1-31-74.9H0A147.87,147.87,0,0,0,43.3,317.8Z" style="fill:#fbbc05"/>
+                </svg>
+            </div>
+        </div>
+        <ul class="search_results"></ul>
+        <div class="search_btn">
+            <button id="search_btn_id" type="button">
+                <span>Search</span>
+                <span>Search</span>
+            </button>
+
+            <!--<a href="https://www.behance.net/juliencoupey" target="_blank">
+              <button>
+                <span>My Behance</span>
+                <span>/juliencoupey</span>
+              </button>
+            </a> -->
+        </div>
+    </div>
+</form>
+<p class="help">Made by Judy Ahn, Olivia Escousse, Finley Li, Noah Shen, and Ploen Voraprukpisut</p>
+
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+
+
+    var searchBar = document.getElementById('search')
+
+    document.getElementById("search_btn_id").onclick = function () {
+        location.href = "main.html"
+    }
+
+    var keywords = ['What does censorship look like around the world?']
+
+    var index = 0
+    var arrCounter = 0
+    var focus = false
+    var timer1, timer2
+
+    function resetBox() {
+        searchBar.value = ''
+        index = 0
+        autoType()
+    }
+
+    var autoType = function () {
+
+        if (focus) {
+
+            return
+        }
+
+        if (index <= keywords[arrCounter].length) {
+            searchBar.value = keywords[arrCounter].substr(0, index++)
+            timer1 = setTimeout("autoType()", 50)
+        } else {
+
+            arrCounter++
+            if (arrCounter === keywords.length) {
+                arrCounter = 0
+            }
+
+            //timer2 = setTimeout(resetBox, 5000);
+        }
+    }
+
+    autoType()
+
+    $("#searchBar").on("focus", function () {
+        focus = true
+        searchBar.value = ''
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+
+    }).on("blur", function () {
+        setTimeout(function () {
+            focus = false
+            resetBox()
+        }, 1000)
+    })
+
+
+</script>
