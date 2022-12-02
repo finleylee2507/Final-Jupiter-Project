@@ -101,6 +101,45 @@
     }
 
 
+    .top-section {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /*.top-section-left {*/
+    /*    border: 1px solid green;*/
+    /*}*/
+
+    /*.top-section-right {*/
+    /*    border: 1px solid blue;*/
+    /*}*/
+
+    .horizontal-gradient {
+        width: 200px;
+        height: 20px;
+        background: linear-gradient(to right, white, black);
+        outline-style: solid;
+        outline-color: black;
+        margin-left: 8px;
+    }
+
+    .vis2-legend {
+        position: relative;
+        top: 80%;
+        display: none;
+        left: -30px;
+        /*border: 1px solid red;*/
+    }
+
+    #vis2-legend-p1 {
+        font-weight: 500;
+    }
+
+    #vis2-legend-p1, #vis2-legend-p2 {
+        margin: 0;
+    }
+
+
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -116,13 +155,26 @@
         <div class="scroll-down-indicator"></div>
     </div>
 
-    <div class="dropdown-wrapper">
-        Continent Displayed: <select class="dropdown" id="continent-selection"></select>
+    <div class="top-section">
+        <div class="top-section-left">
+            <div class="dropdown-wrapper">
+                Continent Displayed: <select class="dropdown" id="continent-selection"></select>
+            </div>
+            <div class="button">
+                <input checked id="vis1" name="button" type="radio" value="vis1"> Organize Country<br>
+                <input disabled id="vis2" name="button" type="radio" value="vis2"> Organize Contient<br>
+            </div>
+        </div>
+        <div class="top-section-right">
+            <div class="vis2-legend">
+                <p id="vis2-legend-p1">% of requests approved:</p>
+                <p id="vis2-legend-p2"> &nbsp; 0% &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;100%</p>
+                <div class="horizontal-gradient solid"></div>
+            </div>
+        </div>
     </div>
-    <div class="button">
-        <input type="radio" name="button" value="vis1" id="vis1" checked> Organize Country<br>
-        <input type="radio" name="button" value="vis2" id="vis2" disabled> Organize Contient<br>
-    </div>
+
+
 </div>
 
 
@@ -134,18 +186,18 @@
     </p>
     <p class="text-container-p2">
         By continent, <span style="color: #76b7b2;"><b>Oceania</b></span> has the highest average accepted request rate,
-        at <b>52.98%</b>, followed by <span style="color: #f28e2c" ;><b>Europe</b></span> at <b>51.15%</b>. <br>
-        <span style="color: #4e79a7" ;><b>Asia</b></span> (<b>31.69%</b>), <span style="color: #edc949" ;><b>Africa</b></span>
-        (<b>28.25%</b>), and <span style="color: #59a14f" ;><b>North America</b></span> (<b>21.5%</b>) have
+        at <b>52.98%</b>, followed by <span ; style="color: #f28e2c"><b>Europe</b></span> at <b>51.15%</b>. <br>
+        <span ; style="color: #4e79a7"><b>Asia</b></span> (<b>31.69%</b>), <span ; style="color: #edc949"><b>Africa</b></span>
+        (<b>28.25%</b>), and <span ; style="color: #59a14f"><b>North America</b></span> (<b>21.5%</b>) have
         significantly lower average rates, with <br>
-        <span style="color: #e15759" ;><b>South America</b></span> having the smallest average acceptance rate at <b>20.15%</b>.
+        <span ; style="color: #e15759"><b>South America</b></span> having the smallest average acceptance rate at <b>20.15%</b>.
     </p>
 
 
     <div id="detailed-info">
         <!--where the tooltip goes-->
 
-        <u> </u> <img src="" class="tool-tip-flag-icon"/>
+        <u> </u> <img class="tool-tip-flag-icon" src=""/>
         <br>Removal Requests: <span id="removal-request-num"></span>
         <br>%Removed: <span id="percent-removed"></span> <br>
 
@@ -153,12 +205,12 @@
           Top platforms for removal:
         </span>
 
-        <div id="first-bar-chart-container" class="bar-chart-container"></div>
+        <div class="bar-chart-container" id="first-bar-chart-container"></div>
 
         <span class="bar-chart-title">
           Top reasons for removal:
        </span>
-        <div id="second-bar-chart-container" class="bar-chart-container"></div>
+        <div class="bar-chart-container" id="second-bar-chart-container"></div>
     </div>
 
 
@@ -180,7 +232,7 @@
         .attr("height", height)
         .on("click", () => {
             tutorialCtr += 1
-            console.log(tutorialCtr)
+            // console.log(tutorialCtr)
             tutorialCreatedStep = false
             if (tutorialCtr == 3) {
                 countries_pre_tutorial[9][2] = countries_sorted[9][2]
@@ -267,8 +319,6 @@
         .force("x", d3.forceX().strength(2).x(function (d) {
             return xScale(percents_removed_percent.get(d[0]))
         }))
-        //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-        //.force("charge", d3.forceManyBody().strength(-1))
         .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
             if (d[3]) {
                 return sizeScale(d[1])
@@ -449,7 +499,6 @@
                     .transition()
                     .ease(d3.easeLinear)
                     .style("fill", function (d) {
-                        //console.log(elapsed);
                         if (elapsed % 2000 > 1000)
                             return "white"
                         return "black"
@@ -473,7 +522,7 @@
                 if (!tutorial_finished) {
                     tutorial(elapsed)
                 } else {
-                    console.log("Timer stopped")
+                    // console.log("Timer stopped")
                     timer.stop()
                 }
 
@@ -728,7 +777,7 @@
         countries_pre_tutorial[4][2] = countries_preprocessed[4][2]
 
         countries_sorted = countries_preprocessed
-        console.log("finished processing")
+        // console.log("finished processing")
     }
 
     const createIcons = async () => {
@@ -823,6 +872,13 @@
             svg_bubble.selectAll(".x-axis-label").style("opacity", "1")
             svg_bubble.selectAll(".quadrant-line").style("opacity", "1")
             svg_bubble.selectAll(".quadrant-line-label").style("opacity", "1")
+        }
+
+        //show/hide legend
+        if (visChanged) {
+            d3.select(".vis2-legend").style("display", "block")
+        } else {
+            d3.select(".vis2-legend").style("display", "none")
         }
         //set active countries based on current select continent
         let country_selection = subset_countries()
@@ -1160,7 +1216,7 @@
                                         .text(temp)
 
                                 } else {
-                                    return
+
                                 }
 
                             })
@@ -1208,9 +1264,9 @@
 
 
             if (!simulationCreated) {
-                console.log(visChanged)
+                // console.log(visChanged)
                 if (simulationExtra) {
-                    console.log("in extra")
+                    // console.log("in extra")
                     if (visChanged) {
                         simulation.force("y", d3.forceY().strength(1).y(function (d) {
                             return latScale(country_location.get(country_code_mapping[d[0]])[1])
@@ -1218,14 +1274,12 @@
                             .force("x", d3.forceX().strength(1).x(function (d) {
                                 return longScale(country_location.get(country_code_mapping[d[0]])[0])
                             }))
-                            //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                            //.force("charge", d3.forceManyBody().strength(-1))
                             .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
                                 if (d[3]) {
                                     return sizeScale(d[1])
                                 } else {
                                     return -1
-                                    console.log(d)
+                                    // console.log(d)
                                 }
                             }).iterations(1)).alpha(0.05)
                     } else {
@@ -1235,19 +1289,17 @@
                             .force("x", d3.forceX().strength(1).x(function (d) {
                                 return xScale(percents_removed_percent.get(d[0]))
                             }))
-                            //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                            //.force("charge", d3.forceManyBody().strength(-1))
                             .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
                                 if (d[3]) {
                                     return sizeScale(d[1])
                                 } else {
                                     return -1
-                                    console.log(d)
+                                    // console.log(d)
                                 }
                             }).iterations(1)).alpha(0.05)
                     }
                 } else {
-                    console.log("in")
+                    // console.log("in")
                     simulation = d3.forceSimulation()
                         .force("y", d3.forceY().strength(.5).y(function (d) {
                             return d[2]
@@ -1255,14 +1307,12 @@
                         .force("x", d3.forceX().strength(.5).x(function (d) {
                             return xScale(percents_removed_percent.get(d[0]))
                         }))
-                        //.force("center", d3.forceCenter().x(function(d){return console.log(xScale(percents_removed_percent.get(d[0]))); xScale(percents_removed_percent.get(d[0]))}).y((bubble_height + margin.top) / 2))
-                        //.force("charge", d3.forceManyBody().strength(-1))
                         .force("collide", d3.forceCollide().strength(0.25).radius(function (d) {
                             if (d[3]) {
                                 return sizeScale(d[1])
                             } else {
                                 return -1
-                                console.log(d)
+                                // console.log(d)
                             }
                         }).iterations(1))
 
@@ -1389,7 +1439,7 @@
                     return 100 + i * 25
                 }) // 100 is where the first dot appears. 25 is the distance between dots
                 .attr("r", 7)
-            return
+
         } else {
             //add axis and text
 
