@@ -101,7 +101,6 @@
     }
 
 
-
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -1524,7 +1523,7 @@
         var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 9, 16])
 
         var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of its key features"],
-            ["Here is the United States.", " It's size is proportional to # of removal requsts they've submitted.", "The larger the circle, the more requests!"],
+            ["Here is the United States.", " It's size is proportional to # of removal requests they've submitted.", "The larger the circle, the more requests!"],
             ["The further to the right the country is, the more", "frequently their requests have been accepted by Google"],
             ["A country's placement on y-axis doesn't mean anything.", "Multiple countries can share the same acceptance rate!"],
             ["You can filter/organize by continent up here!"],
@@ -1547,7 +1546,8 @@
             [bubble_width / 100, bubble_height / 10, bubble_height / 9, bubble_width / 3.5],
             [bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3]]
 
-        let highlights = ["", ["#united-states"], ["#united-states", ".x-axis", ".quadrant-line", ".quadrant-line-label"],
+        let highlights = [["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"],
+            ["#united-states"], ["#united-states", ".x-axis", ".quadrant-line", ".quadrant-line-label"],
             ["#united-states", ".quadrant-line", ".quadrant-line-label", ".x-axis", "#brazil"],
             ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".x-axis"],
             ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"]]
