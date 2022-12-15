@@ -1,6 +1,6 @@
 # "Biased or Not" — Visualizing Google's Responses to Content Removal Requests
 
-Authors/Developers: Judy Ahn, Olivia Escousse, Finley Li, Noah Shen, and Ploenta Voraprukpisut
+**Authors/Developers**: Judy Ahn, Olivia Escousse, Finley Li, Noah Shen, and Ploenta Voraprukpisut
 
 ## Project Summary
 
