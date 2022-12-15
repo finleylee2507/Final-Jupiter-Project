@@ -19,10 +19,14 @@
 
     .dropdown-wrapper {
         margin-left: 30px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        pointer-events: none;
     }
 
-    .button {
-        margin-left: 30px;
+    .dropdown-wrapper select {
+        border-radius: 5px;
     }
 
     .plot-section {
@@ -52,6 +56,7 @@
 
     .text-container {
         /*border: 1px solid black;*/
+        zoom: 90%;
         min-width: 30%;
         left: 70%;
         position: absolute;
@@ -158,11 +163,15 @@
     <div class="top-section">
         <div class="top-section-left">
             <div class="dropdown-wrapper">
-                Continent Displayed: <select class="dropdown" id="continent-selection"></select>
-            </div>
-            <div class="button">
-                <input checked id="vis1" name="button" type="radio" value="vis1"> Organize Country<br>
-                <input disabled id="vis2" name="button" type="radio" value="vis2"> Organize Contient<br>
+                <div id="1st-dropdown">
+                    Continent Displayed: <select class="continent-selection-dropdown" id="continent-selection"></select>
+                </div>
+
+                <div id="2nd-dropdown">
+                    Organize By: <select class="organize-by-selection-dropdown" id="organize-by-selection"></select>
+                </div>
+
+
             </div>
         </div>
         <div class="top-section-right">
@@ -217,7 +226,6 @@
 </div>
 
 <script>
-
     // Line Bubble Plot
 
     //Plot vars
@@ -241,13 +249,13 @@
             if (tutorialCtr >= tutorialSteps && !completed) {
                 drawBubble()
                 completed = true
-                document.getElementById("vis2").removeAttribute('disabled')
                 if (tutorialCtr == tutorialSteps + 1) {
                     simulation.stop()
                 }
 
             }
         })
+
 
     let defs = svg_bubble.append("defs")
 
@@ -299,8 +307,9 @@
 
     //Variable that controls the dropdown
     let current_continent = "All"
-    let dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
-    var visChanged = false
+    let continent_dropdown_options = ["All", "North America", "South America", "Asia", "Europe", "Africa", "Oceania"]
+    let organize_by_dropdown_options = ["country", "continent"]
+    let visChanged = false
     var visPhysicsDealt = true
 
 
@@ -368,6 +377,7 @@
                 .attr("class", "loading_svg")
                 .attr("height", window.innerHeight)
                 .attr("width", window.innerWidth)
+
 
             loading.append("text")
                 .attr("class", "loading-text")
@@ -459,16 +469,9 @@
                 }
                 loading_background  //hide loading screen
                     .style("visibility", "hidden")
-                if (!tutorial_started) {
-                    set_up_axis_and_labels()
-                    tutorial_started = true
-                }
-                if (!tutorial_finished) {
-                    tutorial(elapsed)
-                } else {
-                    // console.log("Timer stopped")
-                    timer.stop()
-                }
+                set_up_axis_and_labels()
+                tutorial(elapsed)
+
 
             }
         } else { //during loading
@@ -476,6 +479,8 @@
             let loading = loading_background.select("svg")
             if (elapsed >= timeinterval / 2) { //if halfway, display second paragraph
                 loading.selectAll("text").remove()
+
+                //display project overview
                 loading.append("text")
                     .attr("class", "loading-text")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -665,12 +670,12 @@
         }
 
         //Find the circles that broke the plane
-        temp_placed_circles = []
-        this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
-        this_radius = sizeScale(this_point[1]) //+ get_halo_stroke_width(sizeScale(this_point[1]))
+        let temp_placed_circles = []
+        let this_center = [xScale(percents_removed_percent.get(this_point[0])), result_y]
+        let this_radius = sizeScale(this_point[1]) //+ get_halo_stroke_width(sizeScale(this_point[1]))
         placed_circles.forEach(d => {
-            other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
-            other_radius = sizeScale(d[1]) + get_halo_stroke_width(sizeScale(d[1]))
+            let other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
+            let other_radius = sizeScale(d[1]) + get_halo_stroke_width(sizeScale(d[1]))
             if (check_breaks_plane(this_center, this_radius, other_center, other_radius)) {
                 temp_placed_circles.push(d)
             }
@@ -680,15 +685,15 @@
         }
 
         //For each circle that broke the plane, see the two ends of valid values
-        var valid_heights = []
+        let valid_heights = []
         temp_placed_circles.forEach(d => {
-            other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
-            other_radius = sizeScale(d[1]) + get_halo_stroke_width(sizeScale(d[1]))
+            let other_center = [xScale(percents_removed_percent.get(d[0])), d[2]]
+            let other_radius = sizeScale(d[1]) + get_halo_stroke_width(sizeScale(d[1]))
             valid_heights.push(get_possible(this_center, this_radius, other_center, other_radius))
         })
 
         //Combine the ranges and pick a single best point
-        best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
+        let best_place = merge_ranges(valid_heights.sort((a, b) => d3.ascending(a[0], b[0])), this_radius)
         return new Promise(resolve => setTimeout(() => resolve(best_place), 1))
     }
 
@@ -876,8 +881,8 @@
                 .domain(innerMapReasons.map(d => d[0]))
                 .range([barchartHeight, 0]).paddingInner(0.1)
 
-            let barChartColorScalePlatforms = d3.scaleOrdinal().domain(innerMapPlatforms.map(d => d[0])).range(d3.schemeTableau10)
-            let barChartColorScaleReasons = d3.scaleOrdinal().domain(innerMapReasons.map(d => d[0])).range(d3.schemeTableau10)
+            // let barChartColorScalePlatforms = d3.scaleOrdinal().domain(innerMapPlatforms.map(d => d[0])).range(d3.schemeTableau10)
+            // let barChartColorScaleReasons = d3.scaleOrdinal().domain(innerMapReasons.map(d => d[0])).range(d3.schemeTableau10)
 
             let barChartXAxis = d3.axisBottom(xScaleBarChart)
             let firstBarChartYAxis = d3.axisLeft(yScaleBarChartPlatforms)
@@ -1379,11 +1384,8 @@
             svg_bubble.selectAll(".mydots")
                 .transition()
                 .ease(d3.easeLinear)
-                .duration(1250)
                 .attr("cx", width - margin.right - 150)
-                .attr("cy", function (d, i) {
-                    return 100 + i * 25
-                }) // 100 is where the first dot appears. 25 is the distance between dots
+                .attr("cy", (d, i) => 100 + i * 25) // 100 is where the first dot appears. 25 is the distance between dots
                 .attr("r", 7)
 
         } else {
@@ -1457,7 +1459,7 @@
             var dropdown_bounds = element.getBoundingClientRect()
             var circles_colors = d3.scaleOrdinal().domain(d3.range(6)).range(d3.schemeTableau10)
 
-            for (i = 0; i < 6; i++) {
+            for (let i = 0; i < 6; i++) {
                 svg_bubble
                     .append("circle")
                     .attr("class", "mydots")
@@ -1489,12 +1491,14 @@
     }
 
     const set_up_dropdown = () => {
-        d3.selectAll(".dropdown").selectAll('myOptions').data(dropdown_options).enter()
+
+        //continent selection
+        d3.selectAll(".continent-selection-dropdown").selectAll('myOptions').data(continent_dropdown_options).enter()
             .append('option')
             .text(d => d) // text showed in the menu
             .attr("value", d => d)
 
-        d3.select(".dropdown")
+        d3.select(".continent-selection-dropdown")
             .on("change", (e, d) => {
                 current_continent = e.currentTarget.value
                 // console.log(current_continent);
@@ -1502,6 +1506,22 @@
                 //draw bubble again
                 drawBubble()
             })
+
+        //organize selection
+        d3.selectAll(".organize-by-selection-dropdown").selectAll('myOptions').data(organize_by_dropdown_options).enter()
+            .append('option')
+            .text(d => d) // text showed in the menu
+            .attr("value", d => d)
+
+
+        d3.select(".organize-by-selection-dropdown")
+            .on("change", (e, d) => {
+                visChanged = e.currentTarget.value === "continent"
+                simulationCreated = false
+                displayParagraphs()
+                drawBubble()
+            })
+
     }
 
     function displayParagraphs() {
@@ -1514,8 +1534,7 @@
         }
     }
 
-    const tutorial = async (elapsed) => {
-
+    const tutorial = (elapsed) => {
         var scaleText = d3.scaleLog().domain([1, 720, 1920]).range([4, 9, 16])
 
         var textBlurbs = [["Welcome to our Visualization!", "This tutorial will walk you through some of its key features"],
@@ -1526,37 +1545,40 @@
             ["We hope you enjoy exploring our visualization!", "Let's release the balls!"]]
 
         if (tutorialCtr > textBlurbs.length - 1) { //tutorial finished
-            svg_bubble.selectAll("g.textbox").remove()
+            timer.stop()
+            d3.selectAll("g.textbox").remove()
             tutorial_finished = true
 
             //reset opacity
-            svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 1)
+            d3.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 1)
 
+            //activate dropdown
+            d3.selectAll(".dropdown-wrapper").style("pointer-events", "auto")
             displayParagraphs()
             return
         }
-        var placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 2.8],
+        let placements = [[bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 2.8],
             [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
             [bubble_width / 1.45, bubble_height / 2.5, bubble_height / 9, bubble_width / 3],
             [bubble_width / 2.2, bubble_height / 3.5, bubble_height / 9, bubble_width / 2.6],
-            [bubble_width / 100, bubble_height / 10, bubble_height / 9, bubble_width / 3.5],
+            [bubble_width / 100, bubble_height / 20, bubble_height / 9, bubble_width / 3.5],
             [bubble_width / 2.695, bubble_height / 4, bubble_height / 9, bubble_width / 3]]
 
-        let highlights = [["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"],
+        let highlights = [["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line",
+            ".x-axis", ".mydots", ".legend-label"],
             ["#united-states"], ["#united-states", ".x-axis", ".quadrant-line", ".quadrant-line-label"],
             ["#united-states", ".quadrant-line", ".quadrant-line-label", ".x-axis", "#brazil"],
-            ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".x-axis"],
+            [".dropdown-wrapper"],
             ["#united-states", "#brazil", ".quadrant-line", ".quadrant-line-label", ".dropdown-wrapper", ".button", ".quadrant-line", ".x-axis"]]
 
 
         //hide non-highlighted elements
-        var currentBlurb = textBlurbs[tutorialCtr]
         d3.select(".dropdown-wrapper").style("opacity", 0.5)
         d3.select(".button").style("opacity", 0.5)
         svg_bubble.selectAll(".x-axis,.x-axis-label,.quadrant-line,.legend-label,.mydots,#united-states,.quadrant-line-label").style("opacity", 0.3)
 
 
-        var currentBlurb = textBlurbs[tutorialCtr]
+        let currentBlurb = textBlurbs[tutorialCtr]
         if (!tutorialCreatedStep) {
             svg_bubble.selectAll("g.textbox").remove()
             var block = svg_bubble.append("g")
@@ -1584,7 +1606,7 @@
                 .style("fill", "black")
                 .attr("stroke", "black")
 
-            for (i = 0; i < currentBlurb.length; i++) {
+            for (let i = 0; i < currentBlurb.length; i++) {
                 block.append("text")
                     .attr("transform", "translate(" + (translateTextBoxX + textBoxWidth / 2) + " ," + (translateTextBoxY + (textBoxHeight * (i + 1)) / (currentBlurb.length + 1)) + ")")
                     .style("text-anchor", "middle")
@@ -1598,7 +1620,7 @@
             svg_bubble.selectAll("g.textbox").selectAll("rect.loading-square-thingy")
                 .transition()
                 .ease(d3.easeLinear)
-                .style("fill", function (d) {
+                .style("fill", d => {
                     if (elapsed % 2000 > 1000)
                         return "white"
                     return "black"
@@ -1611,6 +1633,10 @@
             d3.selectAll(highlighted[i]).style("opacity", 1)
         }
 
+        //draw red box next to dropdown section when it's being introduced
+        if(tutorialCtr===4){
+            d3.selectAll(".dropdown-wrapper").style("border","2px solid red")
+        }
 
     }
 
