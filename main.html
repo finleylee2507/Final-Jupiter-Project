@@ -337,7 +337,7 @@
     //Misc Variables
     let country_to_continent = new Map()
     let continent_to_country = new Map()
-    let timer, floattimer, timer_ctr = 0
+    let timer, timer_ctr = 0
     var removeLoading = false
     var finishedLoading = false
     var removeLoadingCreated = false
@@ -350,7 +350,7 @@
         var circles_colors = d3.scaleOrdinal().domain(d3.range(numcircles)).range(d3.schemeTableau10)
         var placement = d3.scaleLinear().domain([0, 5]).range([window.innerWidth / 4, window.innerWidth * 3 / 4.0])
         var radius = 10
-        var timeinterval = 8000
+        var timeinterval = 8000 //how long the loading screen will last
 
         if (timer_ctr == 0) { //prior to loading, set up the loading dots
             let divs = document.getElementsByTagName("div")
@@ -408,68 +408,13 @@
             }
 
         } else if (elapsed > timeinterval) { //finished loading
-            var loading = loading_background.select("svg")
-                .on("click", function () {
+            finishedLoading = true
+            let loading = loading_background.select("svg")
+                .on("click", () => {
                     removeLoading = true
                 })
             if (!removeLoadingCreated) {
-                loading.selectAll("text").remove()
-                loading.append("text")
-                    .attr("class", "loading-text")
-                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight / 2 - 150) + ")")
-                    .style("text-anchor", "middle")
-                    .style("font-size", 20)
-                    .attr("dy", "20")
-                    .attr("dy", "0em")
-                    .text("With nearly 4 billion active users, Google is currently the most used search engine in the world.")
-                loading.append("text")
-                    .attr("class", "loading-text")
-                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight / 2 - 150) + ")")
-                    .style("text-anchor", "middle")
-                    .style("font-size", 20)
-                    .attr("dy", "20")
-                    .attr("dy", "1.5em")
-                    .text("Across the world, countries can petition to remove content from Google or any of its platforms,")
-                loading.append("text")
-                    .attr("class", "loading-text")
-                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight / 2 - 150) + ")")
-                    .style("text-anchor", "middle")
-                    .style("font-size", 20)
-                    .attr("dy", "20")
-                    .attr("dy", "3em")
-                    .text("citing various reasons such as defamation, national security, and fraud.")
-                loading.append("text")
-                    .attr("class", "loading-text")
-                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight / 2 - 150) + ")")
-                    .style("text-anchor", "middle")
-                    .style("font-size", 20)
-                    .attr("dy", "20")
-                    .attr("dy", "4.5em")
-                    .text("Where in the world are the most removal requests coming from?")
-                loading.append("text")
-                    .attr("class", "loading-text")
-                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight / 2 - 150) + ")")
-                    .style("text-anchor", "middle")
-                    .style("font-size", 20)
-                    .attr("dy", "20")
-                    .attr("dy", "6em")
-                    .text("Does Google grant requests from different regions equally, or is there a difference depending on the region?")
-                loading.append("text")
-                    .attr("class", "loading-text")
-                    .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
-                        (window.innerHeight / 2 - 150) + ")")
-                    .style("text-anchor", "middle")
-                    .style("font-size", 20)
-                    .attr("dy", "20")
-                    .attr("dy", "7.5em")
-                    .text("Let's explore...")
-
-
+                loading.selectAll(".loading-words").remove() //remove "loading..." text
                 loading.append("text")
                     .attr("class", "loading-words")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
@@ -482,7 +427,7 @@
                     .attr("stroke", "black")
 
                 loading.selectAll("g").remove()
-                var block = loading.append("g")
+                let block = loading.append("g")
                     .attr("transform", "translate(" + (window.innerWidth / 2) + " ," +
                         (window.innerHeight * 2 / 3 - 50) + ")")
 
@@ -514,7 +459,6 @@
                 }
                 loading_background  //hide loading screen
                     .style("visibility", "hidden")
-                finishedLoading = true
                 if (!tutorial_started) {
                     set_up_axis_and_labels()
                     tutorial_started = true
@@ -529,8 +473,8 @@
             }
         } else { //during loading
 
-            var loading = loading_background.select("svg")
-            if (elapsed >= timeinterval / 2) { //display second paragraph
+            let loading = loading_background.select("svg")
+            if (elapsed >= timeinterval / 2) { //if halfway, display second paragraph
                 loading.selectAll("text").remove()
                 loading.append("text")
                     .attr("class", "loading-text")
@@ -597,10 +541,12 @@
                     .attr("dy", "20")
                     .text("Loading...")
             }
+
+            //gradually fill up the circles
             loading.selectAll("circle")
                 .transition()
                 .ease(d3.easeLinear)
-                .style("fill", function (d, i) { //filling magic
+                .style("fill", (d, i) => { //filling magic
                     if (((timeinterval / 5) / (numcircles + 1)) * i < elapsed % (timeinterval / 5)) {
                         return circles_colors(i)
                     } else {
